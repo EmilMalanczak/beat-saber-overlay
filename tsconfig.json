@@ -15,5 +15,10 @@
     "noFallthroughCasesInSwitch": true
   },
   "exclude": ["node_modules"],
-  "include": ["**/*"]
+  "include": ["**/*"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  }
 }

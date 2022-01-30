@@ -12,6 +12,14 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: ['react-hooks', '@typescript-eslint', 'prettier', 'react'],
+  settings: {
+    'import/resolver': {
+      node: {
+        paths: ['src'],
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
+      }
+    }
+  },
   rules: {
     'import/no-unresolved': 'error',
     'react-hooks/rules-of-hooks': 'error',
