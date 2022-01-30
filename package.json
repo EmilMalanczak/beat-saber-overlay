@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@commitlint/cli": "^16.1.0",
