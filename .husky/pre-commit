@@ -4,4 +4,4 @@
 
 echo '$ Husky: run lint-staged' 
 
-yarn lint-staged  
+yarn lint-staged
