@@ -1,4 +1,10 @@
 {
+  "name": "bs-obs-overlay",
+  "version": "1.0.0",
+  "description": "Beat Saber OBS overlay",
+  "main": "index.js",
+  "author": "EmilMalanczak",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next",
@@ -6,7 +12,8 @@
     "start": "next start",
     "prepare": "husky install"
   },
-  "dependencies": {
+  "devDependencies": {
+    "typescript": "^4.5.5",
     "@commitlint/cli": "^16.1.0",
     "@commitlint/config-conventional": "^16.0.0",
     "@types/react": "^17.0.38",
@@ -21,11 +28,12 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.2",
+    "prettier": "^2.5.1"
+  },
+  "dependencies": {
     "next": "latest",
-    "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "typescript": "^4.5.5",
     "zustand": "^3.5.4"
   }
 }
