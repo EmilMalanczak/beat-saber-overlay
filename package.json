@@ -13,9 +13,9 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "typescript": "^4.5.5",
     "@commitlint/cli": "^16.1.0",
     "@commitlint/config-conventional": "^16.0.0",
+    "@types/ramda": "^0.27.64",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
@@ -28,10 +28,13 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.2",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5"
   },
   "dependencies": {
+    "immer": "^9.0.12",
     "next": "latest",
+    "ramda": "^0.28.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "zustand": "^3.5.4"
