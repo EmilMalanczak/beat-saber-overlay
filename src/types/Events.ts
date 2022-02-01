@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+// https://github.com/opl-/beatsaber-http-status/blob/master/protocol.md#status-object
 
 export type NoteCutObject = {
   noteID: number // ID of the note
