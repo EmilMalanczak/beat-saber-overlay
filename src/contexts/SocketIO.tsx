@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import io from 'socket.io-client'
 
 import type { FC } from 'react'
@@ -25,7 +25,7 @@ export const SocketIOProvider: FC = ({ children }) => {
     return () => {
       newSocket.close()
     }
-  }, [router.query.ip, setSocket])
+  }, [router.query.ip])
 
   return <SocketProvider value={socket}>{children}</SocketProvider>
 }
