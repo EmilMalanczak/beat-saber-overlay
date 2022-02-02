@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2021",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": false,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -9,13 +13,19 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true,
+    "incremental": true
   },
-  "exclude": ["node_modules"],
-  "include": ["**/*"],
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "**/*"
+  ],
   "settings": {
     "import/resolver": {
       "typescript": {}

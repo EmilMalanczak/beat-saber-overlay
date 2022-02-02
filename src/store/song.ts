@@ -2,7 +2,7 @@ import create from 'zustand'
 import { Song } from '../types/Song'
 import { logStore } from '../utils/logStore'
 
-type StatusStore = {
+type SongStore = {
   loading: boolean
   error: boolean
   song: Song | null
@@ -10,13 +10,15 @@ type StatusStore = {
   getSong: (hash: string) => Promise<void>
 }
 
-export const useStatusStore = logStore(
-  create<StatusStore>((set) => ({
+export const useSongStore = logStore(
+  create<SongStore>((set, get) => ({
     loading: false,
     error: false,
     song: null,
     getSong: async (hash) => {
       try {
+        get().setLoading(true)
+
         const song = { hash } as any // TODO fetch song from beatsaver
 
         set({ song, loading: false, error: false })

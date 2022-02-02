@@ -1,8 +1,8 @@
 import create from 'zustand'
 import { Player } from '../types/Player'
-import { logStore } from '../utils/logStore'
+import { scoresaber } from '../api/scoresaber'
 
-type StatusStore = {
+type PlayerStore = {
   loading: boolean
   fetched: boolean
   error: boolean
@@ -11,26 +11,26 @@ type StatusStore = {
   setLoading: (isLoading: boolean) => void
 }
 
-export const useStatusStore = logStore(
-  create<StatusStore>((set) => ({
-    loading: false,
-    fetched: false,
-    error: false,
-    player: null,
-    getPlayerInfo: async (id) => {
-      try {
-        const player = { id } as Player // TODO fetch player from scoresaber
+export const usePlayerStore = create<PlayerStore>((set, get) => ({
+  loading: false,
+  fetched: false,
+  error: false,
+  player: null,
+  getPlayerInfo: async (id) => {
+    try {
+      get().setLoading(true)
 
-        set({ player, fetched: true, loading: false, error: false })
-      } catch (e) {
-        console.error('[Scoresaber]: there was a problem with fetching player info')
-        console.error(e)
+      const { data: player } = await scoresaber.get<Player>(`/player/${id}/full`) // TODO fetch player from scoresaber
 
-        set({ error: true })
-      }
-    },
-    setLoading: (loading) => {
-      set({ loading })
+      set({ player, fetched: true, loading: false, error: false })
+    } catch (e) {
+      console.error('[Scoresaber]: there was a problem with fetching player info')
+      console.error(e)
+
+      set({ error: true })
     }
-  }))
-)
+  },
+  setLoading: (loading) => {
+    set({ loading })
+  }
+}))
