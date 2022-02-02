@@ -1,4 +1,5 @@
-export const BEATSAVER_URL = 'https://api.beatsaver.com/maps/hash/'
+export const BEATSAVER_URL = 'https://api.beatsaver.com'
+export const SCORESABER_URL = 'https://scoresaber.com/api'
 
 export const HTTPStatus = {
   port: '6557',
