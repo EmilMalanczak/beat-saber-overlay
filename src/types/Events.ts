@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 // https://github.com/opl-/beatsaber-http-status/blob/master/protocol.md#status-object
 
+import { SocketEvent } from './SocketEvent'
+
 export type NoteCutObject = {
   noteID: number // ID of the note
   noteType: 'NoteA' | 'NoteB' | 'Bomb' // Type of note
@@ -169,11 +171,87 @@ export type StatusObject = {
   beatmap: null | BeatmapObject
   playerSettings: PlayerSettingsObject
   mod: ModObject
-  noteCut: NoteCutObject
 }
 
-export type HTTPEvent = {
-  event: string // See [Events](#events)
-  time: number // UNIX timestamp in milliseconds of the moment this event happened
-  status: Partial<StatusObject> // See [Status object](#status-object). May be partial, depending on the event type.
+export type EventDataType =
+  | {
+      event: SocketEvent.HELLO
+      status: StatusObject
+    }
+  | {
+      event: SocketEvent.SONG_START
+      status: StatusObject
+    }
+  | {
+      event: SocketEvent.FINISHED
+      status: Pick<StatusObject, 'performance'>
+    }
+  | {
+      event: SocketEvent.FAILED
+      status: Pick<StatusObject, 'performance'>
+    }
+  | {
+      event: SocketEvent.SOFT_FAILED
+      status: Pick<StatusObject, 'performance' | 'beatmap' | 'mod'>
+    }
+  | {
+      event: SocketEvent.PAUSE
+      status: Pick<StatusObject, 'beatmap'>
+    }
+  | {
+      event: SocketEvent.RESUME
+      status: Pick<StatusObject, 'beatmap'>
+    }
+  | {
+      event: SocketEvent.MENU
+      status: StatusObject
+    }
+  | {
+      event: SocketEvent.NOTE_SPAWNED
+      noteCut: NoteCutObject
+    }
+  | {
+      event: SocketEvent.NOTE_CUT
+      status: Pick<StatusObject, 'performance'>
+      noteCut: NoteCutObject
+    }
+  | {
+      event: SocketEvent.NOTE_FULLY_CUT
+      status: Pick<StatusObject, 'performance'>
+      noteCut: NoteCutObject
+    }
+  | {
+      event: SocketEvent.NOTE_MISSED
+      status: Pick<StatusObject, 'performance'>
+      noteCut: NoteCutObject
+    }
+  | {
+      event: SocketEvent.BOMB_CUT
+      status: Pick<StatusObject, 'performance'>
+      noteCut: NoteCutObject
+    }
+  | {
+      event: SocketEvent.BOMB_MISSED
+      status: Pick<StatusObject, 'performance'>
+      noteCut: NoteCutObject
+    }
+  | {
+      event: SocketEvent.OBSTACLE_ENTER
+      status: Pick<StatusObject, 'performance'>
+    }
+  | {
+      event: SocketEvent.OBSTACLE_EXIT
+      status: Pick<StatusObject, 'performance'>
+    }
+  | {
+      event: SocketEvent.SCORE_CHANGED
+      status: Pick<StatusObject, 'performance'>
+    }
+  | {
+      event: SocketEvent.BEATMAP_EVENT
+      status: Pick<StatusObject, 'beatmap'>
+    }
+
+export type HTTPEventData = EventDataType & {
+  time: number
 }
