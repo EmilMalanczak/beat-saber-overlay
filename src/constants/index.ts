@@ -7,3 +7,5 @@ export const HTTPStatus = {
 }
 
 export const DEFAULT_IP = '127.0.0.1'
+
+export const CONNECTION_RECONNECT_TIME = 3000
