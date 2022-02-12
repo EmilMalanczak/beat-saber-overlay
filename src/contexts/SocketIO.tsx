@@ -5,7 +5,7 @@ import type { FC } from 'react'
 import { DEFAULT_IP, HTTPStatus, CONNECTION_RECONNECT_TIME } from '../constants'
 import { useStatusStore } from '../store/status'
 import { useInterval } from '../hooks/useInterval'
-import { usePlayerStore } from '../store/player'
+import { useScoreStore } from '../store/score'
 import { useSongStore } from '../store/song'
 import { SocketEvent } from '../types/SocketEvent'
 import { HTTPEventData } from '../types/Events'
@@ -20,6 +20,7 @@ export const SocketIOProvider: FC = ({ children }) => {
   const { connect, disconnect, connected } = useStatusStore()
   // const { getPlayerInfo } = usePlayerStore()
   const { getSong } = useSongStore()
+  const { mountScoreNote } = useScoreStore()
 
   const handleConnectToHTTP = useCallback(() => {
     const HTTPSocket = new WebSocket(
@@ -31,7 +32,7 @@ export const SocketIOProvider: FC = ({ children }) => {
 
   const handleTransformSocketData = (socketData: any) => {
     const data: HTTPEventData = JSON.parse(socketData.data)
-    console.log(data)
+    // console.log(data)
 
     const { event } = data
 
@@ -54,6 +55,12 @@ export const SocketIOProvider: FC = ({ children }) => {
         const { noteCut } = data
 
         console.log(noteCut)
+        mountScoreNote({
+          id: noteCut.noteID,
+          score: noteCut.finalScore,
+          x: noteCut.noteLine,
+          y: noteCut.noteLayer
+        })
 
         break
 

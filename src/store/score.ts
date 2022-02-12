@@ -15,7 +15,7 @@ type ScoreStore = {
   mountScoreNote: (note: NoteScore) => void
 }
 
-export const usePlayerStore = create<ScoreStore>((set, get) => ({
+export const useScoreStore = create<ScoreStore>((set, get) => ({
   score: 0,
   noteScores: [],
   unmountScoreNote: (noteId) => {
