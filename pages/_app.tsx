@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app'
 
 import { usePlayerStore } from '../src/store/player'
 import { SocketIOProvider } from '../src/contexts/SocketIO'
+import { ThemeContext } from '../src/contexts/Theme'
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()
@@ -16,9 +17,11 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [getPlayerInfo, router.query.id])
 
   return (
-    <SocketIOProvider>
-      <Component {...pageProps} />
-    </SocketIOProvider>
+    <ThemeContext>
+      <SocketIOProvider>
+        <Component {...pageProps} />
+      </SocketIOProvider>
+    </ThemeContext>
   )
 }
 
