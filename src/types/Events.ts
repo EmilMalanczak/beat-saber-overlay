@@ -17,8 +17,8 @@ export type NoteCutObject = {
     | 'DownRight'
     | 'Any'
     | 'None' // Direction the note is supposed to be cut in
-  noteLine: number // The horizontal position of the note, from left to right [0..3]
-  noteLayer: number // The vertical position of the note, from bottom to top [0..2]
+  noteLine: 0 | 1 | 2 | 3 // The horizontal position of the note, from left to right [0..3]
+  noteLayer: 0 | 1 | 2 // The vertical position of the note, from bottom to top [0..2]
   speedOK: boolean // Cut speed was fast enough
   directionOK: null | boolean // Note was cut in the correct direction. null for bombs.
   saberTypeOK: null | boolean // Note was cut with the correct saber. null for bombs.

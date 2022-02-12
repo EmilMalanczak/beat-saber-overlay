@@ -1,10 +1,23 @@
 import create from 'zustand'
+import { BeatmapObject } from '../types/Events'
 import { Song } from '../types/Song'
+
+type SongDetails = {
+  author: BeatmapObject['songAuthorName']
+  mapper: BeatmapObject['levelAuthorName']
+  cover: BeatmapObject['songCover']
+  difficulty: {
+    level: BeatmapObject['difficultyEnum']
+    name: BeatmapObject['difficulty']
+  }
+}
 
 type SongStore = {
   loading: boolean
   error: boolean
+  paused: boolean
   song: Song | null
+  details: SongDetails | null
   setLoading: (isLoading: boolean) => void
   getSong: (hash: string) => Promise<void>
 }
@@ -12,7 +25,9 @@ type SongStore = {
 export const useSongStore = create<SongStore>((set, get) => ({
   loading: false,
   error: false,
+  paused: false,
   song: null,
+  details: null,
   getSong: async (hash) => {
     try {
       get().setLoading(true)
