@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import type { AppProps } from 'next/app'
 
 import { usePlayerStore } from '../src/store/player'
@@ -16,9 +16,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [getPlayerInfo, router.query.id])
 
   return (
-    // <SocketIOProvider>
-    <Component {...pageProps} />
-    // </SocketIOProvider>
+    <SocketIOProvider>
+      <Component {...pageProps} />
+    </SocketIOProvider>
   )
 }
 

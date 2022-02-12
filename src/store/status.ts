@@ -1,5 +1,4 @@
 import create from 'zustand'
-import { logStore } from '../utils/logStore'
 
 type StatusStore = {
   connected: boolean
@@ -7,10 +6,8 @@ type StatusStore = {
   disconnect: () => void
 }
 
-export const useStatusStore = logStore(
-  create<StatusStore>((set) => ({
-    connected: false,
-    connect: () => set({ connected: true }),
-    disconnect: () => set({ connected: false })
-  }))
-)
+export const useStatusStore = create<StatusStore>((set) => ({
+  connected: false,
+  connect: () => set({ connected: true }),
+  disconnect: () => set({ connected: false })
+}))
