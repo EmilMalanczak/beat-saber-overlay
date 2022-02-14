@@ -1,4 +1,4 @@
 import { useContext } from 'react'
-import { SocketIOContext } from '../contexts/SocketIO'
+import { SocketContext } from '../contexts/Socket'
 
-export const useSocket = () => useContext(SocketIOContext)
+export const useSocket = () => useContext(SocketContext)

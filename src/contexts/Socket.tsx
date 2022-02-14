@@ -9,12 +9,13 @@ import { useScoreStore } from '../store/score'
 import { useSongStore } from '../store/song'
 import { SocketEvent } from '../types/SocketEvent'
 import { HTTPEventData } from '../types/Events'
+import { transformCoordinatesToRadians } from '../utils/transformCordinatesToRadians'
 
-export const SocketIOContext = createContext<WebSocket | null>(null)
+export const SocketContext = createContext<WebSocket | null>(null)
 
-const SocketProvider = SocketIOContext.Provider
+const HTTPProvider = SocketContext.Provider
 
-export const SocketIOProvider: FC = ({ children }) => {
+export const SocketProvider: FC = ({ children }) => {
   const router = useRouter()
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const { connect, disconnect, connected } = useStatusStore()
@@ -52,14 +53,16 @@ export const SocketIOProvider: FC = ({ children }) => {
         break
 
       case SocketEvent.NOTE_FULLY_CUT:
-        const { noteCut } = data
+        const { noteID, finalScore, noteLine, noteLayer, saberDir } = data.noteCut
 
-        console.log(noteCut)
+        console.log(data.noteCut)
+
         mountScoreNote({
-          id: noteCut.noteID,
-          score: noteCut.finalScore,
-          x: noteCut.noteLine,
-          y: noteCut.noteLayer
+          id: noteID,
+          score: finalScore,
+          x: noteLine,
+          y: noteLayer,
+          radians: transformCoordinatesToRadians(saberDir[0], saberDir[1])
         })
 
         break
@@ -101,5 +104,5 @@ export const SocketIOProvider: FC = ({ children }) => {
     }
   }, CONNECTION_RECONNECT_TIME)
 
-  return <SocketProvider value={socket}>{children}</SocketProvider>
+  return <HTTPProvider value={socket}>{children}</HTTPProvider>
 }

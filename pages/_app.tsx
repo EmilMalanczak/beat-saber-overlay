@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import type { AppProps } from 'next/app'
 
 import { usePlayerStore } from '../src/store/player'
-import { SocketIOProvider } from '../src/contexts/SocketIO'
+import { SocketProvider } from '../src/contexts/Socket'
 import { ThemeContext } from '../src/contexts/Theme'
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -18,9 +18,9 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <ThemeContext>
-      <SocketIOProvider>
+      <SocketProvider>
         <Component {...pageProps} />
-      </SocketIOProvider>
+      </SocketProvider>
     </ThemeContext>
   )
 }
