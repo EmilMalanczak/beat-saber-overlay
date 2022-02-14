@@ -1,11 +1,12 @@
 import create from 'zustand'
 import { NoteCutObject } from '../types/Events'
 
-type NoteScore = {
+export type NoteScore = {
   id: NoteCutObject['noteID']
   x: NoteCutObject['noteLine']
   y: NoteCutObject['noteLayer']
   score: NoteCutObject['finalScore']
+  radians: number
 }
 
 type ScoreStore = {
@@ -24,8 +25,12 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
     const scores = [...noteScores]
     const noteIndex = scores.findIndex(({ id }) => noteId === id)
 
+    if (noteIndex !== -1) {
+      scores.splice(noteIndex, 1)
+    }
+
     set({
-      noteScores: noteIndex !== -1 ? scores.splice(noteIndex, 1) : scores
+      noteScores: scores
     })
   },
   mountScoreNote: (note) => {

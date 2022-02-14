@@ -1,0 +1,1 @@
+export { HitScore } from './HitScore'
