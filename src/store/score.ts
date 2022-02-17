@@ -9,16 +9,36 @@ export type NoteScore = {
   radians: number
 }
 
+export type NoteCut = {
+  x: NoteCutObject['noteLine']
+  y: NoteCutObject['noteLayer']
+  direction?: NoteCutObject['noteCutDirection']
+  deviation?: number
+  active: boolean
+  color?: string
+}
+
 type ScoreStore = {
   score: number
   noteScores: NoteScore[]
+  noteCuts: NoteCut[][]
   unmountScoreNote: (id: NoteCutObject['noteID']) => void
   mountScoreNote: (note: NoteScore) => void
+  cutNote: (note: Omit<NoteScore, 'active'>) => void
+  hideCut: (params: Pick<NoteScore, 'x' | 'y'>) => void
 }
+
+const generateCutNotes = (row: NoteCutObject['noteLayer']): NoteCut[] =>
+  ([0, 1, 2, 3] as NoteCutObject['noteLine'][]).map((column) => ({
+    x: column,
+    y: row,
+    active: false
+  }))
 
 export const useScoreStore = create<ScoreStore>((set, get) => ({
   score: 0,
   noteScores: [],
+  noteCuts: [generateCutNotes(0), generateCutNotes(1), generateCutNotes(2)],
   unmountScoreNote: (noteId) => {
     const { noteScores } = get()
 
@@ -38,6 +58,35 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
 
     set({
       noteScores: [...noteScores, note]
+    })
+  },
+  cutNote: (note) => {
+    const { noteCuts } = get()
+
+    const cuts = [...noteCuts]
+
+    cuts[note.y][note.x] = {
+      active: true,
+      ...note
+    }
+
+    set({
+      noteCuts: cuts
+    })
+  },
+  hideCut: ({ x, y }) => {
+    const { noteCuts } = get()
+
+    const cuts = [...noteCuts]
+
+    cuts[y][x] = {
+      active: false,
+      x,
+      y
+    }
+
+    set({
+      noteCuts: cuts
     })
   }
 }))
