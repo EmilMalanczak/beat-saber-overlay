@@ -7,6 +7,7 @@ import { getScoreAngle } from '../../utils/getScoreAngle'
 import { getScoreTransformDistance } from '../../utils/getScoreTransformDistance'
 import { useStyles } from './HitScore.styles'
 import { transformRadiansToAngle } from '../../utils/transformRadiansToAngle'
+import { useTimeout } from '../../hooks/useTimeout'
 
 export type HitScoreConfig = Array<{
   above: number
@@ -73,15 +74,9 @@ export const HitScore: FC<HitScoreProps> = ({
     }
   }))
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      unmountScoreNote(note.id)
-    }, unmountTime)
-
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [note.id, unmountScoreNote, unmountTime])
+  useTimeout(() => {
+    unmountScoreNote(note.id)
+  }, unmountTime)
 
   return (
     <animated.div className={classes.score} style={styles}>
