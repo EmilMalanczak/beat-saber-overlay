@@ -40,7 +40,10 @@ const getPositionStyles = (direction: NoteCut['direction']) => {
 }
 
 export const useStyles = createStyles(
-  (theme, { size = 50, cut: { color = 'blue', direction, deviation = 0 } }: NoteBlockProps) => ({
+  (
+    theme,
+    { size = 50, cut: { color = 'blue', direction, deviation = 0, fromCenter = 0 } }: NoteBlockProps
+  ) => ({
     block: {
       width: size,
       height: size,
@@ -83,10 +86,10 @@ export const useStyles = createStyles(
       width: '10%',
       height: '120%',
       backgroundColor: theme.fn.lighten(color, 0.9),
-      boxShadow: '0px 0px 20px 2px #fff',
+      boxShadow: '0px 0px 10px 2px #fff',
       position: 'absolute',
       top: '-10%',
-      left: '50%',
+      left: `${50 + fromCenter * 50}%`,
       transform: `translateX(-50%) rotate(${-deviation}deg)`,
       zIndex: 2
     }

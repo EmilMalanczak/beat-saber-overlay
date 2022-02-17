@@ -14,6 +14,7 @@ export type NoteCut = {
   y: NoteCutObject['noteLayer']
   direction?: NoteCutObject['noteCutDirection']
   deviation?: number
+  fromCenter?: number
   active: boolean
   color?: string
 }

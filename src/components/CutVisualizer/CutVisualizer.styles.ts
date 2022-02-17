@@ -11,18 +11,16 @@ export const useStyles = createStyles((_, { gap, cellSize }: CutVisualizerProps)
     right: 40
   },
   blockWrapper: {
-    padding: (gap || Math.sqrt(2) * cellSize - cellSize) / 2,
-    /* Add border bottom to all items */
-    borderTop: '1px solid black',
-    borderLeft: '1px solid black',
+    // @ts-ignore
+    padding: (gap || (Math.sqrt(2) - 1.08) * cellSize) / 2,
 
-    /* Remove border bottom from last item & from second last if its odd */
-    '&:nth-child(1)': {
-      borderTop: 'none',
-      borderLeft: 'none'
+    // adding grid internal borders
+    '&:not(:nth-child(-n+4))': {
+      borderTop: '2px solid black'
     },
 
-    /* Add right border to every second item */
-    '&:nth-child(odd)': {}
+    '&:not(:nth-child(4n+1))': {
+      borderLeft: '2px solid black'
+    }
   }
 }))

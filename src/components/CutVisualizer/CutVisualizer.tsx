@@ -10,10 +10,12 @@ export type CutVisualizerProps = {
   fadeTime?: number
 }
 
-export const CutVisualizer: FC<CutVisualizerProps> = (props) => {
-  const { cellSize, fadeTime } = props
-
-  const { classes } = useStyles(props)
+export const CutVisualizer: FC<CutVisualizerProps> = ({
+  cellSize = 50,
+  fadeTime = 300,
+  ...rest
+}) => {
+  const { classes } = useStyles({ cellSize, fadeTime, ...rest })
   const { noteCuts } = useScoreStore()
 
   return (

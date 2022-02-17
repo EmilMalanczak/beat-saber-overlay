@@ -20,7 +20,7 @@ const Home = () => {
     <>
       {/* #6A0DB3 */}
       {/* <NoteBlock color="rgb(200, 20, 20)" size={400} direction="Up" /> */}
-      <CutVisualizer cellSize={200} fadeTime={300000} />
+      <CutVisualizer cellSize={50} fadeTime={300000} />
       <span style={{ margin: 20 }} />
       {/* eslint-disable-next-line react/button-has-type */}
       <button onClick={handleCut}>cut</button>
