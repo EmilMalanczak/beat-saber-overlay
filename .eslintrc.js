@@ -63,6 +63,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
-    '@typescript-eslint/no-non-null-assertion': 'off'
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off'
   }
 }
