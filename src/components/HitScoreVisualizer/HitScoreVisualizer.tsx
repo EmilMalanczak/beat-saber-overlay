@@ -6,7 +6,7 @@ import { useStyles } from './HitScoreVisualizer.styles'
 
 export type HitScoreVisualizerProps = HitScoreSharedProps & {
   rows: 1 | 3
-  width: number
+  width: number | string
   rowHeight: number
   style: any
 }

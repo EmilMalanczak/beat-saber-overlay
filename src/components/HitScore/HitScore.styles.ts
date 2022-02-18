@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/styles'
-import { NoteScore } from '../../store/score'
 import { HitScoreConfig } from './HitScore'
+import type { HitScoreProps } from './HitScore'
 
 const getScoreQualityStyles = (score: number, config: HitScoreConfig) => {
   const scoreStyles = config.find(({ above }) => above <= score)
@@ -11,7 +11,6 @@ const getScoreQualityStyles = (score: number, config: HitScoreConfig) => {
     return {
       fontSize,
       color,
-      textShadow: `${color} 1px 1px 10px`,
       ...rest
     }
   }
@@ -24,12 +23,21 @@ const getScoreQualityStyles = (score: number, config: HitScoreConfig) => {
 }
 
 export const useStyles = createStyles(
-  (_, { x, y, score, maxRow, config }: NoteScore & { maxRow: number; config: HitScoreConfig }) => ({
+  (
+    _,
+    {
+      x,
+      y,
+      score,
+      maxRow,
+      config
+    }: HitScoreProps['note'] & { maxRow: number; config: HitScoreConfig }
+  ) => ({
     score: {
       //  css grid columns are counted from 1
       gridColumn: x + 1,
       // grid row is 1 on top
-      gridRow: maxRow - y,
+      gridRow: 1 || maxRow - y,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

@@ -1,12 +1,12 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { FC } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 
-import { NoteScore, useScoreStore } from '../../store/score'
+import { useScoreStore } from '../../store/score'
+import type { NoteCut } from '../../store/score'
 import { getScoreAngle } from '../../utils/getScoreAngle'
 import { getScoreTransformDistance } from '../../utils/getScoreTransformDistance'
 import { useStyles } from './HitScore.styles'
-import { transformRadiansToAngle } from '../../utils/transformRadiansToAngle'
 import { useTimeout } from '../../hooks/useTimeout'
 
 export type HitScoreConfig = Array<{
@@ -25,7 +25,7 @@ export type HitScoreSharedProps = {
 
 export type HitScoreProps = HitScoreSharedProps & {
   maxRow: number
-  note: NoteScore
+  note: Omit<NoteCut, 'active'>
 }
 
 export const HitScore: FC<HitScoreProps> = ({
@@ -36,14 +36,13 @@ export const HitScore: FC<HitScoreProps> = ({
   maxRotate,
   scoreCutShift
 }) => {
-  const { radians } = note
+  const { radians = 0 } = note
   const { classes } = useStyles({ ...note, maxRow, config })
   const { unmountScoreNote } = useScoreStore()
 
   const transform = useMemo(() => {
-    const angle = transformRadiansToAngle(radians)
-    const { x0, x1, y0, y1 } = getScoreTransformDistance(angle, scoreCutShift)
-    const scoreAngle = getScoreAngle(angle, maxRotate)
+    const { x0, x1, y0, y1 } = getScoreTransformDistance(radians, scoreCutShift)
+    const scoreAngle = getScoreAngle(radians, maxRotate)
 
     return {
       x0,
@@ -52,7 +51,7 @@ export const HitScore: FC<HitScoreProps> = ({
       y1,
       rotate: scoreAngle
     }
-  }, [maxRotate, radians, scoreCutShift])
+  }, [radians, scoreCutShift, maxRotate])
 
   const [styles] = useSpring(() => ({
     from: {
@@ -70,12 +69,13 @@ export const HitScore: FC<HitScoreProps> = ({
     config: {
       tension: 260,
       friction: 20,
-      velocity: 0.01
+      velocity: 0.01,
+      mass: 2
     }
   }))
 
   useTimeout(() => {
-    unmountScoreNote(note.id)
+    unmountScoreNote(note.id!)
   }, unmountTime)
 
   return (

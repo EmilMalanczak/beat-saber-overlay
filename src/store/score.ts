@@ -13,6 +13,8 @@ export type NoteCut = {
   id?: NoteCutObject['noteID']
   x: NoteCutObject['noteLine']
   y: NoteCutObject['noteLayer']
+  score?: NoteCutObject['finalScore']
+  radians?: number
   direction?: NoteCutObject['noteCutDirection']
   deviation?: number
   fromCenter?: number
@@ -56,13 +58,6 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
       noteScores: scores
     })
   },
-  // mountScoreNote: (note) => {
-  //   const { noteScores } = get()
-
-  //   set({
-  //     noteScores: [...noteScores, note]
-  //   })
-  // },
   cutNote: (note) => {
     const { noteCuts, noteScores } = get()
 

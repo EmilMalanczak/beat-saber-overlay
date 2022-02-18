@@ -7,10 +7,6 @@ export const useStyles = createStyles((_, { width, rowHeight, rows }: HitScoreVi
     height: rows * rowHeight,
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)',
-    gridTemplateRows: `repeat(${rows}, 1fr)`,
-    position: 'absolute',
-    bottom: 20,
-    right: 40,
-    border: '1px solid red'
+    gridTemplateRows: `repeat(${rows}, 1fr)`
   }
 }))

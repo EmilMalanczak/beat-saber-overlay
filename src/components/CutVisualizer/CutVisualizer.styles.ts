@@ -7,9 +7,7 @@ export const useStyles = createStyles(
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
       gridTemplateRows: 'repeat(3, 1fr)',
-      position: 'absolute',
-      bottom: 60,
-      right: 40
+      justifyItems: 'center'
     },
     blockWrapper: {
       /*

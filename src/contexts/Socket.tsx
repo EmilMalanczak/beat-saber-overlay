@@ -9,9 +9,10 @@ import { useScoreStore } from '../store/score'
 import { useSongStore } from '../store/song'
 import { SocketEvent } from '../types/SocketEvent'
 import { HTTPEventData } from '../types/Events'
-import { transformCoordinatesToRadians } from '../utils/transformCordinatesToRadians'
+import { transformCoordinatesToRadians } from '../utils/transformCoordinatesToRadians'
 import { Saber } from '../types/Saber'
 import { useUIStore } from '../store/ui'
+import { transformRadiansToAngle } from '../utils/transformRadiansToAngle'
 
 export const SocketContext = createContext<WebSocket | null>(null)
 
@@ -21,10 +22,9 @@ export const SocketProvider: FC = ({ children }) => {
   const router = useRouter()
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const { connect, disconnect, connected } = useStatusStore()
-  // const { getPlayerInfo } = usePlayerStore()
   const { getSong } = useSongStore()
-  const { mountScoreNote, cutNote } = useScoreStore()
-  const { setSaberColors } = useUIStore()
+  const { cutNote } = useScoreStore()
+  const { setSaberColors, colors } = useUIStore()
 
   const handleConnectToHTTP = useCallback(() => {
     const HTTPSocket = new WebSocket(
@@ -34,72 +34,70 @@ export const SocketProvider: FC = ({ children }) => {
     setSocket(HTTPSocket)
   }, [router.query.ip])
 
-  const handleTransformSocketData = (socketData: any) => {
-    const data: HTTPEventData = JSON.parse(socketData.data)
-    // console.log(data)
+  const handleTransformSocketData = useCallback(
+    (socketData) => {
+      const data: HTTPEventData = JSON.parse(socketData.data)
 
-    const { event } = data
+      const { event } = data
 
-    switch (event) {
-      case SocketEvent.HELLO:
-        console.log('%cConnected to HTTPStatus Plugin', 'background-color: green')
-        console.log(
-          `%cBeat Saber ${data.status.game.gameVersion} | HTTPStatus ${data.status.game.pluginVersion}`
-        )
+      switch (event) {
+        case SocketEvent.HELLO:
+          console.log('%cConnected to HTTPStatus Plugin', 'background-color: green')
+          console.log(
+            `%cBeat Saber ${data.status.game.gameVersion} | HTTPStatus ${data.status.game.pluginVersion}`
+          )
 
-        break
+          break
 
-      case SocketEvent.SONG_START:
-        const { songHash, color } = data.status.beatmap!
-        getSong(songHash)
+        case SocketEvent.SONG_START:
+          const { songHash, color } = data.status.beatmap!
+          getSong(songHash)
 
-        setSaberColors({
-          [Saber.A]: `rgb(${color.saberA[0]}, ${color.saberA[1]}, ${color.saberA[2]})`,
-          [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
-        })
-        break
+          setSaberColors({
+            [Saber.A]: `rgb(${color.saberA[0]}, ${color.saberA[1]}, ${color.saberA[2]})`,
+            [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
+          })
+          break
 
-      case SocketEvent.NOTE_FULLY_CUT:
-        const {
-          noteID,
-          finalScore,
-          noteLine,
-          noteLayer,
-          saberDir,
-          noteCutDirection,
-          cutDirectionDeviation,
-          saberTypeOK,
-          saberType
-        } = data.noteCut
+        case SocketEvent.NOTE_FULLY_CUT:
+          const {
+            noteID,
+            finalScore,
+            noteLine,
+            noteLayer,
+            saberDir,
+            noteCutDirection,
+            cutDirectionDeviation,
+            saberTypeOK,
+            saberType,
+            cutDistanceToCenter
+          } = data.noteCut
 
-        console.log(data.noteCut)
+          console.log(data.noteCut)
 
-        mountScoreNote({
-          id: noteID,
-          x: noteLine,
-          y: noteLayer,
-          score: finalScore,
-          deviation: cutDirectionDeviation,
-          direction: noteCutDirection,
-          radians: transformCoordinatesToRadians(saberDir[0], saberDir[1])
-        })
+          cutNote({
+            id: noteID,
+            x: noteLine,
+            y: noteLayer,
+            score: finalScore,
+            radians: transformRadiansToAngle(
+              transformCoordinatesToRadians(saberDir[0], saberDir[1])
+            ),
+            direction: noteCutDirection,
+            deviation: cutDirectionDeviation,
+            color: colors[saberType],
+            badCut: !saberTypeOK,
+            fromCenter: cutDistanceToCenter
+          })
 
-        cutNote({
-          x: noteLine,
-          y: noteLayer,
-          direction: noteCutDirection,
-          deviation: cutDirectionDeviation,
-          fromCenter: 0,
-          color: saberType,
-          badCut: !saberTypeOK
-        })
+          break
 
-        break
-
-      default:
-        break
-    }
-  }
+        default:
+          break
+      }
+    },
+    [colors, cutNote, getSong, setSaberColors]
+  )
 
   useEffect(() => {
     handleConnectToHTTP()
@@ -125,7 +123,7 @@ export const SocketProvider: FC = ({ children }) => {
     return () => {
       socket.close()
     }
-  }, [connect, disconnect, socket])
+  }, [connect, disconnect, handleTransformSocketData, socket])
 
   useInterval(() => {
     if (!connected) {
