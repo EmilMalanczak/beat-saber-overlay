@@ -9,7 +9,7 @@ type UIStore = {
 export const useUIStore = create<UIStore>((set) => ({
   colors: {
     [Saber.A]: 'rgb(200, 20, 20)',
-    [Saber.B]: 'rgb(200, 20, 20)'
+    [Saber.B]: 'rgb(40, 142, 210)'
   },
   setSaberColors: (colors) => {
     set({ colors })
