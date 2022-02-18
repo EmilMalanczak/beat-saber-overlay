@@ -10,6 +10,8 @@ import { useSongStore } from '../store/song'
 import { SocketEvent } from '../types/SocketEvent'
 import { HTTPEventData } from '../types/Events'
 import { transformCoordinatesToRadians } from '../utils/transformCordinatesToRadians'
+import { Saber } from '../types/Saber'
+import { useUIStore } from '../store/ui'
 
 export const SocketContext = createContext<WebSocket | null>(null)
 
@@ -21,7 +23,8 @@ export const SocketProvider: FC = ({ children }) => {
   const { connect, disconnect, connected } = useStatusStore()
   // const { getPlayerInfo } = usePlayerStore()
   const { getSong } = useSongStore()
-  const { mountScoreNote } = useScoreStore()
+  const { mountScoreNote, cutNote } = useScoreStore()
+  const { setSaberColors } = useUIStore()
 
   const handleConnectToHTTP = useCallback(() => {
     const HTTPSocket = new WebSocket(
@@ -47,22 +50,48 @@ export const SocketProvider: FC = ({ children }) => {
         break
 
       case SocketEvent.SONG_START:
-        const { songHash } = data.status.beatmap!
+        const { songHash, color } = data.status.beatmap!
         getSong(songHash)
 
+        setSaberColors({
+          [Saber.A]: `rgb(${color.saberA[0]}, ${color.saberA[1]}, ${color.saberA[2]})`,
+          [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
+        })
         break
 
       case SocketEvent.NOTE_FULLY_CUT:
-        const { noteID, finalScore, noteLine, noteLayer, saberDir } = data.noteCut
+        const {
+          noteID,
+          finalScore,
+          noteLine,
+          noteLayer,
+          saberDir,
+          noteCutDirection,
+          cutDirectionDeviation,
+          saberTypeOK,
+          saberType
+        } = data.noteCut
 
         console.log(data.noteCut)
 
         mountScoreNote({
           id: noteID,
-          score: finalScore,
           x: noteLine,
           y: noteLayer,
+          score: finalScore,
+          deviation: cutDirectionDeviation,
+          direction: noteCutDirection,
           radians: transformCoordinatesToRadians(saberDir[0], saberDir[1])
+        })
+
+        cutNote({
+          x: noteLine,
+          y: noteLayer,
+          direction: noteCutDirection,
+          deviation: cutDirectionDeviation,
+          fromCenter: 0,
+          color: saberType,
+          badCut: !saberTypeOK
         })
 
         break

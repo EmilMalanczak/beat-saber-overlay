@@ -25,6 +25,8 @@ export const generateRandomCut = () => {
     x,
     y,
     deviation: randomInt(0, 20),
+    score: randomInt(98, 115),
+    id: randomInt(0, 30000),
     color: isSaberA ? 'rgb(200, 20, 20)' : 'rgb(106, 13, 179)',
     fromCenter: randomInt(-100, 100) / 100
   }

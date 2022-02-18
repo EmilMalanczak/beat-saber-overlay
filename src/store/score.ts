@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { NoteCutObject } from '../types/Events'
 
-export type NoteScore = {
+export type NoteScorex = {
   id: NoteCutObject['noteID']
   x: NoteCutObject['noteLine']
   y: NoteCutObject['noteLayer']
@@ -10,6 +10,7 @@ export type NoteScore = {
 }
 
 export type NoteCut = {
+  id?: NoteCutObject['noteID']
   x: NoteCutObject['noteLine']
   y: NoteCutObject['noteLayer']
   direction?: NoteCutObject['noteCutDirection']
@@ -17,16 +18,17 @@ export type NoteCut = {
   fromCenter?: number
   active: boolean
   color?: string
+  badCut?: boolean
 }
 
 type ScoreStore = {
   score: number
-  noteScores: NoteScore[]
+  noteScores: Omit<NoteCut, 'active'>[]
   noteCuts: NoteCut[][]
   unmountScoreNote: (id: NoteCutObject['noteID']) => void
-  mountScoreNote: (note: NoteScore) => void
-  cutNote: (note: Omit<NoteScore, 'active'>) => void
-  hideCut: (params: Pick<NoteScore, 'x' | 'y'>) => void
+  // mountScoreNote: (note: NoteCut) => void
+  cutNote: (note: Omit<NoteCut, 'active'>) => void
+  hideCut: (params: Pick<NoteCut, 'x' | 'y'>) => void
 }
 
 const generateCutNotes = (row: NoteCutObject['noteLayer']): NoteCut[] =>
@@ -54,17 +56,18 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
       noteScores: scores
     })
   },
-  mountScoreNote: (note) => {
-    const { noteScores } = get()
+  // mountScoreNote: (note) => {
+  //   const { noteScores } = get()
 
-    set({
-      noteScores: [...noteScores, note]
-    })
-  },
+  //   set({
+  //     noteScores: [...noteScores, note]
+  //   })
+  // },
   cutNote: (note) => {
-    const { noteCuts } = get()
+    const { noteCuts, noteScores } = get()
 
     const cuts = [...noteCuts]
+    const scores = [...noteScores, note]
 
     cuts[note.y][note.x] = {
       active: true,
@@ -72,7 +75,8 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
     }
 
     set({
-      noteCuts: cuts
+      noteCuts: cuts,
+      noteScores: scores
     })
   },
   hideCut: ({ x, y }) => {

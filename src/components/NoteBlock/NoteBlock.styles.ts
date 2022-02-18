@@ -1,29 +1,7 @@
 import { createStyles } from '@mantine/styles'
 import type { NoteCut } from '../../store/score'
+import { getRotationAngle } from '../../utils/getRotationAngle'
 import type { NoteBlockProps } from './NoteBlock'
-
-const getRotationValue = (direction: NoteCut['direction']): number => {
-  switch (direction) {
-    case 'Up':
-      return 0
-    case 'UpRight':
-      return 45
-    case 'Right':
-      return 90
-    case 'DownRight':
-      return 135
-    case 'Down':
-      return 180
-    case 'DownLeft':
-      return 225
-    case 'Left':
-      return 270
-    case 'UpLeft':
-      return 315
-    default:
-      return 0
-  }
-}
 
 const getPositionStyles = (direction: NoteCut['direction']) => {
   if (direction === 'Any') {
@@ -42,14 +20,17 @@ const getPositionStyles = (direction: NoteCut['direction']) => {
 export const useStyles = createStyles(
   (
     theme,
-    { size = 50, cut: { color = 'blue', direction, deviation = 0, fromCenter = 0 } }: NoteBlockProps
+    {
+      size = 50,
+      cut: { color = 'blue', direction = 'Any', deviation = 0, fromCenter = 0 }
+    }: NoteBlockProps
   ) => ({
     block: {
       width: size,
       height: size,
       borderRadius: size * 0.15,
       backgroundColor: color,
-      transform: `rotate(${getRotationValue(direction)}deg)`,
+      transform: `rotate(${getRotationAngle(direction)}deg)`,
       position: 'relative',
       boxShadow: `inset 0 0 20px 8px ${color}, inset -6px 8px 10px 20px rgba(0, 0, 0, 0.5), inset 6px -6px 10px rgba(255, 255, 255, 0.5), inset 6px -6px 10px ${theme.fn.rgba(
         color,
