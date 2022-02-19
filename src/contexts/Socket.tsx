@@ -23,7 +23,7 @@ export const SocketProvider: FC = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const { connect, disconnect, connected } = useStatusStore()
   const { getSong } = useSongStore()
-  const { cutNote } = useScoreStore()
+  const { cutNote, resetStore } = useScoreStore()
   const { setSaberColors, colors } = useUIStore()
 
   const handleConnectToHTTP = useCallback(() => {
@@ -57,6 +57,12 @@ export const SocketProvider: FC = ({ children }) => {
             [Saber.A]: `rgb(${color.saberA[0]}, ${color.saberA[1]}, ${color.saberA[2]})`,
             [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
           })
+          break
+
+        case SocketEvent.FAILED:
+        case SocketEvent.SOFT_FAILED:
+        case SocketEvent.MENU:
+          resetStore()
           break
 
         case SocketEvent.NOTE_FULLY_CUT:

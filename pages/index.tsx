@@ -7,8 +7,8 @@ import { generateRandomCut } from '../src/utils/generateRandomCut'
 export const useStyles = createStyles(() => ({
   visualizers: {
     position: 'absolute',
-    right: 0,
-    bottom: 0
+    left: 30,
+    bottom: 30
   },
   wrapper: {
     position: 'relative'
@@ -28,7 +28,7 @@ const Home = () => {
     // @ts-ignore
     cutNote(note)
   }
-  const unmountTime = 35000
+  const unmountTime = 350
   const width = 600
 
   return (
@@ -43,8 +43,8 @@ const Home = () => {
             gap={undefined}
             cellSize={60}
             fadeTime={unmountTime}
-            gridColor="#000"
-            gridBorderSize={0}
+            gridColor="#fff"
+            gridBorderSize={2}
             style={{
               bottom: 90,
               right: 40

@@ -64,7 +64,7 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
     const cuts = [...noteCuts]
     const scores = [...noteScores, note]
 
-    cuts[note.y][note.x] = {
+    cuts[2 - note.y][note.x] = {
       active: true,
       ...note
     }
@@ -79,7 +79,7 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
 
     const cuts = [...noteCuts]
 
-    cuts[y][x] = {
+    cuts[2 - y][x] = {
       active: false,
       x,
       y
@@ -87,6 +87,12 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
 
     set({
       noteCuts: cuts
+    })
+  },
+  resetStore: () => {
+    set({
+      noteScores: [],
+      noteCuts: [generateCutNotes(0), generateCutNotes(1), generateCutNotes(2)]
     })
   }
 }))

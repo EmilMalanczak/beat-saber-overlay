@@ -30,7 +30,7 @@ export const useStyles = createStyles(
       height: size,
       borderRadius: size * 0.15,
       backgroundColor: color,
-      transform: `rotate(${-getRotationAngle(direction) + 90}deg)`,
+      transform: `rotate(${direction !== 'Any' ? -getRotationAngle(direction) + 90 : 0}deg)`,
       position: 'relative',
       boxShadow: `inset 0 0 20px 8px ${color}, inset -6px 8px 10px 20px rgba(0, 0, 0, 0.5), inset 6px -6px 10px rgba(255, 255, 255, 0.5), inset 6px -6px 10px ${theme.fn.rgba(
         color,
@@ -65,11 +65,11 @@ export const useStyles = createStyles(
 
     cut: {
       width: '10%',
-      height: '130%',
+      height: '150%',
       backgroundColor: theme.fn.lighten(color, 0.9),
       boxShadow: '0px 0px 10px 2px #fff',
       position: 'absolute',
-      top: '-15%',
+      top: '-25%',
       left: `${50 - fromCenter * 50}%`,
       transform: `translateX(-50%) rotate(${-deviation}deg)`,
       zIndex: 2
