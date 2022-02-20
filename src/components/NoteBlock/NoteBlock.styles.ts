@@ -30,7 +30,7 @@ export const useStyles = createStyles(
       height: size,
       borderRadius: size * 0.15,
       backgroundColor: color,
-      transform: `rotate(${direction !== 'Any' ? -getRotationAngle(direction) + 90 : 0}deg)`,
+      transform: `rotate(${-getRotationAngle(direction)}deg)`,
       position: 'relative',
       boxShadow: `inset 0 0 20px 8px ${color}, inset -6px 8px 10px 20px rgba(0, 0, 0, 0.5), inset 6px -6px 10px rgba(255, 255, 255, 0.5), inset 6px -6px 10px ${theme.fn.rgba(
         color,

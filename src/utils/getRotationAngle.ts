@@ -3,28 +3,28 @@ import type { NoteCutObject } from '../types/Events'
 export const getRotationAngle = (direction: NoteCutObject['noteCutDirection']): number => {
   switch (direction) {
     case 'Right':
-      return 0
-
-    case 'UpRight':
-      return 45
-
-    case 'Up':
       return 90
 
-    case 'UpLeft':
+    case 'UpRight':
       return 135
 
-    case 'Left':
+    case 'Up':
       return 180
 
-    case 'DownLeft':
+    case 'UpLeft':
       return 225
 
-    case 'Down':
+    case 'Left':
       return 270
 
-    case 'DownRight':
+    case 'DownLeft':
       return 315
+
+    case 'Down':
+      return 0
+
+    case 'DownRight':
+      return 45
 
     default:
       return 0

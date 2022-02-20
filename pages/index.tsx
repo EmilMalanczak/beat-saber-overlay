@@ -33,9 +33,9 @@ const Home = () => {
 
   return (
     <>
-      <button type="button" onClick={handleCut}>
+      {/* <button type="button" onClick={handleCut}>
         cut
-      </button>
+      </button> */}
 
       <div className={classes.visualizers}>
         <div className={classes.wrapper}>
@@ -43,12 +43,11 @@ const Home = () => {
             gap={undefined}
             cellSize={60}
             fadeTime={unmountTime}
-            gridColor="#fff"
+            gridColor="#000"
             gridBorderSize={2}
             style={{
-              bottom: 90,
-              right: 40
-              // border: '1px solid red'
+              border: '1px solid red',
+              opacity: 0.8
             }}
           />
 
@@ -62,9 +61,7 @@ const Home = () => {
             maxRotate={12}
             scoreCutShift={10}
             style={{
-              bottom: 20,
-              right: 40
-              // border: '1px solid red'
+              border: '1px solid red'
             }}
             config={[
               {

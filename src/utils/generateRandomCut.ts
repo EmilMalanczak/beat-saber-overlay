@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import { getRotationAngle } from './getRotationAngle'
 import { randomInt } from './randomInt'
 import { transformRadiansToAngle } from './transformRadiansToAngle'
@@ -21,7 +22,7 @@ export const generateRandomCut = () => {
 
   const isSaberA = randomInt(0, 1)
   //   directions[randomInt(0, directions.length - 1)]
-  const direction = directions[randomInt(0, directions.length - 1)]
+  const direction = 'Any' || directions[randomInt(0, directions.length - 1)]
   const deviation = randomInt(-35, 35)
 
   return {
@@ -34,7 +35,11 @@ export const generateRandomCut = () => {
     color: isSaberA ? 'rgb(200, 20, 20)' : 'rgb(106, 13, 179)',
     fromCenter: randomInt(-100, 100) / 100,
     radians: transformRadiansToAngle(
-      ((deviation + getRotationAngle(direction as any)) * Math.PI) / 180
+      ((deviation +
+        (direction !== 'Any' ? getRotationAngle(direction as any) : randomInt(0, 360)) -
+        90) *
+        Math.PI) /
+        180
     )
   }
 }
