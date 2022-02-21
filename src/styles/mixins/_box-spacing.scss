@@ -1,0 +1,58 @@
+@use '../utils' as *;
+
+// could've be replaced with $args... but we lose hints from stylelint
+
+@mixin padding($vertical: 0, $horizontal: 0, $top: null, $right: null, $bottom: null, $left: null) {
+  @include spacing-property(
+    $property: 'padding',
+    $vertical: $vertical,
+    $horizontal: $horizontal,
+    $top: $top,
+    $right: $right,
+    $bottom: $bottom,
+    $left: $left
+  );
+}
+
+@mixin margin($vertical: 0, $horizontal: 0, $top: null, $right: null, $bottom: null, $left: null) {
+  @include spacing-property(
+    $property: 'margin',
+    $vertical: $vertical,
+    $horizontal: $horizontal,
+    $top: $top,
+    $right: $right,
+    $bottom: $bottom,
+    $left: $left
+  );
+}
+
+@mixin spacing-property(
+  $property,
+  $vertical: 0,
+  $horizontal: 0,
+  $top: null,
+  $right: null,
+  $bottom: null,
+  $left: null
+) {
+  $is-single-property-only: $top or $right or $bottom or $left;
+
+  @if ($is-single-property-only) {
+    @if ($top) {
+      #{$property}-top: spacing($top);
+    }
+    @if ($right) {
+      #{$property}-right: spacing($right);
+    }
+    @if ($bottom) {
+      #{$property}-bottom: spacing($bottom);
+    }
+    @if ($left) {
+      #{$property}-left: spacing($left);
+    }
+  } @else if ($vertical and $horizontal) {
+    #{$property}: spacing($vertical) spacing($horizontal);
+  } @else {
+    #{$property}: spacing($vertical);
+  }
+}

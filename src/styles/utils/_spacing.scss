@@ -1,0 +1,10 @@
+@function spacing($value) {
+    @if (type-of($value) == "number") {
+        @if (unitless($value)) {
+            @return $value * 4px;
+        } @else {
+            @return $value;
+        }
+    }
+    @return unquote($value);
+}

@@ -1,0 +1,52 @@
+@use './common' as *;
+
+body {
+  --color-white: 255, 255, 255;
+  --color-black: 0, 0, 0;
+  --layout-padding: 24px;
+
+  @each $key, $value in $light-theme {
+    --color-#{$key}: #{derive-rgb-values-from-hex($value)};
+  }
+
+  @each $breakpoint, $padding in $layout-paddings {
+    @include screen($from: $breakpoint) {
+      --layout-padding: #{$padding};
+    }
+  }
+  font-family: Montserrat, sans-serif;
+  color: color(text);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: color(background);
+  -webkit-overflow-x-scrolling: hidden;
+}
+
+@each $theme-name, $theme in $themes {
+  body[data-theme='#{$theme-name}'] {
+    @each $key, $value in $theme {
+      --color-#{$key}: #{derive-rgb-values-from-hex($value)};
+    }
+  }
+}
+
+html {
+  font-size: em(14px, 16px);
+  font-weight: 400;
+  line-height: 1.43;
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-overflow-x-scrolling: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smooeting: grayscale;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+  outline: none;
+}

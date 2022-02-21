@@ -33,9 +33,9 @@ const Home = () => {
 
   return (
     <>
-      {/* <button type="button" onClick={handleCut}>
+      <button type="button" onClick={handleCut}>
         cut
-      </button> */}
+      </button>
 
       <div className={classes.visualizers}>
         <div className={classes.wrapper}>
@@ -46,8 +46,7 @@ const Home = () => {
             gridColor="#000"
             gridBorderSize={2}
             style={{
-              border: '1px solid red',
-              opacity: 0.8
+              border: '1px solid red'
             }}
           />
 

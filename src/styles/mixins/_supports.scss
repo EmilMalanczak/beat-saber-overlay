@@ -1,0 +1,14 @@
+@mixin supports($rule, $value) {
+    @if (not $rule) {
+        @error 'There is rule provided to @support'
+    };
+
+    $prefixed-rule: -webkit-#{$rule};
+
+    @supports (($prefixed-rule: $value) or ($rule: $value)) {
+        & {
+            #{unquote($rule)}: #{unquote($value)};
+            #{unquote($prefixed-rule)}: #{unquote($value)};
+        }
+    }
+} 
