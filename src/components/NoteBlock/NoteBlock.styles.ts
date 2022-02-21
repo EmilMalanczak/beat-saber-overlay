@@ -25,18 +25,23 @@ export const useStyles = createStyles(
       cut: { color = 'blue', direction = 'Any', deviation = 0, fromCenter = 0 }
     }: NoteBlockProps
   ) => ({
-    block: {
+    wrapper: {
+      position: 'relative',
       width: size,
       height: size,
       borderRadius: size * 0.15,
-      backgroundColor: color,
       transform: `rotate(${-getRotationAngle(direction)}deg)`,
-      position: 'relative',
+      overflow: 'hidden'
+    },
+    block: {
+      opacity: 0.2,
+      backgroundColor: color,
+      position: 'absolute',
+      inset: 0,
       boxShadow: `inset 0 0 20px 8px ${color}, inset -6px 8px 10px 20px rgba(0, 0, 0, 0.5), inset 6px -6px 10px rgba(255, 255, 255, 0.5), inset 6px -6px 10px ${theme.fn.rgba(
         color,
         1
       )}`,
-      overflow: 'hidden',
 
       '&::after': {
         content: '""',
@@ -64,9 +69,10 @@ export const useStyles = createStyles(
     },
 
     cut: {
+      opacity: 1,
       width: '10%',
       height: '150%',
-      backgroundColor: theme.fn.lighten(color, 0.9),
+      backgroundColor: theme.fn.lighten('rgb(229, 0, 0)', 0),
       boxShadow: '0px 0px 10px 2px #fff',
       position: 'absolute',
       top: '-25%',

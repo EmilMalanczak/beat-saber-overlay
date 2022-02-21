@@ -80,6 +80,7 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
     const cuts = [...noteCuts]
 
     cuts[2 - y][x] = {
+      ...cuts[2 - y][x],
       active: false,
       x,
       y

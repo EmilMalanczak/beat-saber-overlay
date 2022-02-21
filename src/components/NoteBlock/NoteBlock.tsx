@@ -1,6 +1,7 @@
 import type { FC } from 'react'
-import { useTimeout } from '../../hooks/useTimeout'
+import { useSpring, animated } from '@react-spring/web'
 
+import { useTimeout } from '../../hooks/useTimeout'
 import { NoteCut, useScoreStore } from '../../store/score'
 import { useStyles } from './NoteBlock.styles'
 
@@ -24,6 +25,15 @@ export const NoteBlock: FC<NoteBlockProps> = (props) => {
 
   const arrowHeight = height * 0.5
 
+  const { opacity } = useSpring({
+    opacity: active ? 1 : 0,
+    immediate: active,
+    config: {
+      tension: 210,
+      friction: 20
+    }
+  })
+
   useTimeout(
     () => {
       hideCut({ x, y })
@@ -32,40 +42,41 @@ export const NoteBlock: FC<NoteBlockProps> = (props) => {
   )
 
   return (
-    <div
-      className={classes.block}
+    <animated.div
+      className={classes.wrapper}
       style={{
-        opacity: Number(active)
+        opacity
       }}
     >
-      {direction === 'Any' ? (
-        <svg
-          className={classes.indicator}
-          width={size * 0.2}
-          height={size * 0.2}
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx={arrowHeight} cy={arrowHeight} r={arrowHeight} />
-        </svg>
-      ) : (
-        <svg
-          className={classes.indicator}
-          width={width}
-          height={height}
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="#000"
-            d={`M${width} ${arrowHeight} L${
-              width * 0.5
-            } 0 L 0 ${arrowHeight} L 0 ${height} H ${width} L ${width} ${arrowHeight} Z M 0 ${arrowHeight}`}
-          />
-        </svg>
-      )}
-
+      <div className={classes.block}>
+        {direction === 'Any' ? (
+          <svg
+            className={classes.indicator}
+            width={size * 0.2}
+            height={size * 0.2}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx={arrowHeight} cy={arrowHeight} r={arrowHeight} />
+          </svg>
+        ) : (
+          <svg
+            className={classes.indicator}
+            width={width}
+            height={height}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill="#000"
+              d={`M${width} ${arrowHeight} L${
+                width * 0.5
+              } 0 L 0 ${arrowHeight} L 0 ${height} H ${width} L ${width} ${arrowHeight} Z M 0 ${arrowHeight}`}
+            />
+          </svg>
+        )}
+      </div>
       <span className={classes.cut} />
-    </div>
+    </animated.div>
   )
 }
