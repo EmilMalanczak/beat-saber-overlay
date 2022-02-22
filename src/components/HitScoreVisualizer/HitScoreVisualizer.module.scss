@@ -1,0 +1,7 @@
+.grid {
+  width: calc(var(--grid-width) * 1px);
+  height: calc(var(--grid-height) * 1px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(var(--grid-rows-amount), 1fr);
+}

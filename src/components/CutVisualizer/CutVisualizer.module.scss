@@ -1,0 +1,19 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  justify-items: center;
+}
+
+.blockWrapper {
+  padding: calc(var(--note-padding) * 1px);
+
+  // // adding grid internal borders
+  &:not(:nth-child(-n + 4)) {
+    border-top: calc(var(--note-border-size) * 1px) solid var(--note-border-color);
+  }
+
+  &:not(:nth-child(4n + 1)) {
+    border-left: calc(var(--note-border-size) * 1px) solid var(--note-border-color);
+  }
+}

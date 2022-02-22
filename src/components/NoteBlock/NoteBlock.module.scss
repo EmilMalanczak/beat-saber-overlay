@@ -1,0 +1,52 @@
+.wrapper {
+  position: relative;
+  width: calc(var(--note-size) * 1px);
+  height: calc(var(--note-size) * 1px);
+  border-radius: calc(var(--note-size) * 0.15px);
+  overflow: hidden;
+}
+
+.block {
+  background-color: var(--note-color);
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 20px 8px var(--note-color), inset -6px 8px 10px 20px rgba(0, 0, 0, 0.5),
+    inset 6px -6px 10px rgba(255, 255, 255, 0.5), inset 6px -6px 10px var(--note-color);
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--note-size) * 0.5px);
+    height: calc(var(--note-size) * 0.5px);
+    filter: blur(90px);
+    border-radius: 50%;
+    background: black;
+
+    transform: translate3d(-50%, -50%, 0);
+    top: 50%;
+    left: 50%;
+  }
+}
+
+.indicator {
+  margin: calc(var(--note-indicator-margin) * 1px);
+  position: absolute;
+  filter: drop-shadow(0px 0px 25px var(--note-indicator-shadow));
+  z-index: 1;
+
+  & path,
+  circle {
+    fill: var(--note-indicator-color);
+  }
+}
+
+.cut {
+  opacity: 1;
+  width: calc(var(--note-cut-size) * 1px);
+  height: 150%;
+  background-color: var(--note-cut-color);
+  box-shadow: 0px 0px 10px 2px var(--note-cut-shadow);
+  position: absolute;
+  top: -25%;
+  z-index: 2;
+}

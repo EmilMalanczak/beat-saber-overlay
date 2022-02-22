@@ -21,7 +21,6 @@ export const generateRandomCut = () => {
   const y = randomInt(0, 2)
 
   const isSaberA = randomInt(0, 1)
-  //   directions[randomInt(0, directions.length - 1)]
   const direction = directions[randomInt(0, directions.length - 1)]
   const deviation = randomInt(-35, 35)
 

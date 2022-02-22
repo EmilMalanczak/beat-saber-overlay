@@ -3,11 +3,14 @@ import type { FC } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 
 import { useScoreStore } from '../../store/score'
-import type { NoteCut } from '../../store/score'
 import { getScoreAngle } from '../../utils/getScoreAngle'
 import { getScoreTransformDistance } from '../../utils/getScoreTransformDistance'
-import { useStyles } from './HitScore.styles'
 import { useTimeout } from '../../hooks/useTimeout'
+import { getScoreQualityStyles } from '../../utils/getScoreQualityStyles'
+
+import type { NoteCut } from '../../store/score'
+
+import classes from './HitScore.module.scss'
 
 export type HitScoreConfig = Array<{
   above: number
@@ -32,28 +35,30 @@ export const HitScore: FC<HitScoreProps> = ({
   note,
   unmountTime,
   maxRow,
-  config,
   maxRotate,
-  scoreCutShift
+  scoreCutShift,
+  config
 }) => {
-  const { radians = 0 } = note
-  const { classes } = useStyles({ ...note, maxRow, config })
+  const { radians = 0, x, y, score } = note
   const { unmountScoreNote } = useScoreStore()
 
-  const transform = useMemo(() => {
+  const { transform, rotate, ...qualityStyles } = useMemo(() => {
     const { x0, x1, y0, y1 } = getScoreTransformDistance(radians, scoreCutShift)
     const scoreAngle = getScoreAngle(radians, maxRotate)
 
     return {
-      x0,
-      x1,
-      y0,
-      y1,
-      rotate: scoreAngle
+      transform: {
+        x0,
+        x1,
+        y0,
+        y1
+      },
+      rotate: scoreAngle,
+      ...getScoreQualityStyles(score!, config)
     }
-  }, [radians, scoreCutShift, maxRotate])
+  }, [radians, scoreCutShift, maxRotate, score, config])
 
-  const [styles] = useSpring(() => ({
+  const [styles, set] = useSpring(() => ({
     from: {
       x: transform.x0,
       y: transform.y0,
@@ -63,7 +68,7 @@ export const HitScore: FC<HitScoreProps> = ({
     to: {
       x: transform.x1,
       y: transform.y1,
-      rotate: transform.rotate,
+      rotate,
       opacity: 1
     },
     config: {
@@ -75,11 +80,26 @@ export const HitScore: FC<HitScoreProps> = ({
   }))
 
   useTimeout(() => {
+    set({
+      opacity: 0
+    })
     unmountScoreNote(note.id!)
   }, unmountTime)
 
   return (
-    <animated.div className={classes.score} style={styles}>
+    <animated.div
+      className={classes.score}
+      style={
+        {
+          ...styles,
+          //  css grid columns are counted from 1
+          '--hit-score-column': x + 1,
+          // grid row is 1 on top
+          '--hit-score-row': 1 || maxRow - y,
+          ...qualityStyles
+        } as any
+      }
+    >
       {note.score}
     </animated.div>
   )

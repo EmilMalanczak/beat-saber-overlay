@@ -1,0 +1,9 @@
+.score {
+  @include center();
+
+  grid-column: var(--hit-score-column);
+  grid-row: var(--hit-score-row);
+  font-family: 'Teko';
+  opacity: 1;
+  font-weight: 600;
+}

@@ -1,8 +1,9 @@
-import type { FC } from 'react'
+import type { FC, CSSProperties } from 'react'
 
 import { useScoreStore } from '../../store/score'
 import { HitScore, HitScoreSharedProps } from '../HitScore/HitScore'
-import { useStyles } from './HitScoreVisualizer.styles'
+
+import classes from './HitScoreVisualizer.module.scss'
 
 export type HitScoreVisualizerProps = HitScoreSharedProps & {
   rows: 1 | 3
@@ -12,13 +13,21 @@ export type HitScoreVisualizerProps = HitScoreSharedProps & {
 }
 
 export const HitScoreVisualizer: FC<HitScoreVisualizerProps> = (props) => {
-  const { rows, style, ...scoreProps } = props
-
-  const { classes } = useStyles(props)
+  const { rows, style, width, rowHeight, ...scoreProps } = props
   const { noteScores } = useScoreStore()
 
   return (
-    <div className={classes.grid} style={style}>
+    <div
+      className={classes.grid}
+      style={
+        {
+          ...style,
+          '--grid-rows-amount': rows,
+          '--grid-width': width,
+          '--grid-height': rows * rowHeight
+        } as CSSProperties
+      }
+    >
       {noteScores.map((note) => (
         <HitScore key={note.id} maxRow={rows} note={note} {...scoreProps} />
       ))}

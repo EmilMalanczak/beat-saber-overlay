@@ -1,6 +1,8 @@
 import { createStyles, useMantineTheme } from '@mantine/styles'
+import { useState } from 'react'
 import { CutVisualizer } from '../src/components/CutVisualizer'
 import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
+import { useInterval } from '../src/hooks/useInterval'
 import { useScoreStore } from '../src/store/score'
 import { generateRandomCut } from '../src/utils/generateRandomCut'
 
@@ -20,6 +22,7 @@ const Home = () => {
   const theme = useMantineTheme()
   const { cutNote } = useScoreStore()
   const { classes } = useStyles()
+  const [isDemoOn, toggleDemo] = useState(false)
 
   const handleCut = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -29,11 +32,17 @@ const Home = () => {
     cutNote(note)
   }
   const unmountTime = 350
-  const width = 600
+
+  useInterval(
+    () => {
+      handleCut()
+    },
+    isDemoOn ? 60 : null
+  )
 
   return (
     <>
-      <button type="button" onClick={handleCut}>
+      <button type="button" onClick={() => toggleDemo((p) => !p)}>
         cut
       </button>
 
@@ -41,7 +50,7 @@ const Home = () => {
         <div className={classes.wrapper}>
           <CutVisualizer
             gap={undefined}
-            cellSize={60}
+            cellSize={100}
             fadeTime={unmountTime}
             gridColor="#000"
             gridBorderSize={2}
@@ -54,52 +63,44 @@ const Home = () => {
 
           <HitScoreVisualizer
             rows={1}
-            width="100%"
+            width={400}
             unmountTime={unmountTime}
             rowHeight={100}
             maxRotate={12}
             scoreCutShift={10}
             style={{
               border: '1px solid red'
+              // width: '100%'
             }}
             config={[
               {
                 above: 113,
                 fontSize: 40,
                 color: 'rgb(255, 255, 255)',
-                textShadow: 'rgb(255, 255, 255) 1px 1px 5px',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(255, 255, 255)', 0.4)}`
               },
               {
                 above: 110,
                 fontSize: 38,
                 color: 'rgb(242, 0, 242)',
-                // textShadow: 'rgb(242, 0, 242) 1px 1px 10px',
-                textShadow: 'rgb(255, 255, 255) 1px 1px 5px',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(242, 0, 242)', 0.4)}`
               },
               {
                 above: 107,
                 fontSize: 36,
                 color: 'rgb(0, 102, 255)',
-                // textShadow: 'rgb(0, 102, 255) 1px 1px 10px',
-                textShadow: 'rgb(255, 255, 255) 1px 1px 5px',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(0, 102, 255)', 0.4)}`
               },
               {
                 above: 100,
                 fontSize: 34,
                 color: 'rgb(242, 242, 0)',
-                // textShadow: 'rgb(242, 242, 0) 1px 1px 10px',
-                textShadow: 'rgb(255, 255, 255) 1px 1px 5px',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(242, 242, 0)', 0.4)}`
               },
               {
                 above: 0,
                 fontSize: 32,
                 color: 'rgb(255, 102, 0)',
-                // textShadow: 'rgb(255, 102, 0) 1px 1px 10px',
-                textShadow: 'rgb(255, 255, 255) 1px 1px 5px',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(255, 102, 0)', 0.4)}`
               }
             ]}

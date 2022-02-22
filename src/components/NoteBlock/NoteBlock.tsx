@@ -1,29 +1,54 @@
-import type { FC } from 'react'
+import type { FC, CSSProperties } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 
 import { useTimeout } from '../../hooks/useTimeout'
 import { NoteCut, useScoreStore } from '../../store/score'
-import { useStyles } from './NoteBlock.styles'
+
+import classes from './NoteBlock.module.scss'
+import { getPositionStyles } from '../../utils/getNoteIndicatorPosition'
+import { getRotationAngle } from '../../utils/getRotationAngle'
+
+type Color = (color: string) => string
+
+export type NoteBlockConfig = {
+  indicator: {
+    color: Color
+    shadow: Color
+    height: number
+    width: number
+    topHeight: number
+    margin: number
+  }
+  dot: {
+    size: number
+    position: number
+  }
+  cut: {
+    color: Color
+    shadow: Color
+    size: number
+  }
+  note: {
+    color: Color
+    size: number
+  }
+}
 
 export type NoteBlockProps = {
-  size: number
   cut: NoteCut
   fadeTime: number
+  noteConfig: NoteBlockConfig
 }
 
 export const NoteBlock: FC<NoteBlockProps> = (props) => {
-  const { classes } = useStyles(props)
   const { hideCut } = useScoreStore()
   const {
-    size,
+    noteConfig,
     fadeTime = 300,
-    cut: { active, direction, x, y }
+    cut: { active, direction, x, y, color = '#FFF', fromCenter = 0, deviation = 0 }
   } = props
 
-  const height = size * 0.2
-  const width = size * 0.56
-
-  const arrowHeight = height * 0.5
+  const { indicator, dot, cut, note } = noteConfig
 
   const { opacity } = useSpring({
     opacity: active ? 1 : 0,
@@ -44,39 +69,60 @@ export const NoteBlock: FC<NoteBlockProps> = (props) => {
   return (
     <animated.div
       className={classes.wrapper}
-      style={{
-        opacity
-      }}
+      style={
+        {
+          opacity,
+          transform: `rotate(${-getRotationAngle(direction)}deg)`,
+          '--note-size': note.size,
+          '--note-color': note.color(color),
+          '--note-indicator-color': indicator.color(color),
+          '--note-indicator-shadow': indicator.shadow(color),
+          '--note-indicator-margin': direction !== 'Any' ? indicator.margin : 0,
+          '--note-cut-size': cut.size,
+          '--note-cut-color': cut.color(color),
+          '--note-cut-shadow': cut.shadow(color)
+        } as unknown as CSSProperties
+      }
     >
       <div className={classes.block}>
         {direction === 'Any' ? (
           <svg
             className={classes.indicator}
-            width={size * 0.2}
-            height={size * 0.2}
+            width={dot.size}
+            height={dot.size}
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            style={getPositionStyles(direction)}
           >
-            <circle cx={arrowHeight} cy={arrowHeight} r={arrowHeight} />
+            <circle cx={dot.position} cy={dot.position} r={dot.position} />
           </svg>
         ) : (
           <svg
             className={classes.indicator}
-            width={width}
-            height={height}
+            width={indicator.width}
+            height={indicator.height}
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            style={getPositionStyles(direction)}
           >
             <path
               fill="#000"
-              d={`M${width} ${arrowHeight} L${
-                width * 0.5
-              } 0 L 0 ${arrowHeight} L 0 ${height} H ${width} L ${width} ${arrowHeight} Z M 0 ${arrowHeight}`}
+              d={`M${indicator.width} ${indicator.topHeight} L${indicator.width * 0.5} 0 L 0 ${
+                indicator.topHeight
+              } L 0 ${indicator.height} H ${indicator.width} L ${indicator.width} ${
+                indicator.topHeight
+              } Z M 0 ${indicator.topHeight}`}
             />
           </svg>
         )}
       </div>
-      <span className={classes.cut} />
+      <span
+        className={classes.cut}
+        style={{
+          left: `${50 - fromCenter * 50}%`,
+          transform: `translateX(-50%) rotate(${-deviation}deg)`
+        }}
+      />
     </animated.div>
   )
 }

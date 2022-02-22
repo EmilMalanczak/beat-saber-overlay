@@ -1,6 +1,10 @@
 /**
  * @type {import('next').NextConfig}
  * */
+// import { join, relative } from 'path'
+// eslint-disable-next-line prettier/prettier
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path')
 
 module.exports = {
   sassOptions: {
