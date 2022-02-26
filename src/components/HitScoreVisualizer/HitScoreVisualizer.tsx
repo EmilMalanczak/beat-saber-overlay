@@ -14,7 +14,7 @@ export type HitScoreVisualizerProps = HitScoreSharedProps & {
 
 export const HitScoreVisualizer: FC<HitScoreVisualizerProps> = (props) => {
   const { rows, style, width, rowHeight, ...scoreProps } = props
-  const { noteScores } = useScoreStore()
+  const noteScores = useScoreStore((state) => state.noteScores)
 
   return (
     <div
@@ -28,9 +28,13 @@ export const HitScoreVisualizer: FC<HitScoreVisualizerProps> = (props) => {
         } as CSSProperties
       }
     >
-      {noteScores.map((note) => (
-        <HitScore key={note.id} maxRow={rows} note={note} {...scoreProps} />
-      ))}
+      {noteScores.map((rowNotes) =>
+        rowNotes.map((cell) =>
+          cell.scores.map((note) => (
+            <HitScore key={note.id} maxRow={rows} note={note} {...scoreProps} />
+          ))
+        )
+      )}
     </div>
   )
 }

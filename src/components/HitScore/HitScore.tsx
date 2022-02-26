@@ -39,8 +39,8 @@ export const HitScore: FC<HitScoreProps> = ({
   scoreCutShift,
   config
 }) => {
-  const { radians = 0, x, y, score } = note
-  const { unmountScoreNote } = useScoreStore()
+  const { radians = 0, x, y, score, id } = note
+  const unmountScoreNote = useScoreStore((state) => state.unmountScoreNote)
 
   const { transform, rotate, ...qualityStyles } = useMemo(() => {
     const { x0, x1, y0, y1 } = getScoreTransformDistance(radians, scoreCutShift)
@@ -83,7 +83,10 @@ export const HitScore: FC<HitScoreProps> = ({
     set({
       opacity: 0
     })
-    unmountScoreNote(note.id!)
+
+    if (id) {
+      unmountScoreNote({ id, x, y })
+    }
   }, unmountTime)
 
   return (

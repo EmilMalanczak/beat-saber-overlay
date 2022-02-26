@@ -23,7 +23,8 @@ export const SocketProvider: FC = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const { connect, disconnect, connected } = useStatusStore()
   const { getSong } = useSongStore()
-  const { cutNote, resetStore } = useScoreStore()
+  const cutNote = useScoreStore((state) => state.cutNote)
+  const resetStore = useScoreStore((state) => state.resetStore)
   const { setSaberColors, colors } = useUIStore()
 
   const handleConnectToHTTP = useCallback(() => {
@@ -102,7 +103,7 @@ export const SocketProvider: FC = ({ children }) => {
           break
       }
     },
-    [colors, cutNote, getSong, setSaberColors]
+    [colors, cutNote, getSong, resetStore, setSaberColors]
   )
 
   useEffect(() => {

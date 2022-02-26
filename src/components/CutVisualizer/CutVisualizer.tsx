@@ -1,5 +1,6 @@
 import { lighten } from 'polished'
-import { FC, useMemo } from 'react'
+import { useMemo } from 'react'
+import type { FC } from 'react'
 
 import { useScoreStore } from '../../store/score'
 import { NoteBlock } from '../NoteBlock'
@@ -27,7 +28,7 @@ export const CutVisualizer: FC<CutVisualizerProps> = ({
   style,
   gap
 }) => {
-  const { noteCuts } = useScoreStore()
+  const noteCuts = useScoreStore((state) => state.noteCuts)
 
   const { noteConfig, notePadding }: { noteConfig: NoteBlockConfig; notePadding: number } = useMemo(
     () => ({
@@ -56,7 +57,7 @@ export const CutVisualizer: FC<CutVisualizerProps> = ({
       },
       /*
         default value is to protect from overflowing notes
-        when they are rotated
+        when they are rotated which is equal a*sqrt(2) + some space
       */
       notePadding: (gap || (Math.sqrt(2) - 1.08) * cellSize) / 2
     }),

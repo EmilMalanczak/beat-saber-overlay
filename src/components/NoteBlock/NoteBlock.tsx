@@ -41,7 +41,7 @@ export type NoteBlockProps = {
 }
 
 export const NoteBlock: FC<NoteBlockProps> = (props) => {
-  const { hideCut } = useScoreStore()
+  const hideCut = useScoreStore((state) => state.hideCut)
   const {
     noteConfig,
     fadeTime = 300,

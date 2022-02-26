@@ -1,18 +1,13 @@
 import create from 'zustand'
 import { NoteCutObject } from '../types/Events'
 
-export type NoteScorex = {
-  id: NoteCutObject['noteID']
+type Cords = {
   x: NoteCutObject['noteLine']
   y: NoteCutObject['noteLayer']
-  score: NoteCutObject['finalScore']
-  radians: number
 }
 
-export type NoteCut = {
+export type NoteCut = Cords & {
   id?: NoteCutObject['noteID']
-  x: NoteCutObject['noteLine']
-  y: NoteCutObject['noteLayer']
   score?: NoteCutObject['finalScore']
   radians?: number
   direction?: NoteCutObject['noteCutDirection']
@@ -23,35 +18,57 @@ export type NoteCut = {
   badCut?: boolean
 }
 
-type ScoreStore = {
-  score: number
-  noteScores: Omit<NoteCut, 'active'>[]
-  noteCuts: NoteCut[][]
-  unmountScoreNote: (id: NoteCutObject['noteID']) => void
-  // mountScoreNote: (note: NoteCut) => void
-  cutNote: (note: Omit<NoteCut, 'active'>) => void
-  hideCut: (params: Pick<NoteCut, 'x' | 'y'>) => void
+type Scores = Cords & {
+  scores: Omit<NoteCut, 'active'>[]
 }
 
-const generateCutNotes = (row: NoteCutObject['noteLayer']): NoteCut[] =>
-  ([0, 1, 2, 3] as NoteCutObject['noteLine'][]).map((column) => ({
-    x: column,
-    y: row,
-    active: false
-  }))
+type ScoreStore = {
+  score: number
+  noteScores: Scores[][]
+  noteCuts: NoteCut[][]
+  unmountScoreNote: (
+    cut: Cords & {
+      id: NoteCutObject['noteID']
+    }
+  ) => void
+  cutNote: (note: Omit<NoteCut, 'active'>) => void
+  hideCut: (params: Cords) => void
+  resetStore: () => void
+}
+
+const rows = [0, 1, 2] as Cords['y'][]
+const columns = [0, 1, 2, 3] as Cords['x'][]
+
+const generateGridCells = <T>(defaultState: (cord: { x: Cords['x']; y: Cords['y'] }) => T): T[][] =>
+  rows.map((row) => columns.map((column): T => defaultState({ y: row, x: column }) as T))
+
+const defaultScores = generateGridCells<Scores>((cords) => ({
+  ...cords,
+  scores: []
+}))
+
+const defaultCuts = generateGridCells((cords) => ({
+  ...cords,
+  active: false
+}))
 
 export const useScoreStore = create<ScoreStore>((set, get) => ({
   score: 0,
-  noteScores: [],
-  noteCuts: [generateCutNotes(0), generateCutNotes(1), generateCutNotes(2)],
-  unmountScoreNote: (noteId) => {
+  noteScores: defaultScores,
+  noteCuts: defaultCuts,
+  unmountScoreNote: ({ id: noteId, x, y }) => {
     const { noteScores } = get()
 
     const scores = [...noteScores]
-    const noteIndex = scores.findIndex(({ id }) => noteId === id)
+    /*
+      its faster way of finding index than findIndex
+      benchmark:
+      https://www.measurethat.net/Benchmarks/Show/17459/0/findindex-vs-indexof---javascript-performancedsadsadas
+    */
+    const noteIndex = scores[2 - y][x].scores.map(({ id }) => id).indexOf(noteId)
 
     if (noteIndex !== -1) {
-      scores.splice(noteIndex, 1)
+      scores[2 - y][x].scores.splice(noteIndex, 1)
     }
 
     set({
@@ -60,14 +77,17 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
   },
   cutNote: (note) => {
     const { noteCuts, noteScores } = get()
+    const { x, y } = note
 
     const cuts = [...noteCuts]
-    const scores = [...noteScores, note]
+    const scores = [...noteScores]
 
-    cuts[2 - note.y][note.x] = {
+    cuts[2 - y][x] = {
       active: true,
       ...note
     }
+
+    scores[2 - y][x].scores.push(note)
 
     set({
       noteCuts: cuts,
@@ -92,8 +112,8 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
   },
   resetStore: () => {
     set({
-      noteScores: [],
-      noteCuts: [generateCutNotes(0), generateCutNotes(1), generateCutNotes(2)]
+      noteScores: defaultScores,
+      noteCuts: defaultCuts
     })
   }
 }))

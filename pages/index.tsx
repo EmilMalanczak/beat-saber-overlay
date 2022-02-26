@@ -1,5 +1,6 @@
-import { createStyles, useMantineTheme } from '@mantine/styles'
 import { useState } from 'react'
+import { createStyles, useMantineTheme } from '@mantine/styles'
+
 import { CutVisualizer } from '../src/components/CutVisualizer'
 import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
 import { useInterval } from '../src/hooks/useInterval'
@@ -20,7 +21,7 @@ export const useStyles = createStyles(() => ({
 const Home = () => {
   // const { loading, player } = usePlayerStore()
   const theme = useMantineTheme()
-  const { cutNote } = useScoreStore()
+  const cutNote = useScoreStore((state) => state.cutNote)
   const { classes } = useStyles()
   const [isDemoOn, toggleDemo] = useState(false)
 
@@ -37,7 +38,7 @@ const Home = () => {
     () => {
       handleCut()
     },
-    isDemoOn ? 60 : null
+    isDemoOn ? 1 : null
   )
 
   return (
