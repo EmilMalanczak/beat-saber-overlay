@@ -1,4 +1,4 @@
-import { lighten } from 'polished'
+import { lighten, rgba } from 'polished'
 import { useMemo } from 'react'
 import type { FC } from 'react'
 
@@ -52,6 +52,7 @@ export const CutVisualizer: FC<CutVisualizerProps> = ({
         },
         note: {
           color: (color) => color,
+          backgroundColor: (color) => rgba(color, 0.1),
           size: cellSize
         }
       },

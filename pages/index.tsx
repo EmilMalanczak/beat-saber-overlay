@@ -10,8 +10,8 @@ import { generateRandomCut } from '../src/utils/generateRandomCut'
 export const useStyles = createStyles(() => ({
   visualizers: {
     position: 'absolute',
-    left: 30,
-    bottom: 30
+    bottom: 1,
+    right: 70
   },
   wrapper: {
     position: 'relative'
@@ -38,7 +38,7 @@ const Home = () => {
     () => {
       handleCut()
     },
-    isDemoOn ? 1 : null
+    isDemoOn ? 20 : null
   )
 
   return (
@@ -50,57 +50,59 @@ const Home = () => {
       <div className={classes.visualizers}>
         <div className={classes.wrapper}>
           <CutVisualizer
-            gap={undefined}
-            cellSize={100}
-            fadeTime={unmountTime}
+            cellSize={70}
+            fadeTime={15000}
             gridColor="#000"
-            gridBorderSize={2}
-            style={{
-              border: '1px solid red'
-            }}
+            gridBorderSize={0}
+            style={
+              {
+                // border: '1px solid red'
+              }
+            }
           />
 
-          <div style={{ margin: 30 }} />
+          <div style={{ margin: -20 }} />
 
           <HitScoreVisualizer
             rows={1}
-            width={400}
+            width="100%"
             unmountTime={unmountTime}
             rowHeight={100}
             maxRotate={12}
             scoreCutShift={10}
-            style={{
-              border: '1px solid red'
-              // width: '100%'
-            }}
+            style={
+              {
+                // border: '1px solid red'
+              }
+            }
             config={[
               {
                 above: 113,
-                fontSize: 40,
+                fontSize: 60,
                 color: 'rgb(255, 255, 255)',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(255, 255, 255)', 0.4)}`
               },
               {
                 above: 110,
-                fontSize: 38,
+                fontSize: 58,
                 color: 'rgb(242, 0, 242)',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(242, 0, 242)', 0.4)}`
               },
               {
                 above: 107,
-                fontSize: 36,
+                fontSize: 56,
                 color: 'rgb(0, 102, 255)',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(0, 102, 255)', 0.4)}`
               },
               {
                 above: 100,
-                fontSize: 34,
+                fontSize: 54,
                 color: 'rgb(242, 242, 0)',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(242, 242, 0)', 0.4)}`
               },
               {
                 above: 0,
-                fontSize: 32,
+                fontSize: 52,
                 color: 'rgb(255, 102, 0)',
                 WebkitTextStroke: `1px ${theme.fn.darken('rgb(255, 102, 0)', 0.4)}`
               }

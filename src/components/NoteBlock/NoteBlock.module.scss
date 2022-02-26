@@ -7,7 +7,7 @@
 }
 
 .block {
-  background-color: var(--note-color);
+  background-color: var(--note-background-color);
   position: absolute;
   inset: 0;
   box-shadow: inset 0 0 20px 8px var(--note-color), inset -6px 8px 10px 20px rgba(0, 0, 0, 0.5),

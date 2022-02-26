@@ -30,6 +30,7 @@ export type NoteBlockConfig = {
   }
   note: {
     color: Color
+    backgroundColor: Color
     size: number
   }
 }
@@ -75,6 +76,7 @@ export const NoteBlock: FC<NoteBlockProps> = (props) => {
           transform: `rotate(${-getRotationAngle(direction)}deg)`,
           '--note-size': note.size,
           '--note-color': note.color(color),
+          '--note-background-color': note.backgroundColor(color),
           '--note-indicator-color': indicator.color(color),
           '--note-indicator-shadow': indicator.shadow(color),
           '--note-indicator-margin': direction !== 'Any' ? indicator.margin : 0,
