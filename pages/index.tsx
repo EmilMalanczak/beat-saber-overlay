@@ -58,7 +58,7 @@ const Home = () => {
             }}
           />
 
-          <div style={{ margin: -20 }} />
+          <div style={{ margin: -20 - (100 - (Math.SQRT2 - 1.08) * 70) }} />
 
           <HitScoreVisualizer
             rows={1}

@@ -27,6 +27,6 @@ export const getRotationAngle = (direction?: NoteCutObject['noteCutDirection']):
       return 225
 
     default:
-      return 270
+      return 0
   }
 }
