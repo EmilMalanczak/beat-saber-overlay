@@ -1,6 +1,6 @@
 import type { NoteCut } from '../store/score'
 
-export const getPositionStyles = (direction: NoteCut['direction']) => {
+export const getNoteIndicatorPosition = (direction: NoteCut['direction']) => {
   if (direction === 'Any') {
     return {
       transform: 'translate3d(-50%, -50%, 0)',

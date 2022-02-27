@@ -5,7 +5,7 @@ import { useTimeout } from '../../hooks/useTimeout'
 import { NoteCut, useScoreStore } from '../../store/score'
 
 import classes from './NoteBlock.module.scss'
-import { getPositionStyles } from '../../utils/getNoteIndicatorPosition'
+import { getNoteIndicatorPosition } from '../../utils/getNoteIndicatorPosition'
 import { getRotationAngle } from '../../utils/getRotationAngle'
 
 type Color = (color: string) => string
@@ -94,7 +94,7 @@ export const NoteBlock: FC<NoteBlockProps> = (props) => {
             height={dot.size}
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            style={getPositionStyles(direction)}
+            style={getNoteIndicatorPosition(direction)}
           >
             <circle cx={dot.position} cy={dot.position} r={dot.position} />
           </svg>
@@ -105,7 +105,7 @@ export const NoteBlock: FC<NoteBlockProps> = (props) => {
             height={indicator.height}
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            style={getPositionStyles(direction)}
+            style={getNoteIndicatorPosition(direction)}
           >
             <path
               fill="#000"
