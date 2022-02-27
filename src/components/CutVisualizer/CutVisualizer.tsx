@@ -60,7 +60,7 @@ export const CutVisualizer: FC<CutVisualizerProps> = ({
         default value is to protect from overflowing notes
         when they are rotated which is equal a*sqrt(2) + some space
       */
-      notePadding: (gap || (Math.sqrt(2) - 1.08) * cellSize) / 2
+      notePadding: (gap || (Math.SQRT2 - 1.08) * cellSize) / 2
     }),
     [cellSize, gap]
   )

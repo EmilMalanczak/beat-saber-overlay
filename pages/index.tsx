@@ -32,13 +32,12 @@ const Home = () => {
     // @ts-ignore
     cutNote(note)
   }
-  const unmountTime = 350
 
   useInterval(
     () => {
       handleCut()
     },
-    isDemoOn ? 20 : null
+    isDemoOn ? 50 : null
   )
 
   return (
@@ -51,14 +50,12 @@ const Home = () => {
         <div className={classes.wrapper}>
           <CutVisualizer
             cellSize={70}
-            fadeTime={15000}
+            fadeTime={150}
             gridColor="#000"
             gridBorderSize={0}
-            style={
-              {
-                // border: '1px solid red'
-              }
-            }
+            style={{
+              border: '1px solid red'
+            }}
           />
 
           <div style={{ margin: -20 }} />
@@ -66,8 +63,9 @@ const Home = () => {
           <HitScoreVisualizer
             rows={1}
             width="100%"
-            unmountTime={unmountTime}
-            rowHeight={100}
+            unmountTime={350}
+            rowHeight={70 + (Math.SQRT2 - 1.08) * 70}
+            // rowHeight={100}
             maxRotate={12}
             scoreCutShift={10}
             style={

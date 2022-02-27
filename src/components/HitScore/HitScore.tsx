@@ -89,6 +89,8 @@ export const HitScore: FC<HitScoreProps> = ({
     }
   }, unmountTime)
 
+  const row = maxRow - y > 1 ? maxRow - y : 1
+
   return (
     <animated.div
       className={classes.score}
@@ -98,7 +100,7 @@ export const HitScore: FC<HitScoreProps> = ({
           //  css grid columns are counted from 1
           '--hit-score-column': x + 1,
           // grid row is 1 on top
-          '--hit-score-row': 1 || maxRow - y,
+          '--hit-score-row': row,
           ...qualityStyles
         } as any
       }
