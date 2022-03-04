@@ -1,12 +1,12 @@
 import type { FC, CSSProperties } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 
-import { useTimeout } from '../../hooks/useTimeout'
-import { NoteCut, useScoreStore } from '../../store/score'
+import { useTimeout } from '../../../hooks/useTimeout'
+import { NoteCut, useScoreStore } from '../../../store/score'
 
 import classes from './NoteBlock.module.scss'
-import { getNoteIndicatorPosition } from '../../utils/getNoteIndicatorPosition'
-import { getRotationAngle } from '../../utils/getRotationAngle'
+import { getNoteIndicatorPosition } from '../../../utils/getNoteIndicatorPosition'
+import { getRotationAngle } from '../../../utils/getRotationAngle'
 
 type Color = (color: string) => string
 

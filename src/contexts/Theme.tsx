@@ -5,7 +5,7 @@ export const ThemeContext: FC = ({ children }) => (
   <MantineProvider
     withGlobalStyles
     withNormalizeCSS
-    theme={{ fontFamily: 'Montserrat' }}
+    theme={{ fontFamily: 'Montserrat', colorScheme: 'dark' }}
     emotionOptions={{ key: 'bs', prepend: false }}
   >
     {children}

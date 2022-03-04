@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import type { FC } from 'react'
 
 import { useScoreStore } from '../../store/score'
-import { NoteBlock } from '../NoteBlock'
-import { NoteBlockConfig } from '../NoteBlock/NoteBlock'
+import { NoteBlock } from './NoteBlock'
+import { NoteBlockConfig } from './NoteBlock/NoteBlock'
 import classes from './CutVisualizer.module.scss'
 
 export type CutVisualizerProps = {
