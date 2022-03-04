@@ -1,8 +1,11 @@
 import { ActionIcon, Button, createStyles, Drawer, Group } from '@mantine/core'
 import { useState } from 'react'
 import { Draggable } from '../src/components/Draggable/Draggable'
+import { useInterval } from '../src/hooks/useInterval'
 import { options } from '../src/options'
 import { useConfiguratorStore } from '../src/store/configurator'
+import { useScoreStore } from '../src/store/score'
+import { generateRandomCut } from '../src/utils/generateRandomCut'
 
 const useStyles = createStyles(() => ({
   canvas: {
@@ -21,10 +24,25 @@ const Home = () => {
   const { classes } = useStyles()
   const [opened, setOpened] = useState(false)
 
-  const { dragElement, addElement, elements } = useConfiguratorStore()
+  const { dragElement, addElement, elements, removeElement } = useConfiguratorStore()
+
+  const cutNote = useScoreStore((state) => state.cutNote)
+  const [isDemoOn, toggleDemo] = useState(false)
+
+  useInterval(
+    () => {
+      // @ts-ignore
+      cutNote(generateRandomCut())
+    },
+    isDemoOn ? 100 : null
+  )
 
   return (
     <>
+      <button type="button" onClick={() => toggleDemo((p) => !p)}>
+        cut
+      </button>
+
       <div className={classes.canvas}>
         {Object.values(elements).map(({ name, slug, defaultProps }) => {
           const Item = options.find((opt) => opt.name === name)?.component
@@ -43,7 +61,10 @@ const Home = () => {
               bounds="parent"
               defaultPosition={elements[slug].cords}
               onRemove={() => {
-                console.log('remove', slug)
+                removeElement(slug)
+              }}
+              onEdit={() => {
+                console.log('edit', slug)
               }}
             >
               <Item

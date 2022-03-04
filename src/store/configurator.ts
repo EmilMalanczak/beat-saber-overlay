@@ -15,6 +15,7 @@ type ConfiguratorStore = {
   }
   dragElement: (params: { slug: string; x: number; y: number }) => void
   addElement: (element: ComponentOptions) => void
+  removeElement: (slug: string) => void
   setInitialElements: (initialElements: any) => void
 }
 
@@ -31,6 +32,15 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
       elements: initialElements
     })
   ],
+  removeElement: (slug) => {
+    const currentElements = get().elements
+
+    delete currentElements[slug]
+
+    set({
+      elements: currentElements
+    })
+  },
   addElement: (element) => {
     const currentElements = get().elements
 

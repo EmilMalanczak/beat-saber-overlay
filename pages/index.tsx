@@ -22,8 +22,9 @@ const Home = () => {
   // const { loading, player } = usePlayerStore()
   const theme = useMantineTheme()
   const cutNote = useScoreStore((state) => state.cutNote)
-  const { classes } = useStyles()
   const [isDemoOn, toggleDemo] = useState(false)
+
+  const { classes } = useStyles()
 
   const handleCut = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -37,7 +38,7 @@ const Home = () => {
     () => {
       handleCut()
     },
-    isDemoOn ? 50 : null
+    isDemoOn ? 1 : null
   )
 
   return (

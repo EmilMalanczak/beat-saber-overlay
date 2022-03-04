@@ -2,7 +2,15 @@ import { createStyles } from '@mantine/core'
 
 export const useStyles = createStyles((theme) => ({
   wrapper: {
-    border: '1px solid green'
+    border: '1px solid green',
+    position: 'absolute',
+    zIndex: 1
+  },
+  active: {
+    zIndex: 2
+  },
+  disabled: {
+    zIndex: 0
   },
   box: {
     width: 'max-content',
@@ -20,7 +28,7 @@ export const useStyles = createStyles((theme) => ({
   options: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     textAlign: 'center',
-    padding: theme.spacing.xs,
+    padding: 8,
     borderRadius: theme.radius.md,
     cursor: 'pointer'
   }
