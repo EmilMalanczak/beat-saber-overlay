@@ -1,6 +1,10 @@
 import { ActionIcon, Button, createStyles, Drawer, Group } from '@mantine/core'
+import { useBooleanToggle } from '@mantine/hooks'
 import { useState } from 'react'
+import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
+
 import { Draggable } from '../src/components/Draggable/Draggable'
+import { EditDrawer } from '../src/components/EditDrawer'
 import { useInterval } from '../src/hooks/useInterval'
 import { options } from '../src/options'
 import { useConfiguratorStore } from '../src/store/configurator'
@@ -27,7 +31,8 @@ const Home = () => {
   const { dragElement, addElement, elements, removeElement } = useConfiguratorStore()
 
   const cutNote = useScoreStore((state) => state.cutNote)
-  const [isDemoOn, toggleDemo] = useState(false)
+  const [isDemoOn, toggleDemo] = useBooleanToggle(false)
+  const [isEditOpen, setIsEditOpen] = useBooleanToggle(false)
 
   useInterval(
     () => {
@@ -39,10 +44,6 @@ const Home = () => {
 
   return (
     <>
-      <button type="button" onClick={() => toggleDemo((p) => !p)}>
-        cut
-      </button>
-
       <div className={classes.canvas}>
         {Object.values(elements).map(({ name, slug, defaultProps }) => {
           const Item = options.find((opt) => opt.name === name)?.component
@@ -60,12 +61,8 @@ const Home = () => {
               }}
               bounds="parent"
               defaultPosition={elements[slug].cords}
-              onRemove={() => {
-                removeElement(slug)
-              }}
-              onEdit={() => {
-                console.log('edit', slug)
-              }}
+              onRemove={() => removeElement(slug)}
+              onEdit={() => setIsEditOpen(true)}
             >
               <Item
                 {...{ ...defaultProps, gridBorderSize: 1 }}
@@ -75,15 +72,28 @@ const Home = () => {
           )
         })}
       </div>
-      <ActionIcon
-        color="blue"
-        size="xl"
-        radius="xl"
-        variant="filled"
-        onClick={() => setOpened(true)}
-      >
-        +
-      </ActionIcon>
+
+      <Group spacing={8}>
+        <ActionIcon
+          color="blue"
+          size="xl"
+          radius="xl"
+          variant="filled"
+          onClick={() => setOpened(true)}
+        >
+          <RiAddFill size={20} />
+        </ActionIcon>
+
+        <ActionIcon
+          color="blue"
+          size="xl"
+          radius="xl"
+          variant="filled"
+          onClick={() => toggleDemo((p) => !p)}
+        >
+          {isDemoOn ? <RiPauseFill size={20} /> : <RiPlayFill size={20} />}
+        </ActionIcon>
+      </Group>
 
       <Drawer
         opened={opened}
@@ -97,6 +107,7 @@ const Home = () => {
             <Button
               onClick={() => {
                 addElement(component)
+                setOpened(false)
               }}
             >
               {`add ${component.name}`}
@@ -104,6 +115,8 @@ const Home = () => {
           ))}
         </Group>
       </Drawer>
+
+      <EditDrawer opened={isEditOpen} setOpened={setIsEditOpen} />
     </>
   )
 }

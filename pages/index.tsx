@@ -34,12 +34,7 @@ const Home = () => {
     cutNote(note)
   }
 
-  useInterval(
-    () => {
-      handleCut()
-    },
-    isDemoOn ? 1 : null
-  )
+  useInterval(handleCut, isDemoOn ? 50 : null)
 
   return (
     <>

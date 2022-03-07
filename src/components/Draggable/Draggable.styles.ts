@@ -4,7 +4,11 @@ export const useStyles = createStyles((theme) => ({
   wrapper: {
     border: '1px solid green',
     position: 'absolute',
-    zIndex: 1
+    zIndex: 1,
+    cursor: 'drag'
+  },
+  wrapperGrabbing: {
+    cursor: 'grabbing'
   },
   active: {
     zIndex: 2

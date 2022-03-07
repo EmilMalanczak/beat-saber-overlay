@@ -1,4 +1,5 @@
 import { CutVisualizer } from '../components/CutVisualizer'
+import { Option } from '../types/Options'
 import type { ComponentOptions } from '../types/Options'
 
 export const options: ComponentOptions = {
@@ -11,10 +12,22 @@ export const options: ComponentOptions = {
   description: 'Display cuts from the game',
   options: [
     {
-      prop: 'cellSize',
-      type: 'number',
+      propName: 'cellSize',
+      inputTypeName: Option.NUMBER,
       min: 10,
-      max: 300
+      max: 300,
+      defaultValue: 70
+    },
+    {
+      propName: 'fadeTime',
+      inputTypeName: Option.NUMBER,
+      min: 0,
+      max: 300,
+      defaultValue: 70
+    },
+    {
+      propName: 'gridColor',
+      inputTypeName: Option.COLOR
     }
   ],
   defaultProps: {

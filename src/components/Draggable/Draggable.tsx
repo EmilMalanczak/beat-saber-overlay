@@ -1,12 +1,13 @@
 import { Popper, UnstyledButton, ActionIcon, Group } from '@mantine/core'
 import { useRef, useState } from 'react'
+
 import ReactDraggable from 'react-draggable'
 import { RiDeleteBin7Fill, RiEditFill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
 
 import type { DraggableProps as ReactDraggableProps } from 'react-draggable'
-import type { FC } from 'react'
+import type { FC, MouseEvent } from 'react'
 
-import { useClickOutside, useMergedRef } from '@mantine/hooks'
+import { useBooleanToggle, useClickOutside, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
 
 type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
@@ -18,19 +19,23 @@ export const Draggable: FC<DraggableProps> = ({
   bounds = 'parent',
   onStop,
   onRemove,
+  onEdit,
   defaultPosition,
   children,
   ...rest
 }) => {
-  const [opened, setOpened] = useState(false)
-  const [isLocked, setLocked] = useState(false)
+  const [opened, toggleOpened] = useBooleanToggle(false)
+  const [isLocked, toggleLocked] = useBooleanToggle(false)
   const [position, setPosition] = useState(defaultPosition)
 
   const boxRef = useRef<HTMLDivElement>(null)
   const optionsRef = useRef<HTMLDivElement>(null)
-  const outsideClickRef = useClickOutside(() => setOpened(false))
+  const outsideClickRef = useClickOutside(() => toggleOpened(false))
 
   const { classes, cx } = useStyles()
+
+  const isOnOptionsNode = (e: MouseEvent<HTMLButtonElement>) =>
+    optionsRef.current === e.target || optionsRef.current?.contains(e.target as Node) || false
 
   return (
     <ReactDraggable
@@ -38,28 +43,28 @@ export const Draggable: FC<DraggableProps> = ({
       bounds={bounds}
       position={position}
       defaultClassName={cx(classes.wrapper, {
-        [classes.active]: opened,
-        [classes.disabled]: isLocked
+        [classes.disabled]: isLocked,
+        [classes.active]: opened
       })}
+      defaultClassNameDragging={classes.wrapperGrabbing}
       disabled={isLocked}
-      onDrag={(_, { x, y }) => {
-        setPosition({ x, y })
+      cancel=".options"
+      onDrag={(e, { x, y }) => {
+        if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
+          setPosition({ x, y })
 
-        if (opened) {
-          setOpened(false)
+          if (opened) {
+            toggleOpened(false)
+          }
         }
       }}
       {...rest}
     >
       <UnstyledButton
         ref={useMergedRef(boxRef, outsideClickRef)}
-        onClick={(e: any) => {
-          // eslint-disable-next-line operator-linebreak
-          const isOptionsClicked =
-            optionsRef.current === e.target || optionsRef.current?.contains(e.target)
-
-          if (!isOptionsClicked) {
-            setOpened((p) => !p)
+        onClick={(e) => {
+          if (!isOnOptionsNode(e)) {
+            toggleOpened()
           }
         }}
         className={classes.box}
@@ -75,28 +80,15 @@ export const Draggable: FC<DraggableProps> = ({
           transition="slide-down"
           withinPortal={false}
         >
-          <Group spacing={8} className={classes.options} ref={optionsRef}>
-            <ActionIcon
-              onClick={() => {
-                setLocked((p) => !p)
-              }}
-            >
+          <Group spacing={8} className={cx(classes.options, 'options')} ref={optionsRef}>
+            <ActionIcon onClick={() => toggleLocked()}>
               {isLocked ? <RiLockFill /> : <RiLockUnlockFill />}
             </ActionIcon>
-            <ActionIcon
-              onClick={() => {
-                console.log('edit')
-              }}
-            >
+            <ActionIcon onClick={onEdit}>
               <RiEditFill />
             </ActionIcon>
 
-            <ActionIcon
-              onClick={() => {
-                console.log('remove')
-                onRemove()
-              }}
-            >
+            <ActionIcon onClick={onRemove}>
               <RiDeleteBin7Fill />
             </ActionIcon>
           </Group>

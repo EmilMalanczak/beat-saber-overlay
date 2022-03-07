@@ -9,6 +9,7 @@ type ConfiguratorStore = {
   // we will edit the default props from options drawer later
   elements: Record<string, any>
   zoom: number
+  activeElement: any
   canvas: {
     width: number
     height: number
@@ -16,6 +17,7 @@ type ConfiguratorStore = {
   dragElement: (params: { slug: string; x: number; y: number }) => void
   addElement: (element: ComponentOptions) => void
   removeElement: (slug: string) => void
+  editElement: (slug: string) => void
   setInitialElements: (initialElements: any) => void
 }
 
@@ -23,6 +25,7 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
   elements: [],
   zoom: 1,
   isDragging: false,
+  activeElement: null,
   canvas: {
     width: 720,
     height: 480
@@ -56,6 +59,17 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
         }
       }
     })
+  },
+  editElement: (slug) => {
+    if (slug) {
+      set({
+        activeElement: get().elements.find((el) => el.slug === slug)
+      })
+    } else {
+      set({
+        activeElement: null
+      })
+    }
   },
   dragElement: ({ slug, x, y }) => {
     const currentElements = get().elements
