@@ -2,13 +2,19 @@ import { createStyles } from '@mantine/core'
 
 export const useStyles = createStyles((theme) => ({
   wrapper: {
-    border: '1px solid green',
     position: 'absolute',
     zIndex: 1,
-    cursor: 'drag'
+    cursor: 'drag',
+    outlineOffset: 4,
+    transition: '0.2s outline-offset ease',
+
+    '&:hover': {
+      outline: `1px solid ${theme.colors.dark[3]}`
+    }
   },
   wrapperGrabbing: {
-    cursor: 'grabbing'
+    cursor: 'grabbing',
+    outlineOffset: 0
   },
   active: {
     zIndex: 2

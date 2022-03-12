@@ -14,20 +14,42 @@ export const options: ComponentOptions = {
     {
       propName: 'cellSize',
       inputTypeName: Option.NUMBER,
+      label: 'Size',
+      description: 'size of each note',
       min: 10,
       max: 300,
-      defaultValue: 70
+      value: 100
     },
     {
       propName: 'fadeTime',
       inputTypeName: Option.NUMBER,
+      label: 'Fade',
+      description: 'time in ms after the note disappear',
       min: 0,
-      max: 300,
-      defaultValue: 70
+      max: 1000,
+      value: 300
     },
     {
-      propName: 'gridColor',
-      inputTypeName: Option.COLOR
+      inputTypeName: Option.TOGGLE,
+      label: 'Show grid',
+      checked: false,
+      options: [
+        {
+          propName: 'gridColor',
+          inputTypeName: Option.COLOR,
+          format: 'rgba',
+          label: 'Grid color',
+          value: 'rgba(0, 0, 0, 1)'
+        },
+        {
+          propName: 'gridSize',
+          inputTypeName: Option.SLIDER,
+          label: 'Grid border size',
+          min: 0,
+          max: 10,
+          value: 2
+        }
+      ]
     }
   ],
   defaultProps: {

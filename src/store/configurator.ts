@@ -7,9 +7,9 @@ type ConfiguratorStore = {
   isDragging: boolean
   // each components has its own config in /options folder
   // we will edit the default props from options drawer later
-  elements: Record<string, any>
+  elements: Record<string, ComponentOptions & { cords: { x: number; y: number } }>
   zoom: number
-  activeElement: any
+  activeElement: (ComponentOptions & { cords: { x: number; y: number } }) | null
   canvas: {
     width: number
     height: number
@@ -17,12 +17,14 @@ type ConfiguratorStore = {
   dragElement: (params: { slug: string; x: number; y: number }) => void
   addElement: (element: ComponentOptions) => void
   removeElement: (slug: string) => void
-  editElement: (slug: string) => void
+  selectElement: (slug: string) => void
+  editActiveElement: (propName: string, value: unknown) => void
   setInitialElements: (initialElements: any) => void
+  saveConfig: () => void
 }
 
 export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
-  elements: [],
+  elements: {},
   zoom: 1,
   isDragging: false,
   activeElement: null,
@@ -60,14 +62,35 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
       }
     })
   },
-  editElement: (slug) => {
+  selectElement: (slug) => {
     if (slug) {
       set({
-        activeElement: get().elements.find((el) => el.slug === slug)
+        activeElement: Object.values(get().elements).find((el) => el.slug === slug) || null
       })
     } else {
       set({
         activeElement: null
+      })
+    }
+  },
+  editActiveElement: (prop, value) => {
+    const { activeElement } = get()
+
+    if (activeElement) {
+      set({
+        activeElement: {
+          ...activeElement,
+          options: activeElement.options.map((option) => {
+            if (option.propName === prop) {
+              return {
+                ...option,
+                value
+              }
+            }
+
+            return option
+          })
+        }
       })
     }
   },
@@ -86,6 +109,18 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
         }
       }
     })
+  },
+  saveConfig: () => {
+    const { activeElement, elements } = get()
+
+    if (activeElement?.slug) {
+      set({
+        elements: {
+          ...elements,
+          [activeElement.slug]: activeElement
+        }
+      })
+    }
   }
 }))
 

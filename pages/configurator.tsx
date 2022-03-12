@@ -1,5 +1,6 @@
-import { ActionIcon, Button, createStyles, Drawer, Group } from '@mantine/core'
+import { ActionIcon, Button, createStyles, Drawer, Group, Portal } from '@mantine/core'
 import { useBooleanToggle } from '@mantine/hooks'
+import { values } from 'ramda'
 import { useState } from 'react'
 import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
 
@@ -21,6 +22,11 @@ const useStyles = createStyles(() => ({
     position: 'relative',
     overflow: 'auto',
     padding: 20
+  },
+  controls: {
+    position: 'fixed',
+    bottom: 16,
+    left: 16
   }
 }))
 
@@ -28,11 +34,15 @@ const Home = () => {
   const { classes } = useStyles()
   const [opened, setOpened] = useState(false)
 
-  const { dragElement, addElement, elements, removeElement } = useConfiguratorStore()
+  const { dragElement, addElement, elements, removeElement, selectElement } = useConfiguratorStore()
 
   const cutNote = useScoreStore((state) => state.cutNote)
   const [isDemoOn, toggleDemo] = useBooleanToggle(false)
   const [isEditOpen, setIsEditOpen] = useBooleanToggle(false)
+
+  console.log({
+    elements
+  })
 
   useInterval(
     () => {
@@ -45,7 +55,7 @@ const Home = () => {
   return (
     <>
       <div className={classes.canvas}>
-        {Object.values(elements).map(({ name, slug, defaultProps }) => {
+        {Object.values(elements).map(({ name, slug, options: elementOptions }) => {
           const Item = options.find((opt) => opt.name === name)?.component
 
           if (!Item) return null
@@ -61,11 +71,24 @@ const Home = () => {
               }}
               bounds="parent"
               defaultPosition={elements[slug].cords}
+              propsDependencies={[elementOptions.map(({ value }) => value)]}
               onRemove={() => removeElement(slug)}
-              onEdit={() => setIsEditOpen(true)}
+              onEdit={() => {
+                setIsEditOpen(true)
+                selectElement(slug)
+              }}
             >
               <Item
-                {...{ ...defaultProps, gridBorderSize: 1 }}
+                {...{
+                  ...elementOptions.reduce(
+                    (acc, item) => ({
+                      ...acc,
+                      ...{ ...(item?.propName ? { [item.propName]: item.value } : {}) }
+                    }),
+                    {}
+                  ),
+                  gridBorderSize: 1
+                }}
                 //   gridBorderSize={1}
               />
             </Draggable>
@@ -73,27 +96,29 @@ const Home = () => {
         })}
       </div>
 
-      <Group spacing={8}>
-        <ActionIcon
-          color="blue"
-          size="xl"
-          radius="xl"
-          variant="filled"
-          onClick={() => setOpened(true)}
-        >
-          <RiAddFill size={20} />
-        </ActionIcon>
+      <Portal zIndex={5}>
+        <Group spacing={8} className={classes.controls}>
+          <ActionIcon
+            color="blue"
+            size="xl"
+            radius="xl"
+            variant="filled"
+            onClick={() => setOpened(true)}
+          >
+            <RiAddFill size={20} />
+          </ActionIcon>
 
-        <ActionIcon
-          color="blue"
-          size="xl"
-          radius="xl"
-          variant="filled"
-          onClick={() => toggleDemo((p) => !p)}
-        >
-          {isDemoOn ? <RiPauseFill size={20} /> : <RiPlayFill size={20} />}
-        </ActionIcon>
-      </Group>
+          <ActionIcon
+            color="blue"
+            size="xl"
+            radius="xl"
+            variant="filled"
+            onClick={() => toggleDemo((p) => !p)}
+          >
+            {isDemoOn ? <RiPauseFill size={20} /> : <RiPlayFill size={20} />}
+          </ActionIcon>
+        </Group>
+      </Portal>
 
       <Drawer
         opened={opened}

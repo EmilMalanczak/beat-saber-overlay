@@ -13,6 +13,7 @@ import { useStyles } from './Draggable.styles'
 type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
   onRemove: () => void
   onEdit: () => void
+  propsDependencies: any[]
 }
 
 export const Draggable: FC<DraggableProps> = ({
@@ -22,6 +23,7 @@ export const Draggable: FC<DraggableProps> = ({
   onEdit,
   defaultPosition,
   children,
+  propsDependencies,
   ...rest
 }) => {
   const [opened, toggleOpened] = useBooleanToggle(false)
@@ -76,7 +78,7 @@ export const Draggable: FC<DraggableProps> = ({
           position="top"
           placement="end"
           withArrow
-          forceUpdateDependencies={[position]}
+          forceUpdateDependencies={[position, ...propsDependencies]}
           transition="slide-down"
           withinPortal={false}
         >
