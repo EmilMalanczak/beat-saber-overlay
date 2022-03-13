@@ -1,6 +1,5 @@
 import { ActionIcon, Button, createStyles, Drawer, Group, Portal } from '@mantine/core'
 import { useBooleanToggle } from '@mantine/hooks'
-import { values } from 'ramda'
 import { useState } from 'react'
 import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
 
@@ -10,6 +9,7 @@ import { useInterval } from '../src/hooks/useInterval'
 import { options } from '../src/options'
 import { useConfiguratorStore } from '../src/store/configurator'
 import { useScoreStore } from '../src/store/score'
+import { Option } from '../src/types/Options'
 import { generateRandomCut } from '../src/utils/generateRandomCut'
 
 const useStyles = createStyles(() => ({
@@ -17,8 +17,8 @@ const useStyles = createStyles(() => ({
     margin: 20,
     marginLeft: 'auto',
     border: '1px solid red',
-    height: 480,
-    width: 720,
+    height: 600,
+    width: 1000,
     position: 'relative',
     overflow: 'auto',
     padding: 20
@@ -60,6 +60,28 @@ const Home = () => {
 
           if (!Item) return null
 
+          const elementProps = elementOptions.reduce((acc, item) => {
+            if (item?.inputTypeName === Option.TOGGLE_COMPONENTS) {
+              return {
+                ...acc,
+                ...item.options.reduce(
+                  (nAcc, nItem) => ({
+                    ...nAcc,
+                    [nItem.propName]: nItem.value
+                  }),
+                  {}
+                )
+              }
+            }
+
+            return {
+              ...acc,
+              [item.propName]: item.value
+            }
+          }, {})
+
+          console.log(elementProps)
+
           return (
             <Draggable
               onStop={(_, { x, y }) => {
@@ -79,16 +101,7 @@ const Home = () => {
               }}
             >
               <Item
-                {...{
-                  ...elementOptions.reduce(
-                    (acc, item) => ({
-                      ...acc,
-                      ...{ ...(item?.propName ? { [item.propName]: item.value } : {}) }
-                    }),
-                    {}
-                  ),
-                  gridBorderSize: 1
-                }}
+                {...elementProps}
                 //   gridBorderSize={1}
               />
             </Draggable>

@@ -12,15 +12,17 @@ export const options: ComponentOptions = {
   description: 'Display cuts from the game',
   options: [
     {
+      id: 'cell-size',
       propName: 'cellSize',
-      inputTypeName: Option.NUMBER,
+      inputTypeName: Option.SLIDER,
       label: 'Size',
       description: 'size of each note',
       min: 10,
       max: 300,
-      value: 100
+      value: 70
     },
     {
+      id: 'fade-time',
       propName: 'fadeTime',
       inputTypeName: Option.NUMBER,
       label: 'Fade',
@@ -30,35 +32,34 @@ export const options: ComponentOptions = {
       value: 300
     },
     {
-      inputTypeName: Option.TOGGLE,
+      id: 'grid-show-toggle',
+      inputTypeName: Option.TOGGLE_COMPONENTS,
       label: 'Show grid',
-      checked: false,
+      checked: true,
       options: [
         {
+          visibleWhenChecked: true,
+          uncheckedValue: 'rgba(255, 255, 255, 1)',
+          id: 'grid-color',
           propName: 'gridColor',
           inputTypeName: Option.COLOR,
           format: 'rgba',
           label: 'Grid color',
-          value: 'rgba(0, 0, 0, 1)'
+          value: 'rgba(255, 255, 255, 1)'
         },
         {
-          propName: 'gridSize',
+          visibleWhenChecked: true,
+          uncheckedValue: 0,
+          checkedValue: 1,
+          id: 'grid-border-size',
+          propName: 'gridBorderSize',
           inputTypeName: Option.SLIDER,
           label: 'Grid border size',
           min: 0,
           max: 10,
-          value: 2
+          value: 0
         }
       ]
     }
-  ],
-  defaultProps: {
-    cellSize: 70,
-    fadeTime: 150,
-    gridColor: '#fff',
-    gridBorderSize: 0,
-    style: {
-      width: 'max-content'
-    }
-  }
+  ]
 }

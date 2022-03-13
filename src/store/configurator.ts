@@ -1,7 +1,8 @@
 import { useLocalStorageValue } from '@mantine/hooks'
 import { useEffect } from 'react'
 import create from 'zustand'
-import type { ComponentOptions } from '../types/Options'
+import type { SetState } from 'zustand'
+import { ComponentOptions, Option } from '../types/Options'
 
 type ConfiguratorStore = {
   isDragging: boolean
@@ -18,12 +19,16 @@ type ConfiguratorStore = {
   addElement: (element: ComponentOptions) => void
   removeElement: (slug: string) => void
   selectElement: (slug: string) => void
-  editActiveElement: (propName: string, value: unknown) => void
+  editActiveElement: (id: string, value: any) => void
   setInitialElements: (initialElements: any) => void
   saveConfig: () => void
+  toggleActiveElementComponents: (id: string, isChecked: boolean) => void
+  editActiveELementState: (
+    callback: (state: ConfiguratorStore, set: SetState<ConfiguratorStore>) => void
+  ) => void
 }
 
-export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
+export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
   elements: {},
   zoom: 1,
   isDragging: false,
@@ -73,7 +78,7 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
       })
     }
   },
-  editActiveElement: (prop, value) => {
+  toggleActiveElementComponents: (id, isChecked) => {
     const { activeElement } = get()
 
     if (activeElement) {
@@ -81,19 +86,85 @@ export const useConfiguratorStorex = create<ConfiguratorStore>((set, get) => ({
         activeElement: {
           ...activeElement,
           options: activeElement.options.map((option) => {
-            if (option.propName === prop) {
+            if (option?.id === id && option.inputTypeName === Option.TOGGLE_COMPONENTS) {
               return {
                 ...option,
-                value
+                checked: isChecked,
+                options: option.options.map((opt) => {
+                  if (opt.visibleWhenChecked && !isChecked) {
+                    console.log(`I set ${opt.id} value to ${opt.uncheckedValue}`)
+
+                    return {
+                      ...opt,
+                      value: opt.uncheckedValue
+                    }
+                  }
+
+                  if (!opt.visibleWhenChecked && isChecked) {
+                    return {
+                      ...opt,
+                      value: opt.checkedValue
+                    }
+                  }
+
+                  console.log('i just return opt')
+
+                  return opt
+                })
               }
             }
 
-            return option
+            return {
+              ...option,
+              checked: isChecked
+            }
           })
         }
       })
     }
   },
+  editActiveElement: (id, value) => {
+    const { activeElement } = get()
+
+    if (activeElement) {
+      set({
+        activeElement: {
+          ...activeElement,
+          options: activeElement.options.map((option) => {
+            switch (option.inputTypeName) {
+              case Option.TOGGLE_COMPONENTS: {
+                return {
+                  ...option,
+                  options: option.options.map((opt) => {
+                    if (opt?.id === id) {
+                      return {
+                        ...opt,
+                        value
+                      }
+                    }
+
+                    return opt
+                  })
+                }
+              }
+
+              default: {
+                if (option?.id === id) {
+                  return {
+                    ...option,
+                    value
+                  }
+                }
+
+                return option
+              }
+            }
+          })
+        }
+      })
+    }
+  },
+  editActiveELementState: (callback) => callback(get(), set),
   dragElement: ({ slug, x, y }) => {
     const currentElements = get().elements
 
@@ -129,11 +200,11 @@ export const useConfiguratorStore = (): ConfiguratorStore => {
     key: 'overlay-config'
   })
 
-  const [setInitialElements, elements] = useConfiguratorStorex((state) => [
+  const [setInitialElements, elements] = useConfiguratorStoreBare((state) => [
     state.setInitialElements,
     state.elements
   ])
-  const store = useConfiguratorStorex()
+  const store = useConfiguratorStoreBare()
 
   useEffect(() => {
     if (localConfig) {

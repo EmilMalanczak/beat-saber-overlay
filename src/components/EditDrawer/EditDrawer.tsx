@@ -1,9 +1,10 @@
 import type { VFC } from 'react'
-import { Group, Drawer, Text, Button } from '@mantine/core'
+import { Group, Drawer, Text, Button, Switch } from '@mantine/core'
 
 import { useStyles } from './EditDrawer.styles'
 import { useConfiguratorStore } from '../../store/configurator'
 import { optionsInputs } from './optionsInputs'
+import { Option, TogglePropOptions } from '../../types/Options'
 
 type EditDrawer = {
   opened: boolean
@@ -12,7 +13,8 @@ type EditDrawer = {
 
 export const EditDrawer: VFC<EditDrawer> = ({ opened, setOpened }) => {
   const { classes } = useStyles()
-  const { activeElement, saveConfig, editActiveElement } = useConfiguratorStore()
+  const { activeElement, saveConfig, editActiveElement, toggleActiveElementComponents } =
+    useConfiguratorStore()
 
   // console.log(activeElement)
 
@@ -30,15 +32,49 @@ export const EditDrawer: VFC<EditDrawer> = ({ opened, setOpened }) => {
     >
       {activeElement?.description && <Text mb={16}>{activeElement?.description}</Text>}
       <Group direction="column" spacing={12} className={classes.content}>
-        {activeElement?.options.map(({ inputTypeName, propName, ...props }) => {
+        {activeElement?.options.map(({ inputTypeName, id, ...props }) => {
           const { component: Input, handler } = optionsInputs[inputTypeName]
-          // console.log(props)
+
+          if (inputTypeName === Option.TOGGLE_COMPONENTS) {
+            const { options, checked, ...switchProps } = props as TogglePropOptions
+
+            return (
+              <>
+                <Switch
+                  checked={checked}
+                  onChange={(e) => {
+                    toggleActiveElementComponents(id, e.target.checked)
+                    saveConfig()
+                  }}
+                  {...switchProps}
+                />
+                {options.map(
+                  ({ id: optId, visibleWhenChecked, inputTypeName: optInputType, ...optProps }) => {
+                    if (visibleWhenChecked !== checked) return null
+
+                    const { component: NestedInput, handler: nestedHandler } =
+                      optionsInputs[optInputType]
+
+                    return (
+                      <NestedInput
+                        {...optProps}
+                        onChange={(...args: any[]) => {
+                          editActiveElement(optId, nestedHandler(...args))
+                          saveConfig()
+                        }}
+                      />
+                    )
+                  }
+                )}
+              </>
+            )
+          }
 
           return (
             <Input
               {...props}
               onChange={(...args: any[]) => {
-                editActiveElement(propName, handler(...args))
+                editActiveElement(id, handler(...args))
                 saveConfig()
               }}
             />

@@ -10,6 +10,7 @@ export const options: ComponentOptions = {
   image: '',
   description: 'Display cut scores from the game',
   options: [],
+
   defaultProps: {
     rows: 1,
     width: '100%',

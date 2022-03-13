@@ -1,5 +1,6 @@
 import type {
   ColorInputProps,
+  InputWrapperBaseProps,
   NumberInputProps,
   SelectProps,
   SliderProps,
@@ -14,21 +15,37 @@ export enum Option {
   SELECT,
   COLOR,
   SCORE_VISUALIZER_CONFIG,
-  TOGGLE
+  TOGGLE,
+  TOGGLE_COMPONENTS
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionsBase<N extends Option, Props extends object = {}> = {
+  id: string
   inputTypeName: N
-  propName?: string
+  propName: string
 } & Props
 
-type Options =
+type PropOptions =
   | OptionsBase<Option.NUMBER, NumberInputProps>
   | OptionsBase<Option.SELECT, SelectProps>
   | OptionsBase<Option.COLOR, ColorInputProps>
-  | OptionsBase<Option.SLIDER, SliderProps>
+  | OptionsBase<Option.SLIDER, InputWrapperBaseProps & SliderProps>
   | OptionsBase<Option.TOGGLE, SwitchProps>
+
+type ToggleOptions = PropOptions & {
+  visibleWhenChecked: boolean
+  uncheckedValue?: any
+  checkedValue?: any
+}
+
+export type TogglePropOptions = {
+  id: string
+  inputTypeName: Option.TOGGLE_COMPONENTS
+  options: ToggleOptions[]
+} & SwitchProps
+
+type OptionsType = PropOptions | TogglePropOptions
 
 export type ComponentOptions = {
   name: string
@@ -37,7 +54,6 @@ export type ComponentOptions = {
   order: number
   image: string
   description: string
-  options: (Options & { options?: Options[] })[]
+  options: OptionsType[]
   component: any
-  defaultProps: any
 }
