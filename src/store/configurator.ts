@@ -4,13 +4,15 @@ import create from 'zustand'
 import type { SetState } from 'zustand'
 import { ComponentOptions, Option } from '../types/Options'
 
+type ElementType = ComponentOptions & { cords: { x: number; y: number } }
+
 type ConfiguratorStore = {
   isDragging: boolean
   // each components has its own config in /options folder
   // we will edit the default props from options drawer later
-  elements: Record<string, ComponentOptions & { cords: { x: number; y: number } }>
+  elements: Record<string, ElementType>
   zoom: number
-  activeElement: (ComponentOptions & { cords: { x: number; y: number } }) | null
+  activeElement: ElementType | null
   canvas: {
     width: number
     height: number
@@ -91,14 +93,14 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
                 ...option,
                 checked: isChecked,
                 options: option.options.map((opt) => {
-                  if (opt.visibleWhenChecked && !isChecked) {
+                  if (!isChecked && 'uncheckedValue' in opt) {
                     return {
                       ...opt,
                       value: opt.uncheckedValue
                     }
                   }
 
-                  if (!opt.visibleWhenChecked && isChecked) {
+                  if (isChecked && 'checkedValue' in opt) {
                     return {
                       ...opt,
                       value: opt.checkedValue
@@ -158,6 +160,10 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
           })
         }
       })
+
+      const button = document.getElementById(id)
+
+      console.log({ button })
     }
   },
   editActiveELementState: (callback) => callback(get(), set),
@@ -206,6 +212,8 @@ export const useConfiguratorStore = (): ConfiguratorStore => {
     if (localConfig) {
       setInitialElements(JSON.parse(localConfig))
     }
+    // it causes infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

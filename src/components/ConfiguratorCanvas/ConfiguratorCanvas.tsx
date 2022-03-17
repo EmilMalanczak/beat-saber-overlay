@@ -12,11 +12,12 @@ type ConfiguratorProps = {
 export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
   const { classes } = useStyles()
 
-  const { dragElement, elements, removeElement, selectElement } = useConfiguratorStore()
+  const { dragElement, elements, removeElement, selectElement, canvas } = useConfiguratorStore()
 
   return (
     <div className={classes.canvas}>
-      {Object.values(elements).map(({ id, name, slug, options: elementOptions }) => {
+      <span className={classes.size}>{`${canvas.width} x ${canvas.height}`}</span>
+      {Object.values(elements).map(({ name, slug, options: elementOptions }) => {
         const Item = options.find((opt) => opt.name === name)?.component
 
         if (!Item) return null
@@ -45,7 +46,7 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
 
         return (
           <Draggable
-            id={id}
+            id={name}
             onStop={(_, { x, y }) => {
               dragElement({
                 slug,

@@ -35,7 +35,7 @@ export const options: ComponentOptions = {
       id: 'grid-show-toggle',
       inputTypeName: Option.TOGGLE_COMPONENTS,
       label: 'Show grid',
-      checked: true,
+      checked: false,
       options: [
         {
           visibleWhenChecked: true,
