@@ -14,6 +14,7 @@ type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
   onRemove: () => void
   onEdit: () => void
   propsDependencies: any[]
+  id: string
 }
 
 export const Draggable: FC<DraggableProps> = ({
@@ -24,6 +25,7 @@ export const Draggable: FC<DraggableProps> = ({
   defaultPosition,
   children,
   propsDependencies,
+  id,
   ...rest
 }) => {
   const [opened, toggleOpened] = useBooleanToggle(false)
@@ -70,6 +72,7 @@ export const Draggable: FC<DraggableProps> = ({
           }
         }}
         className={classes.box}
+        id={id}
       >
         {children}
         <Popper<HTMLDivElement>

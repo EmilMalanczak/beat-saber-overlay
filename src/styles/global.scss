@@ -21,6 +21,9 @@ body {
   height: 100%;
   background-color: color(background);
   -webkit-overflow-x-scrolling: hidden;
+  min-height: 100vh;
+  // mantine dark[4] color
+  background-color: #373a40;
 }
 
 @each $theme-name, $theme in $themes {
@@ -33,20 +36,4 @@ body {
 
 html {
   font-size: em(14px, 16px);
-  font-weight: 400;
-  line-height: 1.43;
-  box-sizing: border-box;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  -webkit-overflow-x-scrolling: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smooeting: grayscale;
-}
-
-*,
-*::after,
-*::before {
-  box-sizing: inherit;
-  outline: none;
 }

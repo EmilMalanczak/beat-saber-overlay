@@ -6,11 +6,7 @@ export const useStyles = createStyles((theme) => ({
     zIndex: 1,
     cursor: 'drag',
     outlineOffset: 4,
-    transition: '0.2s outline-offset ease',
-
-    '&:hover': {
-      outline: `1px solid ${theme.colors.dark[3]}`
-    }
+    transition: '0.2s outline-offset ease'
   },
   wrapperGrabbing: {
     cursor: 'grabbing',
@@ -32,6 +28,18 @@ export const useStyles = createStyles((theme) => ({
 
       '& > *': {
         pointerEvents: 'auto !important' as any
+      }
+    },
+
+    '&:hover': {
+      outline: `1px solid ${theme.colors.dark[2]}`
+    },
+
+    '&:focus': {
+      boxShadow: 'none',
+
+      '&:not(:hover)': {
+        outline: `1px solid ${theme.colors.dark[3]}`
       }
     }
   },
