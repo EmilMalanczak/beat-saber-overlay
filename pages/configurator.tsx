@@ -2,6 +2,7 @@ import { ActionIcon, Button, createStyles, Drawer, Group, Portal } from '@mantin
 import { useBooleanToggle } from '@mantine/hooks'
 import { useState } from 'react'
 import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
+import { AddElementDrawer } from '../src/components/AddElementDrawer/AddElementDrawer'
 
 import { Draggable } from '../src/components/Draggable/Draggable'
 import { EditDrawer } from '../src/components/EditDrawer'
@@ -32,24 +33,20 @@ const useStyles = createStyles(() => ({
 
 const Home = () => {
   const { classes } = useStyles()
-  const [opened, setOpened] = useState(false)
 
-  const { dragElement, addElement, elements, removeElement, selectElement } = useConfiguratorStore()
+  const { dragElement, elements, removeElement, selectElement } = useConfiguratorStore()
 
   const cutNote = useScoreStore((state) => state.cutNote)
-  const [isDemoOn, toggleDemo] = useBooleanToggle(false)
+  const [isDemoOn, toggleDemo] = useBooleanToggle(true)
   const [isEditOpen, setIsEditOpen] = useBooleanToggle(false)
-
-  console.log({
-    elements
-  })
+  const [isAddOpen, setAddOpen] = useState(false)
 
   useInterval(
     () => {
       // @ts-ignore
       cutNote(generateRandomCut())
     },
-    isDemoOn ? 100 : null
+    isDemoOn ? 150 : null
   )
 
   return (
@@ -116,7 +113,7 @@ const Home = () => {
             size="xl"
             radius="xl"
             variant="filled"
-            onClick={() => setOpened(true)}
+            onClick={() => setAddOpen(true)}
           >
             <RiAddFill size={20} />
           </ActionIcon>
@@ -133,27 +130,7 @@ const Home = () => {
         </Group>
       </Portal>
 
-      <Drawer
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title="Add element"
-        padding="xl"
-        size="xl"
-      >
-        <Group direction="column" spacing={16}>
-          {options.map((component) => (
-            <Button
-              onClick={() => {
-                addElement(component)
-                setOpened(false)
-              }}
-            >
-              {`add ${component.name}`}
-            </Button>
-          ))}
-        </Group>
-      </Drawer>
-
+      <AddElementDrawer opened={isAddOpen} setOpened={setAddOpen} />
       <EditDrawer opened={isEditOpen} setOpened={setIsEditOpen} />
     </>
   )

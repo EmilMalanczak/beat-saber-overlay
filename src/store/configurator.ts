@@ -92,8 +92,6 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
                 checked: isChecked,
                 options: option.options.map((opt) => {
                   if (opt.visibleWhenChecked && !isChecked) {
-                    console.log(`I set ${opt.id} value to ${opt.uncheckedValue}`)
-
                     return {
                       ...opt,
                       value: opt.uncheckedValue
@@ -106,8 +104,6 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
                       value: opt.checkedValue
                     }
                   }
-
-                  console.log('i just return opt')
 
                   return opt
                 })

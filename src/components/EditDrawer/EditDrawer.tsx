@@ -1,17 +1,17 @@
 import type { VFC } from 'react'
-import { Group, Drawer, Text, Button, Switch } from '@mantine/core'
+import { Group, Drawer, Text, Button, Switch, Title } from '@mantine/core'
 
 import { useStyles } from './EditDrawer.styles'
 import { useConfiguratorStore } from '../../store/configurator'
 import { optionsInputs } from './optionsInputs'
 import { Option, TogglePropOptions } from '../../types/Options'
 
-type EditDrawer = {
+type EditDrawerProps = {
   opened: boolean
   setOpened: (value: boolean) => void
 }
 
-export const EditDrawer: VFC<EditDrawer> = ({ opened, setOpened }) => {
+export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
   const { classes } = useStyles()
   const { activeElement, saveConfig, editActiveElement, toggleActiveElementComponents } =
     useConfiguratorStore()
@@ -25,12 +25,16 @@ export const EditDrawer: VFC<EditDrawer> = ({ opened, setOpened }) => {
         drawer: classes.drawer
       }}
       onClose={() => setOpened(false)}
-      title="Edit element"
+      title={<Title order={4}>Edit element</Title>}
       padding="xl"
       overlayOpacity={0}
       size="xl"
     >
-      {activeElement?.description && <Text mb={16}>{activeElement?.description}</Text>}
+      {activeElement?.description && (
+        <Text size="sm" mb={16}>
+          {activeElement?.description}
+        </Text>
+      )}
       <Group direction="column" spacing={12} className={classes.content}>
         {activeElement?.options.map(({ inputTypeName, id, ...props }) => {
           const { component: Input, handler } = optionsInputs[inputTypeName]

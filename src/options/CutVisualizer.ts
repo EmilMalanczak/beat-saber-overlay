@@ -18,7 +18,7 @@ export const options: ComponentOptions = {
       label: 'Size',
       description: 'size of each note',
       min: 10,
-      max: 300,
+      max: 140,
       value: 70
     },
     {
@@ -39,13 +39,13 @@ export const options: ComponentOptions = {
       options: [
         {
           visibleWhenChecked: true,
-          uncheckedValue: 'rgba(255, 255, 255, 1)',
+          uncheckedValue: 'rgba(255, 255, 255, 0.08)',
           id: 'grid-color',
           propName: 'gridColor',
           inputTypeName: Option.COLOR,
           format: 'rgba',
           label: 'Grid color',
-          value: 'rgba(255, 255, 255, 1)'
+          value: 'rgba(255, 255, 255, 0.08)'
         },
         {
           visibleWhenChecked: true,
