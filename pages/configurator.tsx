@@ -7,7 +7,7 @@ import { AddElementDrawer } from '../src/components/AddElementDrawer/AddElementD
 import { useInterval } from '../src/hooks/useInterval'
 import { EditDrawer } from '../src/components/EditDrawer'
 import { useScoreStore } from '../src/store/score'
-import { generateRandomCut } from '../src/utils/generateRandomCut'
+import { generateRandomCut } from '../src/helpers/generateRandomCut'
 import { ConfiguratorCanvas } from '../src/components/ConfiguratorCanvas/ConfiguratorCanvas'
 
 const Home = () => {

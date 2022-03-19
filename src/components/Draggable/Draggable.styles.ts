@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/core'
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
   wrapper: {
     position: 'absolute',
     zIndex: 1,
@@ -48,6 +48,8 @@ export const useStyles = createStyles((theme) => ({
     textAlign: 'center',
     padding: 8,
     borderRadius: theme.radius.md,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    transform: `scale(${1 / zoom})`,
+    transformOrigin: 'bottom right'
   }
 }))

@@ -1,5 +1,5 @@
 import type { VFC } from 'react'
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
+import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import { ActionIcon, Group, Portal } from '@mantine/core'
 import { RiZoomInLine, RiZoomOutLine, RiFullscreenLine, RiFullscreenExitLine } from 'react-icons/ri'
 import { useFullscreen } from '@mantine/hooks'
@@ -9,8 +9,16 @@ import { useConfiguratorStore } from '../../store/configurator'
 import { Draggable } from '../Draggable/Draggable'
 import { Option } from '../../types/Options'
 import { useStyles } from './ConfiguratorCanvas.styles'
+import { roundZoomScale } from '../../helpers/roundZoomScale'
 
-const dragDisabledElements = ['draggable']
+const maxScale = 3
+const minScale = 0.75
+
+// calculations are inconsistent thats why .22 <shrug>
+const scale = {
+  step: 0.2,
+  multiplier: 1.22
+}
 
 type ConfiguratorProps = {
   onEdit: (value: boolean) => void
@@ -19,24 +27,27 @@ type ConfiguratorProps = {
 export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
   const { classes } = useStyles()
 
-  const { dragElement, elements, removeElement, selectElement, canvas } = useConfiguratorStore()
+  const { dragElement, elements, removeElement, selectElement, canvas, setCanvas } =
+    useConfiguratorStore()
   const { toggle: toggleFullscreen, fullscreen } = useFullscreen()
 
   return (
     <TransformWrapper
       initialScale={1}
-      minScale={0.75}
-      maxScale={4}
-      wheel={{ excluded: dragDisabledElements }}
-      pinch={{ excluded: dragDisabledElements }}
-      panning={{ excluded: dragDisabledElements }}
-      doubleClick={{ excluded: dragDisabledElements, step: 0.5 }}
+      minScale={minScale}
+      maxScale={maxScale}
+      centerOnInit
+      doubleClick={{ disabled: true }}
+      onInit={({ state }) => setCanvas({ zoom: state.scale })}
+      onZoom={({ state }) => setCanvas({ zoom: state.scale })}
     >
-      {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+      {({ zoomIn, zoomOut, state }) => (
         <>
           <TransformComponent wrapperClass={classes.wrapper}>
             <div className={classes.canvas}>
-              <span className={classes.size}>{`${canvas.width} x ${canvas.height}`}</span>
+              <span className={classes.size}>
+                {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom}x`}
+              </span>
               {Object.values(elements).map(({ name, slug, options: elementOptions }) => {
                 const Item = options.find((opt) => opt.name === name)?.component
 
@@ -75,6 +86,7 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
                       })
                     }}
                     bounds="parent"
+                    zoom={canvas.zoom}
                     defaultPosition={elements[slug].cords}
                     propsDependencies={[elementOptions.map(({ value }) => value)]}
                     onRemove={() => removeElement(slug)}
@@ -91,21 +103,40 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
           </TransformComponent>
 
           <Portal zIndex={5}>
-            <Group
-              spacing={4}
-              styles={{
-                root: {
-                  position: 'fixed',
-                  bottom: 16,
-                  right: 16
-                }
-              }}
-            >
-              <ActionIcon size="lg" radius="lg" variant="filled" onClick={() => zoomIn(0.3)}>
+            <Group spacing={4} className={classes.zoomControls}>
+              <ActionIcon
+                size="lg"
+                radius="lg"
+                variant="filled"
+                onClick={() => {
+                  console.log(state)
+
+                  zoomIn(scale.step)
+
+                  const multipliedScale = roundZoomScale(state.scale * scale.multiplier)
+
+                  setCanvas({
+                    zoom: maxScale > multipliedScale ? multipliedScale : maxScale
+                  })
+                }}
+              >
                 <RiZoomInLine />
               </ActionIcon>
 
-              <ActionIcon size="lg" radius="lg" variant="filled" onClick={() => zoomOut(0.3)}>
+              <ActionIcon
+                size="lg"
+                radius="lg"
+                variant="filled"
+                onClick={() => {
+                  zoomOut(scale.step)
+
+                  const multipliedScale = roundZoomScale(state.scale / scale.multiplier)
+
+                  setCanvas({
+                    zoom: minScale < multipliedScale ? multipliedScale : minScale
+                  })
+                }}
+              >
                 <RiZoomOutLine />
               </ActionIcon>
 

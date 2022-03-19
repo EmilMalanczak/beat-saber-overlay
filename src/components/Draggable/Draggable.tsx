@@ -9,12 +9,14 @@ import type { FC, MouseEvent } from 'react'
 
 import { useBooleanToggle, useClickOutside, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
+import { useConfiguratorStore } from '../../store/configurator'
 
 type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
   onRemove: () => void
   onEdit: () => void
   propsDependencies: any[]
   id: string
+  zoom: number
 }
 
 export const Draggable: FC<DraggableProps> = ({
@@ -26,6 +28,7 @@ export const Draggable: FC<DraggableProps> = ({
   children,
   propsDependencies,
   id,
+  zoom,
   ...rest
 }) => {
   const [opened, toggleOpened] = useBooleanToggle(false)
@@ -36,7 +39,7 @@ export const Draggable: FC<DraggableProps> = ({
   const optionsRef = useRef<HTMLDivElement>(null)
   const outsideClickRef = useClickOutside(() => toggleOpened(false))
 
-  const { classes, cx } = useStyles()
+  const { classes, cx } = useStyles({ zoom })
 
   const isOnOptionsNode = (e: MouseEvent<HTMLButtonElement>) =>
     optionsRef.current === e.target || optionsRef.current?.contains(e.target as Node) || false
@@ -82,10 +85,31 @@ export const Draggable: FC<DraggableProps> = ({
           referenceElement={boxRef.current as HTMLDivElement}
           position="top"
           placement="end"
-          withArrow
+          withArrow={false}
+          gutter={6}
           forceUpdateDependencies={[position, ...propsDependencies]}
           transition="slide-down"
+          zIndex={100}
           withinPortal={false}
+          modifiers={[
+            {
+              // @ts-ignore
+              name: 'sameWidth',
+              enabled: true,
+              phase: 'beforeWrite',
+              requires: ['computeStyles'],
+              fn: ({ state }: any) => {
+                state.styles.popper.transform = `translate3d(2px, -${
+                  (state?.rects?.reference.height || 0) + Math.round(6 * zoom)
+                }px, 0px)`
+              },
+              effect: ({ state }: any) => {
+                state.styles.popper.transform = `translate3d(2px, -${
+                  (state?.rects?.reference.height || 0) + Math.round(6 * zoom)
+                }px, 0px)`
+              }
+            }
+          ]}
         >
           <Group spacing={8} className={cx(classes.options, 'options')} ref={optionsRef}>
             <ActionIcon onClick={() => toggleLocked()}>

@@ -5,7 +5,7 @@ import { CutVisualizer } from '../src/components/CutVisualizer'
 import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
 import { useInterval } from '../src/hooks/useInterval'
 import { useScoreStore } from '../src/store/score'
-import { generateRandomCut } from '../src/utils/generateRandomCut'
+import { generateRandomCut } from '../src/helpers/generateRandomCut'
 
 export const useStyles = createStyles(() => ({
   visualizers: {

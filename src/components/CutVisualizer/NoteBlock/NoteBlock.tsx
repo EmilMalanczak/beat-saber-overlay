@@ -5,8 +5,8 @@ import { useTimeout } from '../../../hooks/useTimeout'
 import { NoteCut, useScoreStore } from '../../../store/score'
 
 import classes from './NoteBlock.module.scss'
-import { getNoteIndicatorPosition } from '../../../utils/getNoteIndicatorPosition'
-import { getRotationAngle } from '../../../utils/getRotationAngle'
+import { getNoteIndicatorPosition } from '../../../helpers/getNoteIndicatorPosition'
+import { getRotationAngle } from '../../../helpers/getRotationAngle'
 
 type Color = (color: string) => string
 

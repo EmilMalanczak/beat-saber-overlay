@@ -26,5 +26,11 @@ export const useStyles = createStyles((theme) => ({
     color: theme.colors.dark[2],
     fontSize: 12,
     ...theme.fn.fontStyles()
+  },
+
+  zoomControls: {
+    position: 'fixed',
+    bottom: 16,
+    right: 16
   }
 }))
