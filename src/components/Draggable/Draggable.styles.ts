@@ -4,7 +4,7 @@ export const useStyles = createStyles((theme) => ({
   wrapper: {
     position: 'absolute',
     zIndex: 1,
-    cursor: 'drag',
+    cursor: 'grab',
     outlineOffset: 4,
     transition: '0.2s outline-offset ease'
   },

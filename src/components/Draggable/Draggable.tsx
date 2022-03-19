@@ -46,7 +46,7 @@ export const Draggable: FC<DraggableProps> = ({
       onStop={onStop}
       bounds={bounds}
       position={position}
-      defaultClassName={cx(classes.wrapper, {
+      defaultClassName={cx(classes.wrapper, 'draggable', {
         [classes.disabled]: isLocked,
         [classes.active]: opened
       })}
@@ -54,6 +54,8 @@ export const Draggable: FC<DraggableProps> = ({
       disabled={isLocked}
       cancel=".options"
       onDrag={(e, { x, y }) => {
+        e.stopPropagation()
+
         if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
           setPosition({ x, y })
 

@@ -11,12 +11,13 @@ type ConfiguratorStore = {
   // each components has its own config in /options folder
   // we will edit the default props from options drawer later
   elements: Record<string, ElementType>
-  zoom: number
   activeElement: ElementType | null
   canvas: {
     width: number
     height: number
+    zoom: number
   }
+  setCanvas: (params: { width?: number; height?: number; zoom?: number }) => void
   dragElement: (params: { slug: string; x: number; y: number }) => void
   addElement: (element: ComponentOptions) => void
   removeElement: (slug: string) => void
@@ -32,12 +33,12 @@ type ConfiguratorStore = {
 
 export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
   elements: {},
-  zoom: 1,
   isDragging: false,
   activeElement: null,
   canvas: {
     width: 720,
-    height: 480
+    height: 480,
+    zoom: 1
   },
   setInitialElements: (initialElements) => [
     set({
@@ -194,6 +195,16 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
         }
       })
     }
+  },
+  setCanvas: (params) => {
+    const { canvas } = get()
+
+    set({
+      canvas: {
+        ...canvas,
+        ...params
+      }
+    })
   }
 }))
 
