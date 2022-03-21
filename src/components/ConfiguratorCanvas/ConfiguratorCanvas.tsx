@@ -10,7 +10,7 @@ import type { ResizableProps } from 'react-resizable'
 import { useConfiguratorStore } from '../../store/configurator'
 import { useStyles } from './ConfiguratorCanvas.styles'
 import { roundZoomScale } from '../../helpers/roundZoomScale'
-import { ConfiguratorItems } from './ConfiguratorItems'
+import { ConfiguratorItems } from './components/ConfiguratorItems'
 
 const maxScale = 3
 const minScale = 0.5

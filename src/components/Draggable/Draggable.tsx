@@ -1,5 +1,5 @@
 import { Popper, UnstyledButton, ActionIcon, Group } from '@mantine/core'
-import { CSSProperties, useRef, useState } from 'react'
+import { CSSProperties, useCallback, useRef, useState } from 'react'
 
 import { useDebouncedCallback } from 'use-debounce'
 import ReactDraggable from 'react-draggable'
@@ -10,6 +10,7 @@ import type { FC, MouseEvent } from 'react'
 
 import { useBooleanToggle, useClickOutside, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
+import { GuideLine } from './components/GuideLine'
 
 type Bounds = {
   top: number
@@ -80,17 +81,20 @@ export const Draggable: FC<DraggableProps> = ({
     })
   }, 8)
 
-  const handleDrag: DraggableEventHandler = (e) => {
-    e.stopPropagation()
+  const handleDrag: DraggableEventHandler = useCallback(
+    (e) => {
+      e.stopPropagation()
 
-    if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
-      debouncedSetBounds()
+      if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
+        debouncedSetBounds()
 
-      if (opened) {
-        toggleOpened(false)
+        if (opened) {
+          toggleOpened(false)
+        }
       }
-    }
-  }
+    },
+    [debouncedSetBounds, opened, toggleOpened]
+  )
 
   return (
     <ReactDraggable
@@ -104,6 +108,7 @@ export const Draggable: FC<DraggableProps> = ({
       defaultClassNameDragging={classes.wrapperGrabbing}
       disabled={isLocked}
       cancel=".options"
+      scale={zoom}
       onStart={() => {
         saveConfiguratorCanvasPosition()
 
@@ -143,21 +148,10 @@ export const Draggable: FC<DraggableProps> = ({
       >
         {isDragging && (
           <>
-            <div className={cx(classes.offset, classes.offsetHorizontal, classes.offsetLeft)}>
-              {boxBounds.left > 0 && <span>{boxBounds.left}</span>}
-            </div>
-
-            <div className={cx(classes.offset, classes.offsetHorizontal, classes.offsetRight)}>
-              {boxBounds.right > 0 && <span>{boxBounds.right}</span>}
-            </div>
-
-            <div className={cx(classes.offset, classes.offsetVertical, classes.offsetTop)}>
-              {boxBounds.top > 0 && <span>{boxBounds.top}</span>}
-            </div>
-
-            <div className={cx(classes.offset, classes.offsetVertical, classes.offsetBottom)}>
-              {boxBounds.bottom > 0 && <span>{boxBounds.bottom}</span>}
-            </div>
+            <GuideLine direction="left" value={boxBounds.left} />
+            <GuideLine direction="right" value={boxBounds.right} />
+            <GuideLine direction="top" value={boxBounds.top} />
+            <GuideLine direction="bottom" value={boxBounds.bottom} />
           </>
         )}
         {children}
