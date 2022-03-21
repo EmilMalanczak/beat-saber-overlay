@@ -1,7 +1,7 @@
 import type { FC, CSSProperties } from 'react'
 
 import { useScoreStore } from '../../store/score'
-import { HitScore, HitScoreSharedProps } from '../HitScore/HitScore'
+import { HitScore, HitScoreSharedProps } from './HitScore/HitScore'
 
 import classes from './HitScoreVisualizer.module.scss'
 

@@ -305,41 +305,41 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@mantine/core@^3.6.7":
-  version "3.6.7"
-  resolved "https://registry.yarnpkg.com/@mantine/core/-/core-3.6.7.tgz#14c46e5dd9f6369aa82a8c210cf8babf4ab3e699"
-  integrity sha512-MTNMeAWLy0Da6QpZu2ARgXO9BTe8dBl8FeZVANK/IyG4LF0qyU12SpOofbu86uWeMQsylIglBKXAlcDeVdqugA==
+"@mantine/core@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@mantine/core/-/core-4.0.4.tgz#407274b33cd33198d25071f907cdfcc167de5109"
+  integrity sha512-ktMXI0fI3tTE4ULyNLq0xVWm+okHTmsxXbwQU9zOcxQo9FsSA+tt7FKbzq2gTxuwezflEbjIHm81Mq6DmkAo9g==
   dependencies:
-    "@mantine/styles" "3.6.7"
+    "@mantine/styles" "4.0.4"
     "@popperjs/core" "^2.9.3"
     "@radix-ui/react-scroll-area" "^0.1.1"
     clsx "^1.1.1"
     react-popper "^2.2.5"
     react-textarea-autosize "^8.3.2"
 
-"@mantine/hooks@^3.6.7":
-  version "3.6.7"
-  resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-3.6.7.tgz#fb5b7267e118c12f2f62130439e374893014214d"
-  integrity sha512-fcCsz0KK3JK68pCf9AEj4sB0dFJTCSdSYR14uEmv1qRis0NHayNHf2xkcwrXRm28F47rgTl4o8zwub37M/A/Xg==
+"@mantine/hooks@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-4.0.4.tgz#6c70c6e01fad8c94d700df2f0942713184c63b09"
+  integrity sha512-gSbdoKDxxNVQpssTL25n7VUK/U6PQdWOilP041ygZ7k2sPt6PD4FzLLwbKtB0Be6MUiyvW3zAOKh3y2/NjZ40w==
 
-"@mantine/ssr@^3.6.7":
-  version "3.6.7"
-  resolved "https://registry.yarnpkg.com/@mantine/ssr/-/ssr-3.6.7.tgz#b602be8a2594fed9eefdf420f5ed5577e8bcd889"
-  integrity sha512-GOLnIHwrMfIw5dTLWxyKIWhQbpXYMxeplm9YkmNHLkqt1j0yqpY6DL+2qXdWAdSzqwV+ijaNnICIYy0vr0CS0Q==
+"@mantine/ssr@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@mantine/ssr/-/ssr-4.0.4.tgz#eb2b902aaa90ce5e449aac41485e1b28fcd8b224"
+  integrity sha512-pyw4t38TvkJ1gUmcCElK+fQrQZPlwF5mLkvnqh97k7rW9GErrdauOv4/kMzjimOvsrm/z7zJ998vUH1lq8HxcA==
   dependencies:
     "@emotion/cache" "^11.7.1"
     "@emotion/react" "^11.7.1"
     "@emotion/serialize" "^1.0.2"
     "@emotion/server" "^11.4.0"
     "@emotion/utils" "^1.0.0"
-    "@mantine/styles" "3.6.7"
+    "@mantine/styles" "4.0.4"
     csstype "^3.0.9"
     html-react-parser "^1.3.0"
 
-"@mantine/styles@3.6.7", "@mantine/styles@^3.6.7":
-  version "3.6.7"
-  resolved "https://registry.yarnpkg.com/@mantine/styles/-/styles-3.6.7.tgz#e27d4a81b0c1c46deca31c1c20e67732198a0d86"
-  integrity sha512-Oh7Fx2H52BQpWjk/1mwDAlzOnGgljk5auHbXtwI61XezJMtcJNTG38Vn+xlksvC4yHaHDHOwtgKRx4ARVOwsbg==
+"@mantine/styles@4.0.4", "@mantine/styles@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@mantine/styles/-/styles-4.0.4.tgz#dcac61bcfd73d39127212a028a77de018a89ba96"
+  integrity sha512-tQny97sUkoGJQ/fPKEXPR4114qoKm6isMmNtA+0/KtLFvlzFK4orNxV1n0yiW702uiZEegiHjpInheLCWOAedg==
   dependencies:
     "@emotion/cache" "^11.7.1"
     "@emotion/react" "^11.7.1"
@@ -676,6 +676,13 @@
   version "17.0.11"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.11.tgz#e1eadc3c5e86bdb5f7684e00274ae228e7bcc466"
   integrity sha512-f96K3k+24RaLGVu/Y2Ng3e1EbZ8/cVJvypZWd7cy0ofCBaf2lcM46xNhycMZ2xGwbBjRql7hOlZ+e2WlJ5MH3Q==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-resizable@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@types/react-resizable/-/react-resizable-1.7.4.tgz#8138e370338511b480ad00267d4efdd217f45741"
+  integrity sha512-+xsGkd+Gvb9+8mLR1EyhNN8kBRJcsT1uJF4WpkFpFPIoApX2S89BmJA2RVtMdkhwe6YxV4RbHfaJ3bIdcgHc7g==
   dependencies:
     "@types/react" "*"
 
@@ -2816,7 +2823,7 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.6.0, prop-types@^15.7.2:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -2859,10 +2866,23 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-draggable@^4.0.3, react-draggable@^4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.4.tgz#5b26d9996be63d32d285a426f41055de87e59b2f"
+  integrity sha512-6e0WdcNLwpBx/YIDpoyd2Xb04PB0elrDrulKUgdrIlwuYvxh5Ok9M+F8cljm8kPXXs43PmMzek9RrB1b7mLMqA==
+  dependencies:
+    clsx "^1.1.1"
+    prop-types "^15.6.0"
+
 react-fast-compare@^3.0.1:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
+react-icons@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.3.1.tgz#2fa92aebbbc71f43d2db2ed1aed07361124e91ca"
+  integrity sha512-cB10MXLTs3gVuXimblAdI71jrJx8njrJZmNMEMC+sQu5B/BIOmlsAjskdqpn81y8UBVEGuHODd7/ci5DvoSzTQ==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
@@ -2881,6 +2901,14 @@ react-property@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-property/-/react-property-2.0.0.tgz#2156ba9d85fa4741faf1918b38efc1eae3c6a136"
   integrity sha512-kzmNjIgU32mO4mmH5+iUyrqlpFQhF8K2k7eZ4fdLSOPFrD1XgEuSBv9LDEgxRXTMBqMd8ppT0x6TIzqE5pdGdw==
+
+react-resizable@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-3.0.4.tgz#aa20108eff28c52c6fddaa49abfbef8abf5e581b"
+  integrity sha512-StnwmiESiamNzdRHbSSvA65b0ZQJ7eVQpPusrSmcpyGKzC0gojhtO62xxH6YOBmepk9dQTBi9yxidL3W4s3EBA==
+  dependencies:
+    prop-types "15.x"
+    react-draggable "^4.0.3"
 
 react-spring@^9.4.3:
   version "9.4.3"
@@ -2902,6 +2930,11 @@ react-textarea-autosize@^8.3.2:
     "@babel/runtime" "^7.10.2"
     use-composed-ref "^1.0.0"
     use-latest "^1.0.0"
+
+react-zoom-pan-pinch@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/react-zoom-pan-pinch/-/react-zoom-pan-pinch-2.1.3.tgz#3b84594200343136c0d4397c33fec38dc0ee06ad"
+  integrity sha512-a5AChOWhjo0RmxsNZXGQIlNh3e3nLU6m4V6M+6dlbPNk5d+MtMxgKWyA5zpR06Lp3OZkZVF9nR8JeWSvKwck9g==
 
 react@^17.0.2:
   version "17.0.2"
@@ -3524,6 +3557,11 @@ use-composed-ref@^1.0.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/use-composed-ref/-/use-composed-ref-1.2.1.tgz#9bdcb5ccd894289105da2325e1210079f56bf849"
   integrity sha512-6+X1FLlIcjvFMAeAD/hcxDT8tmyrWnbSPMU0EnxQuDLIxokuFzWliXBiYZuGIx+mrAMLBw0WFfCkaPw8ebzAhw==
+
+use-debounce@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-7.0.1.tgz#380e6191cc13ad29f8e2149a12b5c37cc2891190"
+  integrity sha512-fOrzIw2wstbAJuv8PC9Vg4XgwyTLEOdq4y/Z3IhVl8DAE4svRcgyEUvrEXu+BMNgMoc3YND6qLT61kkgEKXh7Q==
 
 use-isomorphic-layout-effect@^1.0.0:
   version "1.1.1"

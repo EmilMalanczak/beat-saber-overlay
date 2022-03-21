@@ -5,7 +5,7 @@ import { CutVisualizer } from '../src/components/CutVisualizer'
 import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
 import { useInterval } from '../src/hooks/useInterval'
 import { useScoreStore } from '../src/store/score'
-import { generateRandomCut } from '../src/utils/generateRandomCut'
+import { generateRandomCut } from '../src/helpers/generateRandomCut'
 
 export const useStyles = createStyles(() => ({
   visualizers: {
@@ -22,8 +22,9 @@ const Home = () => {
   // const { loading, player } = usePlayerStore()
   const theme = useMantineTheme()
   const cutNote = useScoreStore((state) => state.cutNote)
-  const { classes } = useStyles()
   const [isDemoOn, toggleDemo] = useState(false)
+
+  const { classes } = useStyles()
 
   const handleCut = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -33,12 +34,7 @@ const Home = () => {
     cutNote(note)
   }
 
-  useInterval(
-    () => {
-      handleCut()
-    },
-    isDemoOn ? 50 : null
-  )
+  useInterval(handleCut, isDemoOn ? 50 : null)
 
   return (
     <>
@@ -49,16 +45,16 @@ const Home = () => {
       <div className={classes.visualizers}>
         <div className={classes.wrapper}>
           <CutVisualizer
-            cellSize={70}
+            cellSize={50}
             fadeTime={150}
-            gridColor="#000"
-            gridBorderSize={0}
+            gridColor="#fff"
+            gridBorderSize={2}
             style={{
               border: '1px solid red'
             }}
           />
 
-          <div style={{ margin: -20 - (100 - (Math.SQRT2 - 1.08) * 70) }} />
+          <div style={{ margin: 20 - (100 - (70 + (Math.SQRT2 - 1.08) * 70)) }} />
 
           <HitScoreVisualizer
             rows={1}
@@ -68,11 +64,9 @@ const Home = () => {
             // rowHeight={100}
             maxRotate={12}
             scoreCutShift={10}
-            style={
-              {
-                // border: '1px solid red'
-              }
-            }
+            style={{
+              border: '1px solid red'
+            }}
             config={[
               {
                 above: 113,

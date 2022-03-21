@@ -2,13 +2,13 @@ import { useMemo } from 'react'
 import type { FC } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 
-import { useScoreStore } from '../../store/score'
-import { getScoreAngle } from '../../utils/getScoreAngle'
-import { getScoreTransformDistance } from '../../utils/getScoreTransformDistance'
-import { useTimeout } from '../../hooks/useTimeout'
-import { getScoreQualityStyles } from '../../utils/getScoreQualityStyles'
+import { useScoreStore } from '../../../store/score'
+import { getScoreAngle } from '../../../helpers/getScoreAngle'
+import { getScoreTransformDistance } from '../../../helpers/getScoreTransformDistance'
+import { useTimeout } from '../../../hooks/useTimeout'
+import { getScoreQualityStyles } from '../../../helpers/getScoreQualityStyles'
 
-import type { NoteCut } from '../../store/score'
+import type { NoteCut } from '../../../store/score'
 
 import classes from './HitScore.module.scss'
 

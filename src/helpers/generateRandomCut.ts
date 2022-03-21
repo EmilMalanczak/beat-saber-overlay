@@ -1,7 +1,7 @@
 /* eslint-disable operator-linebreak */
 import { getRotationAngle } from './getRotationAngle'
-import { randomInt } from './randomInt'
-import { transformRadiansToAngle } from './transformRadiansToAngle'
+import { randomInt } from '../utils/randomInt'
+import { transformRadiansToAngle } from '../utils/transformRadiansToAngle'
 
 const directions = [
   'Up',
