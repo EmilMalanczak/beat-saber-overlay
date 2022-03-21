@@ -1,7 +1,7 @@
 import { useLocalStorageValue } from '@mantine/hooks'
 import { useEffect } from 'react'
 import create from 'zustand'
-import type { SetState } from 'zustand'
+import type { SetState, StateSelector } from 'zustand'
 import { ComponentOptions, Option } from '../types/Options'
 
 type ElementType = ComponentOptions & { cords: { x: number; y: number } }
@@ -208,7 +208,9 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
   }
 }))
 
-export const useConfiguratorStore = (): ConfiguratorStore => {
+export const useConfiguratorStore = (
+  selector: StateSelector<ConfiguratorStore, any> = (state) => state
+): ConfiguratorStore => {
   const [localConfig, setLocalConfig] = useLocalStorageValue({
     key: 'overlay-config'
   })
@@ -217,7 +219,7 @@ export const useConfiguratorStore = (): ConfiguratorStore => {
     state.setInitialElements,
     state.elements
   ])
-  const store = useConfiguratorStoreBare()
+  const store = useConfiguratorStoreBare(selector)
 
   useEffect(() => {
     if (localConfig) {
@@ -231,5 +233,5 @@ export const useConfiguratorStore = (): ConfiguratorStore => {
     setLocalConfig(JSON.stringify(elements))
   }, [elements, setLocalConfig])
 
-  return store as ConfiguratorStore
+  return { ...store }
 }

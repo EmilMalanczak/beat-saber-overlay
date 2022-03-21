@@ -1,18 +1,19 @@
+import { useState } from 'react'
 import type { VFC } from 'react'
-import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import { ActionIcon, Group, Portal } from '@mantine/core'
 import { RiZoomInLine, RiZoomOutLine, RiFullscreenLine, RiFullscreenExitLine } from 'react-icons/ri'
 import { useFullscreen } from '@mantine/hooks'
+import { Resizable } from 'react-resizable'
+import type { ResizableProps } from 'react-resizable'
 
-import { options } from '../../options'
 import { useConfiguratorStore } from '../../store/configurator'
-import { Draggable } from '../Draggable/Draggable'
-import { Option } from '../../types/Options'
 import { useStyles } from './ConfiguratorCanvas.styles'
 import { roundZoomScale } from '../../helpers/roundZoomScale'
+import { ConfiguratorItems } from './ConfiguratorItems'
 
 const maxScale = 3
-const minScale = 0.75
+const minScale = 0.5
 
 // calculations are inconsistent thats why .22 <shrug>
 const scale = {
@@ -25,92 +26,60 @@ type ConfiguratorProps = {
 }
 
 export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
-  const { classes } = useStyles()
-
-  const { dragElement, elements, removeElement, selectElement, canvas, setCanvas } =
-    useConfiguratorStore()
+  const { canvas, setCanvas } = useConfiguratorStore((state) => ({
+    canvas: state.canvas,
+    setCanvas: state.setCanvas
+  }))
   const { toggle: toggleFullscreen, fullscreen } = useFullscreen()
+  const [isResizing, setResizing] = useState(false)
+
+  const { classes } = useStyles({ width: canvas.width, height: canvas.height })
+
+  const handleResizeCanvas: ResizableProps['onResize'] = (_, { size }) => {
+    setCanvas({ width: size.width, height: size.height })
+  }
 
   return (
     <TransformWrapper
-      initialScale={1}
       minScale={minScale}
       maxScale={maxScale}
       centerOnInit
+      disabled={isResizing}
       doubleClick={{ disabled: true }}
       onInit={({ state }) => setCanvas({ zoom: state.scale })}
       onZoom={({ state }) => setCanvas({ zoom: state.scale })}
     >
-      {({ zoomIn, zoomOut, state }) => (
+      {({ zoomIn, zoomOut, state, centerView }) => (
         <>
           <TransformComponent wrapperClass={classes.wrapper}>
-            <div className={classes.canvas}>
-              <span className={classes.size}>
-                {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom}x`}
-              </span>
-              {Object.values(elements).map(({ name, slug, options: elementOptions }) => {
-                const Item = options.find((opt) => opt.name === name)?.component
-
-                if (!Item) return null
-
-                const elementProps = elementOptions.reduce((acc, item) => {
-                  if (item?.inputTypeName === Option.TOGGLE_COMPONENTS) {
-                    return {
-                      ...acc,
-                      ...item.options.reduce(
-                        (nAcc, nItem) => ({
-                          ...nAcc,
-                          [nItem.propName]: nItem.value
-                        }),
-                        {}
-                      )
-                    }
-                  }
-
-                  return {
-                    ...acc,
-                    [item.propName]: item.value
-                  }
-                }, {})
-
-                // console.log(elementProps)
-
-                return (
-                  <Draggable
-                    id={name}
-                    onStop={(_, { x, y }) => {
-                      dragElement({
-                        slug,
-                        x,
-                        y
-                      })
-                    }}
-                    bounds="parent"
-                    zoom={canvas.zoom}
-                    defaultPosition={elements[slug].cords}
-                    propsDependencies={[elementOptions.map(({ value }) => value)]}
-                    onRemove={() => removeElement(slug)}
-                    onEdit={() => {
-                      onEdit(true)
-                      selectElement(slug)
-                    }}
-                  >
-                    <Item {...elementProps} />
-                  </Draggable>
-                )
-              })}
-            </div>
+            <Resizable
+              width={canvas.width}
+              height={canvas.height}
+              onResize={handleResizeCanvas}
+              onResizeStart={() => setResizing(true)}
+              onResizeStop={() => {
+                setResizing(false)
+                centerView()
+              }}
+            >
+              <div>
+                <span className={classes.size}>
+                  {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom}x`}
+                </span>
+                <div className={classes.canvas} id="configurator-canvas">
+                  <ConfiguratorItems onEdit={onEdit} />
+                </div>
+              </div>
+            </Resizable>
           </TransformComponent>
 
           <Portal zIndex={5}>
-            <Group spacing={4} className={classes.zoomControls}>
+            <Group spacing={4} className={classes.canvasControls}>
               <ActionIcon
                 size="lg"
                 radius="lg"
                 variant="filled"
                 onClick={() => {
-                  console.log(state)
-
                   zoomIn(scale.step)
 
                   const multipliedScale = roundZoomScale(state.scale * scale.multiplier)

@@ -1,15 +1,29 @@
 import { Popper, UnstyledButton, ActionIcon, Group } from '@mantine/core'
-import { useRef, useState } from 'react'
+import { CSSProperties, useRef, useState } from 'react'
 
+import { useDebouncedCallback } from 'use-debounce'
 import ReactDraggable from 'react-draggable'
 import { RiDeleteBin7Fill, RiEditFill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
 
-import type { DraggableProps as ReactDraggableProps } from 'react-draggable'
+import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
 import type { FC, MouseEvent } from 'react'
 
 import { useBooleanToggle, useClickOutside, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
-import { useConfiguratorStore } from '../../store/configurator'
+
+type Bounds = {
+  top: number
+  bottom: number
+  right: number
+  left: number
+}
+
+const defaultBounds = {
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0
+}
 
 type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
   onRemove: () => void
@@ -33,7 +47,12 @@ export const Draggable: FC<DraggableProps> = ({
 }) => {
   const [opened, toggleOpened] = useBooleanToggle(false)
   const [isLocked, toggleLocked] = useBooleanToggle(false)
+  const [isDragging, setDragging] = useState(false)
+
   const [position, setPosition] = useState(defaultPosition)
+
+  const canvasBounds = useRef<Bounds>(defaultBounds)
+  const [boxBounds, setBounds] = useState<Bounds>(defaultBounds)
 
   const boxRef = useRef<HTMLDivElement>(null)
   const optionsRef = useRef<HTMLDivElement>(null)
@@ -44,29 +63,62 @@ export const Draggable: FC<DraggableProps> = ({
   const isOnOptionsNode = (e: MouseEvent<HTMLButtonElement>) =>
     optionsRef.current === e.target || optionsRef.current?.contains(e.target as Node) || false
 
+  const saveConfiguratorCanvasPosition = () => {
+    const canvasNode = document.getElementById('configurator-canvas')
+
+    canvasBounds.current = canvasNode?.getBoundingClientRect() || defaultBounds
+  }
+
+  const debouncedSetBounds = useDebouncedCallback(() => {
+    const { top, left, bottom, right } = boxRef.current?.getBoundingClientRect() || defaultBounds
+
+    setBounds({
+      top: Math.floor(Math.abs(top - canvasBounds.current.top) / zoom),
+      right: Math.floor(Math.abs(right - canvasBounds.current.right) / zoom),
+      bottom: Math.floor(Math.abs(bottom - canvasBounds.current.bottom) / zoom),
+      left: Math.floor(Math.abs(left - canvasBounds.current.left) / zoom)
+    })
+  }, 8)
+
+  const handleDrag: DraggableEventHandler = (e) => {
+    e.stopPropagation()
+
+    if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
+      debouncedSetBounds()
+
+      if (opened) {
+        toggleOpened(false)
+      }
+    }
+  }
+
   return (
     <ReactDraggable
-      onStop={onStop}
       bounds={bounds}
       position={position}
       defaultClassName={cx(classes.wrapper, 'draggable', {
         [classes.disabled]: isLocked,
-        [classes.active]: opened
+        [classes.active]: opened,
+        [classes.dragging]: isDragging
       })}
       defaultClassNameDragging={classes.wrapperGrabbing}
       disabled={isLocked}
       cancel=".options"
-      onDrag={(e, { x, y }) => {
-        e.stopPropagation()
+      onStart={() => {
+        saveConfiguratorCanvasPosition()
+
+        setDragging(true)
+      }}
+      onStop={(e, state) => {
+        if (onStop) onStop(e, state)
 
         if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
-          setPosition({ x, y })
-
-          if (opened) {
-            toggleOpened(false)
-          }
+          setPosition({ x: state.x, y: state.y })
         }
+
+        setDragging(false)
       }}
+      onDrag={handleDrag}
       {...rest}
     >
       <UnstyledButton
@@ -76,9 +128,38 @@ export const Draggable: FC<DraggableProps> = ({
             toggleOpened()
           }
         }}
-        className={classes.box}
+        className={cx(classes.box, {
+          [classes.dragging]: isDragging
+        })}
         id={id}
+        style={
+          {
+            '--offset-left': `${boxBounds.left}px`,
+            '--offset-right': `${boxBounds.right}px`,
+            '--offset-top': `${boxBounds.top}px`,
+            '--offset-bottom': `${boxBounds.bottom}px`
+          } as CSSProperties
+        }
       >
+        {isDragging && (
+          <>
+            <div className={cx(classes.offset, classes.offsetHorizontal, classes.offsetLeft)}>
+              {boxBounds.left > 0 && <span>{boxBounds.left}</span>}
+            </div>
+
+            <div className={cx(classes.offset, classes.offsetHorizontal, classes.offsetRight)}>
+              {boxBounds.right > 0 && <span>{boxBounds.right}</span>}
+            </div>
+
+            <div className={cx(classes.offset, classes.offsetVertical, classes.offsetTop)}>
+              {boxBounds.top > 0 && <span>{boxBounds.top}</span>}
+            </div>
+
+            <div className={cx(classes.offset, classes.offsetVertical, classes.offsetBottom)}>
+              {boxBounds.bottom > 0 && <span>{boxBounds.bottom}</span>}
+            </div>
+          </>
+        )}
         {children}
         <Popper<HTMLDivElement>
           mounted={opened}
@@ -94,16 +175,11 @@ export const Draggable: FC<DraggableProps> = ({
           modifiers={[
             {
               // @ts-ignore
-              name: 'sameWidth',
+              name: 'zoomTransform',
               enabled: true,
               phase: 'beforeWrite',
               requires: ['computeStyles'],
               fn: ({ state }: any) => {
-                state.styles.popper.transform = `translate3d(2px, -${
-                  (state?.rects?.reference.height || 0) + Math.round(6 * zoom)
-                }px, 0px)`
-              },
-              effect: ({ state }: any) => {
                 state.styles.popper.transform = `translate3d(2px, -${
                   (state?.rects?.reference.height || 0) + Math.round(6 * zoom)
                 }px, 0px)`
