@@ -11,10 +11,11 @@ enum Direction {
 type GuideLineProps = {
   direction: keyof typeof Direction
   value: number
+  zoom: number
 }
 
-export const GuideLine: VFC<GuideLineProps> = ({ value, direction }) => {
-  const { classes, cx } = useStyles()
+export const GuideLine: VFC<GuideLineProps> = ({ value, direction, zoom }) => {
+  const { classes, cx } = useStyles({ zoom })
 
   return (
     <div

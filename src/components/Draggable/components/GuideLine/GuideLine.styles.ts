@@ -11,17 +11,17 @@ const reveal = keyframes`
   }
 `
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
   offset: {
     position: 'absolute',
 
     '& span': {
       position: 'absolute',
-      padding: 3,
+      padding: 3 / zoom,
       animation: `${reveal} 1s ease forward`,
 
       backgroundColor: theme.colors.dark[4],
-      fontSize: 10,
+      fontSize: 12 / zoom,
       borderRadius: 4
     },
 
