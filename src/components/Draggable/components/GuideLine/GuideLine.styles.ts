@@ -12,77 +12,16 @@ const reveal = keyframes`
 `
 
 export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
-  wrapper: {
-    position: 'absolute',
-    zIndex: 1,
-    cursor: 'grab',
-    outlineOffset: 4,
-    transition: '0.2s outline-offset ease'
-  },
-
-  wrapperGrabbing: {
-    cursor: 'grabbing',
-    outlineOffset: 0
-  },
-
-  active: {
-    zIndex: 2
-  },
-
-  disabled: {
-    zIndex: 0
-  },
-
-  box: {
-    width: 'max-content',
-    height: 'auto',
-    position: 'relative',
-
-    '& > div:last-of-type > *': {
-      pointerEvents: 'none',
-
-      '& > *': {
-        pointerEvents: 'auto !important' as any
-      }
-    },
-
-    '&:hover': {
-      outline: `1px solid ${theme.colors.dark[2]}`
-    },
-
-    '&:focus': {
-      boxShadow: 'none',
-
-      '&:not(:hover)': {
-        outline: `1px solid ${theme.colors.dark[3]}`
-      }
-    }
-  },
-
-  dragging: {
-    outline: `1px solid ${theme.colors.dark[2]}`
-  },
-
-  options: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-    textAlign: 'center',
-    padding: 8,
-    borderRadius: theme.radius.md,
-    cursor: 'pointer',
-    transform: `scale(${1 / zoom})`,
-    transformOrigin: 'bottom right'
-  },
-
   offset: {
     position: 'absolute',
 
     '& span': {
       position: 'absolute',
-      padding: 3,
+      padding: 3 / zoom,
       animation: `${reveal} 1s ease forward`,
 
       backgroundColor: theme.colors.dark[4],
-      fontSize: 10,
+      fontSize: 12 / zoom,
       borderRadius: 4
     },
 
@@ -93,7 +32,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     }
   },
 
-  offsetHorizontal: {
+  horizontal: {
     bottom: '50%',
 
     '&::after': {
@@ -103,7 +42,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     }
   },
 
-  offsetVertical: {
+  vertical: {
     left: '50%',
 
     '&::after': {
@@ -113,7 +52,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     }
   },
 
-  offsetTop: {
+  top: {
     height: 'var(--offset-top)',
     bottom: '100%',
 
@@ -127,7 +66,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     }
   },
 
-  offsetBottom: {
+  bottom: {
     height: 'var(--offset-bottom)',
     top: '100%',
 
@@ -141,7 +80,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     }
   },
 
-  offsetLeft: {
+  left: {
     width: 'var(--offset-left)',
     right: '100%',
 
@@ -155,7 +94,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     }
   },
 
-  offsetRight: {
+  right: {
     width: 'var(--offset-right)',
     left: '100%',
 

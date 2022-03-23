@@ -1,11 +1,20 @@
 import { createStyles } from '@mantine/styles'
 
 export const useStyles = createStyles(
-  (theme, { width, height }: { width: number; height: number }) => ({
-    wrapper: {
+  (theme, { width, height, zoom }: { width: number; height: number; zoom: number }) => ({
+    background: {
       width: '100%',
       height: '100vh',
-      cursor: 'move'
+      cursor: 'move',
+
+      '& .react-resizable-handle': {
+        transformOrigin: 'bottom right',
+        transform: `scale(${1 / zoom})`
+      }
+    },
+
+    wrapper: {
+      margin: '10vmin'
     },
 
     canvas: {
@@ -24,7 +33,7 @@ export const useStyles = createStyles(
       bottom: 'calc(100% + 2px)',
       left: 0,
       color: theme.colors.dark[2],
-      fontSize: 12,
+      fontSize: 12 / zoom,
       ...theme.fn.fontStyles()
     },
 

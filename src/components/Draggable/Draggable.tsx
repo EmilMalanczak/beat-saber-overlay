@@ -1,15 +1,19 @@
 import { Popper, UnstyledButton, ActionIcon, Group } from '@mantine/core'
-import { CSSProperties, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useDebouncedCallback } from 'use-debounce'
+import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
 import ReactDraggable from 'react-draggable'
 import { RiDeleteBin7Fill, RiEditFill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
 
 import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
-import type { FC, MouseEvent } from 'react'
+import type { FC, CSSProperties, MouseEvent } from 'react'
 
-import { useBooleanToggle, useClickOutside, useMergedRef } from '@mantine/hooks'
+import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
+import { GuideLine } from './components/GuideLine'
+import { recalculatePosition } from './recalculatePosition'
+import { useConfiguratorStore, useConfiguratorStoreBare } from '../../store/configurator'
+import { getConfiguratorElement } from '../../helpers/getConfiguratorElement'
 
 type Bounds = {
   top: number
@@ -58,13 +62,16 @@ export const Draggable: FC<DraggableProps> = ({
   const optionsRef = useRef<HTMLDivElement>(null)
   const outsideClickRef = useClickOutside(() => toggleOpened(false))
 
+  const canvas = useConfiguratorStoreBare((state) => state.canvas)
+  const { ref: sizeRef, width: childWidth, height: childHeight } = useElementSize()
+
   const { classes, cx } = useStyles({ zoom })
 
   const isOnOptionsNode = (e: MouseEvent<HTMLButtonElement>) =>
     optionsRef.current === e.target || optionsRef.current?.contains(e.target as Node) || false
 
   const saveConfiguratorCanvasPosition = () => {
-    const canvasNode = document.getElementById('configurator-canvas')
+    const canvasNode = getConfiguratorElement()
 
     canvasBounds.current = canvasNode?.getBoundingClientRect() || defaultBounds
   }
@@ -80,17 +87,31 @@ export const Draggable: FC<DraggableProps> = ({
     })
   }, 8)
 
-  const handleDrag: DraggableEventHandler = (e) => {
-    e.stopPropagation()
+  const handleDrag: DraggableEventHandler = useCallback(
+    (e) => {
+      e.stopPropagation()
 
-    if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
-      debouncedSetBounds()
+      if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
+        debouncedSetBounds()
 
-      if (opened) {
-        toggleOpened(false)
+        if (opened) {
+          toggleOpened(false)
+        }
       }
-    }
-  }
+    },
+    [debouncedSetBounds, opened, toggleOpened]
+  )
+
+  const throttledRecalculatePosition = useThrottledCallback(() => {
+    const updatedPosition = recalculatePosition(id, position?.x || 0, position?.y || 0)
+
+    setPosition(updatedPosition)
+  }, 500)
+
+  useEffect(() => {
+    throttledRecalculatePosition()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvas.height, canvas.width, id, childHeight, childWidth])
 
   return (
     <ReactDraggable
@@ -104,6 +125,9 @@ export const Draggable: FC<DraggableProps> = ({
       defaultClassNameDragging={classes.wrapperGrabbing}
       disabled={isLocked}
       cancel=".options"
+      scale={zoom}
+      offsetParent={document?.getElementById('configurator-canvas') || undefined}
+      nodeRef={boxRef}
       onStart={() => {
         saveConfiguratorCanvasPosition()
 
@@ -122,7 +146,7 @@ export const Draggable: FC<DraggableProps> = ({
       {...rest}
     >
       <UnstyledButton
-        ref={useMergedRef(boxRef, outsideClickRef)}
+        ref={useMergedRef(boxRef, outsideClickRef, sizeRef)}
         onClick={(e) => {
           if (!isOnOptionsNode(e)) {
             toggleOpened()
@@ -143,21 +167,10 @@ export const Draggable: FC<DraggableProps> = ({
       >
         {isDragging && (
           <>
-            <div className={cx(classes.offset, classes.offsetHorizontal, classes.offsetLeft)}>
-              {boxBounds.left > 0 && <span>{boxBounds.left}</span>}
-            </div>
-
-            <div className={cx(classes.offset, classes.offsetHorizontal, classes.offsetRight)}>
-              {boxBounds.right > 0 && <span>{boxBounds.right}</span>}
-            </div>
-
-            <div className={cx(classes.offset, classes.offsetVertical, classes.offsetTop)}>
-              {boxBounds.top > 0 && <span>{boxBounds.top}</span>}
-            </div>
-
-            <div className={cx(classes.offset, classes.offsetVertical, classes.offsetBottom)}>
-              {boxBounds.bottom > 0 && <span>{boxBounds.bottom}</span>}
-            </div>
+            <GuideLine direction="left" value={boxBounds.left} zoom={zoom} />
+            <GuideLine direction="right" value={boxBounds.right} zoom={zoom} />
+            <GuideLine direction="top" value={boxBounds.top} zoom={zoom} />
+            <GuideLine direction="bottom" value={boxBounds.bottom} zoom={zoom} />
           </>
         )}
         {children}

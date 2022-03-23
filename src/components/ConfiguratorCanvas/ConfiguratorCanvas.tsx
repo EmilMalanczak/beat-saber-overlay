@@ -10,7 +10,8 @@ import type { ResizableProps } from 'react-resizable'
 import { useConfiguratorStore } from '../../store/configurator'
 import { useStyles } from './ConfiguratorCanvas.styles'
 import { roundZoomScale } from '../../helpers/roundZoomScale'
-import { ConfiguratorItems } from './ConfiguratorItems'
+import { ConfiguratorItems } from './components/ConfiguratorItems'
+import { CANVAS_ID } from '../../constants/dom'
 
 const maxScale = 3
 const minScale = 0.5
@@ -33,7 +34,7 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
   const { toggle: toggleFullscreen, fullscreen } = useFullscreen()
   const [isResizing, setResizing] = useState(false)
 
-  const { classes } = useStyles({ width: canvas.width, height: canvas.height })
+  const { classes } = useStyles(canvas)
 
   const handleResizeCanvas: ResizableProps['onResize'] = (_, { size }) => {
     setCanvas({ width: size.width, height: size.height })
@@ -51,7 +52,7 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
     >
       {({ zoomIn, zoomOut, state, centerView }) => (
         <>
-          <TransformComponent wrapperClass={classes.wrapper}>
+          <TransformComponent wrapperClass={classes.background}>
             <Resizable
               width={canvas.width}
               height={canvas.height}
@@ -62,11 +63,11 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
                 centerView()
               }}
             >
-              <div>
+              <div className={classes.wrapper}>
                 <span className={classes.size}>
                   {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom}x`}
                 </span>
-                <div className={classes.canvas} id="configurator-canvas">
+                <div className={classes.canvas} id={CANVAS_ID}>
                   <ConfiguratorItems onEdit={onEdit} />
                 </div>
               </div>
