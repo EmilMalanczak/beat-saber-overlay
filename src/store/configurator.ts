@@ -209,7 +209,7 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
 }))
 
 export const useConfiguratorStore = (
-  selector?: StateSelector<ConfiguratorStore, any> = (state) => state
+  selector: StateSelector<ConfiguratorStore, any> = (state) => state
 ): ConfiguratorStore => {
   const [localConfig, setLocalConfig] = useLocalStorageValue({
     key: 'overlay-config'

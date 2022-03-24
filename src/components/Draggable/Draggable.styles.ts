@@ -70,7 +70,8 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     borderRadius: theme.radius.md,
     cursor: 'pointer',
     transform: `scale(${1 / zoom})`,
-    transformOrigin: 'bottom right'
+    transformOrigin: 'bottom right',
+    flexWrap: 'nowrap'
   },
 
   offset: {

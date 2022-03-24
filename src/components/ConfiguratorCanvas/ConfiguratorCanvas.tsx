@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { VFC } from 'react'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
+import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { ActionIcon, Group, Portal } from '@mantine/core'
 import { RiZoomInLine, RiZoomOutLine, RiFullscreenLine, RiFullscreenExitLine } from 'react-icons/ri'
 import { useFullscreen } from '@mantine/hooks'
@@ -33,6 +34,8 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
   }))
   const { toggle: toggleFullscreen, fullscreen } = useFullscreen()
   const [isResizing, setResizing] = useState(false)
+  const [wasInitiallyZoomed, setWasInitiallyZoomed] = useState(false)
+  const panRef = useRef<ReactZoomPanPinchRef>(null)
 
   const { classes } = useStyles(canvas)
 
@@ -40,8 +43,34 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
     setCanvas({ width: size.width, height: size.height })
   }
 
+  const getInitialZoom = () => {
+    const vmin = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight
+
+    const heightDimension = roundZoomScale(window.innerHeight / (canvas.height + vmin * 0.1))
+    const widthDimension = roundZoomScale(window.innerWidth / (canvas.width + vmin * 0.1))
+    console.log({
+      heightDimension,
+      widthDimension
+    })
+
+    return heightDimension > widthDimension ? widthDimension : heightDimension
+  }
+
+  useEffect(() => {
+    if (!wasInitiallyZoomed && panRef.current) {
+      const initialZoom = getInitialZoom()
+      console.log('x')
+
+      setCanvas({ zoom: initialZoom })
+      panRef.current.centerView(initialZoom)
+      setWasInitiallyZoomed(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [panRef.current])
+
   return (
     <TransformWrapper
+      ref={panRef}
       minScale={minScale}
       maxScale={maxScale}
       centerOnInit
