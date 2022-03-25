@@ -48,10 +48,6 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
 
     const heightDimension = roundZoomScale(window.innerHeight / (canvas.height + vmin * 0.1))
     const widthDimension = roundZoomScale(window.innerWidth / (canvas.width + vmin * 0.1))
-    console.log({
-      heightDimension,
-      widthDimension
-    })
 
     return heightDimension > widthDimension ? widthDimension : heightDimension
   }
@@ -59,7 +55,6 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
   useEffect(() => {
     if (!wasInitiallyZoomed && panRef.current) {
       const initialZoom = getInitialZoom()
-      console.log('x')
 
       setCanvas({ zoom: initialZoom })
       panRef.current.centerView(initialZoom)
@@ -77,7 +72,19 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
       disabled={isResizing}
       doubleClick={{ disabled: true }}
       onInit={({ state }) => setCanvas({ zoom: state.scale })}
-      onZoom={({ state }) => setCanvas({ zoom: state.scale })}
+      onZoomStop={({ state }) => {
+        let finalScale = state.scale
+
+        if (state.scale < minScale) {
+          finalScale = minScale
+        }
+
+        if (state.scale > maxScale) {
+          finalScale = maxScale
+        }
+
+        setCanvas({ zoom: finalScale })
+      }}
     >
       {({ zoomIn, zoomOut, state, centerView }) => (
         <>
