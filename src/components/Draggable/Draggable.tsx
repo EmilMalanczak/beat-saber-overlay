@@ -1,19 +1,18 @@
-import { Popper, UnstyledButton, ActionIcon, Group } from '@mantine/core'
+import { UnstyledButton } from '@mantine/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
-
+import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
 import ReactDraggable from 'react-draggable'
-import { RiDeleteBin7Fill, RiEditFill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
 
 import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
 import type { FC, CSSProperties, MouseEvent } from 'react'
 
-import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
 import { GuideLine } from './components/GuideLine'
 import { recalculatePosition } from './recalculatePosition'
-import { useConfiguratorStore, useConfiguratorStoreBare } from '../../store/configurator'
+import { useConfiguratorStoreBare } from '../../store/configurator'
 import { getConfiguratorElement } from '../../helpers/getConfiguratorElement'
+import { DraggableOptions } from './components/DraggableOptions/DraggableOptions'
 
 type Bounds = {
   top: number
@@ -80,10 +79,10 @@ export const Draggable: FC<DraggableProps> = ({
     const { top, left, bottom, right } = boxRef.current?.getBoundingClientRect() || defaultBounds
 
     setBounds({
-      top: Math.floor(Math.abs(top - canvasBounds.current.top) / zoom),
-      right: Math.floor(Math.abs(right - canvasBounds.current.right) / zoom),
-      bottom: Math.floor(Math.abs(bottom - canvasBounds.current.bottom) / zoom),
-      left: Math.floor(Math.abs(left - canvasBounds.current.left) / zoom)
+      top: Math.abs(Math.round((top - canvasBounds.current.top) / zoom)),
+      right: Math.abs(Math.round((right - canvasBounds.current.right) / zoom)),
+      bottom: Math.abs(Math.round((bottom - canvasBounds.current.bottom) / zoom)),
+      left: Math.abs(Math.round((left - canvasBounds.current.left) / zoom))
     })
   }, 8)
 
@@ -174,45 +173,18 @@ export const Draggable: FC<DraggableProps> = ({
           </>
         )}
         {children}
-        <Popper<HTMLDivElement>
-          mounted={opened}
-          referenceElement={boxRef.current as HTMLDivElement}
-          position="top"
-          placement="end"
-          withArrow={false}
-          gutter={6}
-          forceUpdateDependencies={[position, ...propsDependencies]}
-          transition="slide-down"
-          zIndex={100}
-          withinPortal={false}
-          modifiers={[
-            {
-              // @ts-ignore
-              name: 'zoomTransform',
-              enabled: true,
-              phase: 'beforeWrite',
-              requires: ['computeStyles'],
-              fn: ({ state }: any) => {
-                state.styles.popper.transform = `translate3d(2px, -${
-                  (state?.rects?.reference.height || 0) + Math.round(6 * zoom)
-                }px, 0px)`
-              }
-            }
-          ]}
-        >
-          <Group spacing={8} className={cx(classes.options, 'options')} ref={optionsRef}>
-            <ActionIcon onClick={() => toggleLocked()}>
-              {isLocked ? <RiLockFill /> : <RiLockUnlockFill />}
-            </ActionIcon>
-            <ActionIcon onClick={onEdit}>
-              <RiEditFill />
-            </ActionIcon>
 
-            <ActionIcon onClick={onRemove}>
-              <RiDeleteBin7Fill />
-            </ActionIcon>
-          </Group>
-        </Popper>
+        <DraggableOptions
+          visible={opened}
+          forceUpdateDependencies={[position, ...propsDependencies]}
+          onEdit={onEdit}
+          onRemove={onRemove}
+          onLock={toggleLocked}
+          locked={isLocked}
+          boxRef={boxRef}
+          optionsRef={optionsRef}
+          zoom={canvas.zoom}
+        />
       </UnstyledButton>
     </ReactDraggable>
   )
