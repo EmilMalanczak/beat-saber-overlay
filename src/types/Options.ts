@@ -16,7 +16,8 @@ export enum Option {
   COLOR,
   SCORE_VISUALIZER_CONFIG,
   TOGGLE,
-  TOGGLE_COMPONENTS
+  TOGGLE_COMPONENTS,
+  TEXT
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -32,6 +33,7 @@ type PropOptions =
   | OptionsBase<Option.COLOR, ColorInputProps>
   | OptionsBase<Option.SLIDER, InputWrapperBaseProps & SliderProps>
   | OptionsBase<Option.TOGGLE, SwitchProps>
+  | OptionsBase<Option.TEXT, TextCoreProps>
 
 type ToggleOptions = PropOptions & {
   visibleWhenChecked: boolean
