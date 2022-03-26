@@ -1,8 +1,9 @@
-import { UnstyledButton } from '@mantine/core'
+import { UnstyledButton, Transition } from '@mantine/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
 import ReactDraggable from 'react-draggable'
+import { useTransition, animated } from 'react-spring'
 
 import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
 import type { FC, CSSProperties, MouseEvent } from 'react'
@@ -65,6 +66,16 @@ export const Draggable: FC<DraggableProps> = ({
   const { ref: sizeRef, width: childWidth, height: childHeight } = useElementSize()
 
   const { classes, cx } = useStyles({ zoom })
+
+  const guideLinesTransition = useTransition(isDragging, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    delay: isDragging ? 300 : 0,
+    config: {
+      duration: 175
+    }
+  })
 
   const isOnOptionsNode = (e: MouseEvent<HTMLButtonElement>) =>
     optionsRef.current === e.target || optionsRef.current?.contains(e.target as Node) || false
@@ -164,13 +175,16 @@ export const Draggable: FC<DraggableProps> = ({
           } as CSSProperties
         }
       >
-        {isDragging && (
-          <>
-            <GuideLine direction="left" value={boxBounds.left} zoom={zoom} />
-            <GuideLine direction="right" value={boxBounds.right} zoom={zoom} />
-            <GuideLine direction="top" value={boxBounds.top} zoom={zoom} />
-            <GuideLine direction="bottom" value={boxBounds.bottom} zoom={zoom} />
-          </>
+        {guideLinesTransition(
+          (styles, item) =>
+            item && (
+              <animated.div style={styles}>
+                <GuideLine direction="left" value={boxBounds.left} zoom={zoom} />
+                <GuideLine direction="right" value={boxBounds.right} zoom={zoom} />
+                <GuideLine direction="top" value={boxBounds.top} zoom={zoom} />
+                <GuideLine direction="bottom" value={boxBounds.bottom} zoom={zoom} />
+              </animated.div>
+            )
         )}
         {children}
 
