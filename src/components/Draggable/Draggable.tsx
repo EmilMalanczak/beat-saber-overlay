@@ -1,19 +1,20 @@
-import { Popper, UnstyledButton, ActionIcon, Group } from '@mantine/core'
+import { UnstyledButton } from '@mantine/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
-
+import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
 import ReactDraggable from 'react-draggable'
-import { RiDeleteBin7Fill, RiEditFill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
+import { useTransition, animated } from 'react-spring'
 
 import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
-import type { FC, CSSProperties, MouseEvent } from 'react'
+import type { FC, CSSProperties, MouseEvent, MouseEventHandler } from 'react'
 
-import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useStyles } from './Draggable.styles'
 import { GuideLine } from './components/GuideLine'
 import { recalculatePosition } from './recalculatePosition'
-import { useConfiguratorStore, useConfiguratorStoreBare } from '../../store/configurator'
+import { useConfiguratorStoreBare } from '../../store/configurator'
 import { getConfiguratorElement } from '../../helpers/getConfiguratorElement'
+import { DraggableOptions } from './components/DraggableOptions/DraggableOptions'
+import { CANVAS_PADDING } from '../../constants/dom'
 
 type Bounds = {
   top: number
@@ -30,8 +31,8 @@ const defaultBounds = {
 }
 
 type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
-  onRemove: () => void
-  onEdit: () => void
+  onRemove: MouseEventHandler<HTMLButtonElement>
+  onEdit: (params: { initialLeft: number; finalLeft: number; y: number }) => void
   propsDependencies: any[]
   id: string
   zoom: number
@@ -67,6 +68,16 @@ export const Draggable: FC<DraggableProps> = ({
 
   const { classes, cx } = useStyles({ zoom })
 
+  const guideLinesTransition = useTransition(isDragging, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    delay: isDragging ? 300 : 0,
+    config: {
+      duration: 175
+    }
+  })
+
   const isOnOptionsNode = (e: MouseEvent<HTMLButtonElement>) =>
     optionsRef.current === e.target || optionsRef.current?.contains(e.target as Node) || false
 
@@ -80,12 +91,21 @@ export const Draggable: FC<DraggableProps> = ({
     const { top, left, bottom, right } = boxRef.current?.getBoundingClientRect() || defaultBounds
 
     setBounds({
-      top: Math.floor(Math.abs(top - canvasBounds.current.top) / zoom),
-      right: Math.floor(Math.abs(right - canvasBounds.current.right) / zoom),
-      bottom: Math.floor(Math.abs(bottom - canvasBounds.current.bottom) / zoom),
-      left: Math.floor(Math.abs(left - canvasBounds.current.left) / zoom)
+      top: Math.abs(Math.round((top - canvasBounds.current.top) / zoom)),
+      right: Math.abs(Math.round((right - canvasBounds.current.right) / zoom)),
+      bottom: Math.abs(Math.round((bottom - canvasBounds.current.bottom) / zoom)),
+      left: Math.abs(Math.round((left - canvasBounds.current.left) / zoom))
     })
   }, 8)
+
+  const getCenterXPosition = () => {
+    const { left } = boxRef.current?.getBoundingClientRect() || defaultBounds
+
+    return {
+      initialLeft: left,
+      finalLeft: (window.innerWidth - childWidth - 500) / 2
+    }
+  }
 
   const handleDrag: DraggableEventHandler = useCallback(
     (e) => {
@@ -110,6 +130,7 @@ export const Draggable: FC<DraggableProps> = ({
 
   useEffect(() => {
     throttledRecalculatePosition()
+    debouncedSetBounds()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvas.height, canvas.width, id, childHeight, childWidth])
 
@@ -165,54 +186,35 @@ export const Draggable: FC<DraggableProps> = ({
           } as CSSProperties
         }
       >
-        {isDragging && (
-          <>
-            <GuideLine direction="left" value={boxBounds.left} zoom={zoom} />
-            <GuideLine direction="right" value={boxBounds.right} zoom={zoom} />
-            <GuideLine direction="top" value={boxBounds.top} zoom={zoom} />
-            <GuideLine direction="bottom" value={boxBounds.bottom} zoom={zoom} />
-          </>
+        {guideLinesTransition(
+          (styles, item) =>
+            item && (
+              <animated.div style={styles}>
+                <GuideLine direction="left" value={boxBounds.left} zoom={zoom} />
+                <GuideLine direction="right" value={boxBounds.right} zoom={zoom} />
+                <GuideLine direction="top" value={boxBounds.top} zoom={zoom} />
+                <GuideLine direction="bottom" value={boxBounds.bottom} zoom={zoom} />
+              </animated.div>
+            )
         )}
         {children}
-        <Popper<HTMLDivElement>
-          mounted={opened}
-          referenceElement={boxRef.current as HTMLDivElement}
-          position="top"
-          placement="end"
-          withArrow={false}
-          gutter={6}
-          forceUpdateDependencies={[position, ...propsDependencies]}
-          transition="slide-down"
-          zIndex={100}
-          withinPortal={false}
-          modifiers={[
-            {
-              // @ts-ignore
-              name: 'zoomTransform',
-              enabled: true,
-              phase: 'beforeWrite',
-              requires: ['computeStyles'],
-              fn: ({ state }: any) => {
-                state.styles.popper.transform = `translate3d(2px, -${
-                  (state?.rects?.reference.height || 0) + Math.round(6 * zoom)
-                }px, 0px)`
-              }
-            }
-          ]}
-        >
-          <Group spacing={8} className={cx(classes.options, 'options')} ref={optionsRef}>
-            <ActionIcon onClick={() => toggleLocked()}>
-              {isLocked ? <RiLockFill /> : <RiLockUnlockFill />}
-            </ActionIcon>
-            <ActionIcon onClick={onEdit}>
-              <RiEditFill />
-            </ActionIcon>
 
-            <ActionIcon onClick={onRemove}>
-              <RiDeleteBin7Fill />
-            </ActionIcon>
-          </Group>
-        </Popper>
+        <DraggableOptions
+          visible={opened}
+          forceUpdateDependencies={[position, ...propsDependencies]}
+          onEdit={() => {
+            onEdit({
+              ...getCenterXPosition(),
+              y: position?.y || 0
+            })
+          }}
+          onRemove={onRemove}
+          onLock={() => toggleLocked()}
+          locked={isLocked}
+          boxRef={boxRef}
+          optionsRef={optionsRef}
+          zoom={canvas.zoom}
+        />
       </UnstyledButton>
     </ReactDraggable>
   )

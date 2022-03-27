@@ -1,0 +1,1 @@
+export { TextCore } from './TextCore'

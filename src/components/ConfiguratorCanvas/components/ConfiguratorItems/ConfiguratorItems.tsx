@@ -7,7 +7,7 @@ import { Draggable } from '../../../Draggable/Draggable'
 import { Option } from '../../../../types/Options'
 
 type ConfiguratorItemProps = {
-  onEdit: (value: boolean) => void
+  onEdit: (value: boolean, params: { initialLeft: number; finalLeft: number; y: number }) => void
 }
 
 export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) => {
@@ -62,8 +62,8 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
             defaultPosition={elements[slug].cords}
             propsDependencies={[elementOptions.map(({ value }) => value)]}
             onRemove={() => removeElement(slug)}
-            onEdit={() => {
-              onEdit(true)
+            onEdit={(params) => {
+              onEdit(true, params)
               selectElement(slug)
             }}
           >

@@ -1,15 +1,4 @@
-import { createStyles, keyframes } from '@mantine/core'
-
-const reveal = keyframes`
-  from {
-    opacity: 0;
-    background: red;
-  }
-
-  to {
-    opacity: 1;
-  }
-`
+import { createStyles } from '@mantine/core'
 
 export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
   wrapper: {
@@ -70,7 +59,8 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     borderRadius: theme.radius.md,
     cursor: 'pointer',
     transform: `scale(${1 / zoom})`,
-    transformOrigin: 'bottom right'
+    transformOrigin: 'bottom right',
+    flexWrap: 'nowrap'
   },
 
   offset: {
@@ -79,8 +69,6 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
     '& span': {
       position: 'absolute',
       padding: 3,
-      animation: `${reveal} 1s ease forward`,
-
       backgroundColor: theme.colors.dark[4],
       fontSize: 10,
       borderRadius: 4

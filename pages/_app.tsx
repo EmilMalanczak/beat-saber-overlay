@@ -7,6 +7,7 @@ import { SocketProvider } from '../src/contexts/Socket'
 import { ThemeContext } from '../src/contexts/Theme'
 
 import '../src/styles/global.scss'
+import '../src/styles/fonts.scss'
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()

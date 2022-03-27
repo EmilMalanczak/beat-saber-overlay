@@ -1,4 +1,11 @@
-import { NumberInput, ColorInput, Switch, Slider as MSlider, InputWrapper } from '@mantine/core'
+import {
+  NumberInput,
+  ColorInput,
+  Switch,
+  Slider as MSlider,
+  InputWrapper,
+  Select
+} from '@mantine/core'
 import { Option } from '../../types/Options'
 
 type Handler = (...values: any[]) => void
@@ -40,7 +47,7 @@ export const optionsInputs: Record<
     handler: defaultHandler
   },
   [Option.SELECT]: {
-    component: NumberInput,
+    component: Select,
     handler: defaultHandler
   },
   [Option.SLIDER]: {

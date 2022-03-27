@@ -36,8 +36,8 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
   isDragging: false,
   activeElement: null,
   canvas: {
-    width: 1920,
-    height: 1080,
+    width: 960,
+    height: 720,
     zoom: 1
   },
   setInitialElements: (initialElements) => [
@@ -161,10 +161,6 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
           })
         }
       })
-
-      const button = document.getElementById(id)
-
-      console.log({ button })
     }
   },
   editActiveELementState: (callback) => callback(get(), set),
@@ -209,7 +205,7 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
 }))
 
 export const useConfiguratorStore = (
-  selector?: StateSelector<ConfiguratorStore, any> = (state) => state
+  selector: StateSelector<ConfiguratorStore, any> = (state) => state
 ): ConfiguratorStore => {
   const [localConfig, setLocalConfig] = useLocalStorageValue({
     key: 'overlay-config'

@@ -6,11 +6,9 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          {/* SEO stuff */}
           <title>Beat saber overlay generator</title>
-          <link
-            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Teko:wght@500;600;700&display=swap"
-            rel="stylesheet"
-          />
+
           <link rel="apple-touch-icon" sizes="57x57" href="/assets/apple-icon-57x57.png" />
           <link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-icon-60x60.png" />
           <link rel="apple-touch-icon" sizes="72x72" href="/assets/apple-icon-72x72.png" />
@@ -31,6 +29,15 @@ export default class MyDocument extends Document {
           <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#ffffff" />
+
+          {/* font loading */}
+          <link rel="preload" href="/fonts/NeonTubes2.ttf" as="font" crossOrigin="" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Oswald:wght@200;300;400;500;600;700&family=Teko:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />

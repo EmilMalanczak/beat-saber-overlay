@@ -5,6 +5,7 @@ import { useStyles } from './EditDrawer.styles'
 import { useConfiguratorStore } from '../../store/configurator'
 import { optionsInputs } from './optionsInputs'
 import { Option, TogglePropOptions } from '../../types/Options'
+import { DRAWER_WIDTH } from '../../constants/dom'
 
 type EditDrawerProps = {
   opened: boolean
@@ -16,8 +17,6 @@ export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
   const { activeElement, saveConfig, editActiveElement, toggleActiveElementComponents } =
     useConfiguratorStore()
 
-  // console.log(activeElement)
-
   return (
     <Drawer
       opened={opened}
@@ -28,7 +27,7 @@ export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
       title={<Title order={4}>Edit element</Title>}
       padding="xl"
       overlayOpacity={0}
-      size="xl"
+      size={DRAWER_WIDTH}
     >
       {activeElement?.description && (
         <Text size="sm" mb={16}>

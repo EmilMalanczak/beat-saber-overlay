@@ -37,7 +37,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
 
     '&::after': {
       height: 1,
-      width: '100vw',
+      width: '200vw',
       top: 4
     }
   },
@@ -47,7 +47,7 @@ export const useStyles = createStyles((theme, { zoom }: { zoom: number }) => ({
 
     '&::after': {
       width: 1,
-      height: '100vh',
+      height: '200vh',
       right: 4
     }
   },
