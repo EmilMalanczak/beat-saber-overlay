@@ -1,4 +1,5 @@
 import { createStyles } from '@mantine/styles'
+import { CANVAS_PADDING } from '../../constants/dom'
 
 export const useStyles = createStyles(
   (theme, { width, height, zoom }: { width: number; height: number; zoom: number }) => ({
@@ -24,7 +25,7 @@ export const useStyles = createStyles(
       position: 'relative',
       // cursor: 'move',
       overflow: 'hidden',
-      padding: 20,
+      padding: CANVAS_PADDING,
       backgroundColor: theme.colors.dark[8]
     },
 

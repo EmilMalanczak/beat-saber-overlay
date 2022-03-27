@@ -1,4 +1,4 @@
-import { UnstyledButton, Transition } from '@mantine/core'
+import { UnstyledButton } from '@mantine/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
 import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
@@ -6,7 +6,7 @@ import ReactDraggable from 'react-draggable'
 import { useTransition, animated } from 'react-spring'
 
 import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
-import type { FC, CSSProperties, MouseEvent } from 'react'
+import type { FC, CSSProperties, MouseEvent, MouseEventHandler } from 'react'
 
 import { useStyles } from './Draggable.styles'
 import { GuideLine } from './components/GuideLine'
@@ -14,6 +14,7 @@ import { recalculatePosition } from './recalculatePosition'
 import { useConfiguratorStoreBare } from '../../store/configurator'
 import { getConfiguratorElement } from '../../helpers/getConfiguratorElement'
 import { DraggableOptions } from './components/DraggableOptions/DraggableOptions'
+import { CANVAS_PADDING } from '../../constants/dom'
 
 type Bounds = {
   top: number
@@ -30,8 +31,8 @@ const defaultBounds = {
 }
 
 type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
-  onRemove: () => void
-  onEdit: () => void
+  onRemove: MouseEventHandler<HTMLButtonElement>
+  onEdit: (params: { initialLeft: number; finalLeft: number; y: number }) => void
   propsDependencies: any[]
   id: string
   zoom: number
@@ -97,6 +98,15 @@ export const Draggable: FC<DraggableProps> = ({
     })
   }, 8)
 
+  const getCenterXPosition = () => {
+    const { left } = boxRef.current?.getBoundingClientRect() || defaultBounds
+
+    return {
+      initialLeft: left,
+      finalLeft: (window.innerWidth - childWidth - 500) / 2
+    }
+  }
+
   const handleDrag: DraggableEventHandler = useCallback(
     (e) => {
       e.stopPropagation()
@@ -120,6 +130,7 @@ export const Draggable: FC<DraggableProps> = ({
 
   useEffect(() => {
     throttledRecalculatePosition()
+    debouncedSetBounds()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvas.height, canvas.width, id, childHeight, childWidth])
 
@@ -191,9 +202,14 @@ export const Draggable: FC<DraggableProps> = ({
         <DraggableOptions
           visible={opened}
           forceUpdateDependencies={[position, ...propsDependencies]}
-          onEdit={onEdit}
+          onEdit={() => {
+            onEdit({
+              ...getCenterXPosition(),
+              y: position?.y || 0
+            })
+          }}
           onRemove={onRemove}
-          onLock={toggleLocked}
+          onLock={() => toggleLocked()}
           locked={isLocked}
           boxRef={boxRef}
           optionsRef={optionsRef}

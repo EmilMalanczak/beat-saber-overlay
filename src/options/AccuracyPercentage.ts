@@ -1,6 +1,7 @@
 import { Option } from '../types/Options'
 import type { ComponentOptions } from '../types/Options'
 import { AccuracyPercentage } from '../components/AccuracyPercentage'
+import { NUMBER_FONT_FAMILIES } from '../constants/ui'
 
 export const options: ComponentOptions = {
   name: 'Accuracy percentage',
@@ -31,6 +32,16 @@ export const options: ComponentOptions = {
       max: 900,
       step: 100,
       value: 400
+    },
+    {
+      id: 'font-family',
+      propName: 'font',
+      inputTypeName: Option.SELECT,
+      label: 'Font',
+      //   description: 'size of each note',
+      data: NUMBER_FONT_FAMILIES,
+      value: 'Montserrat Alternates',
+      placeholder: 'Pick one'
     }
   ]
 }

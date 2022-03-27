@@ -1,6 +1,7 @@
 import { ActionIcon, Group, Popper } from '@mantine/core'
-import { VFC, RefObject, CSSProperties, useRef, useState } from 'react'
 import { RiDeleteBin7Fill, RiEditFill, RiLockFill, RiLockUnlockFill } from 'react-icons/ri'
+
+import type { VFC, RefObject, CSSProperties, MouseEventHandler } from 'react'
 
 import { useStyles } from './DraggableOptions.styles'
 
@@ -8,9 +9,9 @@ type DraggableOptionsProps = {
   visible: boolean
   locked: boolean
   zoom: number
-  onEdit: () => void
-  onRemove: () => void
-  onLock: () => void
+  onEdit: MouseEventHandler<HTMLButtonElement>
+  onRemove: MouseEventHandler<HTMLButtonElement>
+  onLock: MouseEventHandler<HTMLButtonElement>
   forceUpdateDependencies: any[]
   boxRef: RefObject<HTMLDivElement>
   optionsRef: RefObject<HTMLDivElement>
@@ -65,7 +66,6 @@ export const DraggableOptions: VFC<DraggableOptionsProps> = ({
           phase: 'beforeWrite',
           requires: ['computeStyles'],
           fn: ({ state }: any) => {
-            console.log(state)
             const { placement } = state
 
             state.styles.popper['transform-origin'] = `${

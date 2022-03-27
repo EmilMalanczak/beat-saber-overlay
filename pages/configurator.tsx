@@ -26,7 +26,7 @@ const Home = () => {
 
   return (
     <>
-      <ConfiguratorCanvas onEdit={(val) => setIsEditOpen(val)} />
+      <ConfiguratorCanvas editing={isEditOpen} onEdit={(val) => setIsEditOpen(val)} />
 
       <Portal zIndex={5}>
         <Group

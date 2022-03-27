@@ -12,7 +12,7 @@ import { useConfiguratorStore } from '../../store/configurator'
 import { useStyles } from './ConfiguratorCanvas.styles'
 import { roundZoomScale } from '../../helpers/roundZoomScale'
 import { ConfiguratorItems } from './components/ConfiguratorItems'
-import { CANVAS_ID } from '../../constants/dom'
+import { CANVAS_ID, DRAWER_WIDTH } from '../../constants/dom'
 
 const maxScale = 3
 const minScale = 0.5
@@ -25,9 +25,10 @@ const scale = {
 
 type ConfiguratorProps = {
   onEdit: (value: boolean) => void
+  editing: boolean
 }
 
-export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
+export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit, editing }) => {
   const { canvas, setCanvas } = useConfiguratorStore((state) => ({
     canvas: state.canvas,
     setCanvas: state.setCanvas
@@ -37,10 +38,23 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
   const [wasInitiallyZoomed, setWasInitiallyZoomed] = useState(false)
   const panRef = useRef<ReactZoomPanPinchRef>(null)
 
+  const latestPosition = useRef<{ x: number; y: number }>()
+
   const { classes } = useStyles(canvas)
 
   const handleResizeCanvas: ResizableProps['onResize'] = (_, { size }) => {
     setCanvas({ width: size.width, height: size.height })
+  }
+
+  const saveLatestPosition = (x?: number, y?: number) => {
+    if (panRef.current) {
+      const { positionY, positionX } = panRef.current.state
+
+      latestPosition.current = {
+        x: x ?? positionX,
+        y: y ?? positionY
+      }
+    }
   }
 
   const getInitialZoom = () => {
@@ -51,6 +65,14 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
 
     return heightDimension > widthDimension ? widthDimension : heightDimension
   }
+  useEffect(() => {
+    if (!editing && wasInitiallyZoomed && latestPosition.current?.x && latestPosition.current?.y) {
+      console.log('back to prev transform')
+      console.log(latestPosition.current)
+
+      panRef.current?.setTransform(latestPosition.current.x, latestPosition.current.y, canvas.zoom)
+    }
+  }, [canvas.zoom, editing, wasInitiallyZoomed])
 
   useEffect(() => {
     if (!wasInitiallyZoomed && panRef.current) {
@@ -59,9 +81,17 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
       setCanvas({ zoom: initialZoom })
       panRef.current.centerView(initialZoom)
       setWasInitiallyZoomed(true)
+
+      saveLatestPosition()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [panRef.current])
+
+  useEffect(() => {
+    if (panRef.current) {
+      saveLatestPosition()
+    }
+  }, [canvas.zoom])
 
   return (
     <TransformWrapper
@@ -83,10 +113,12 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
           finalScale = maxScale
         }
 
+        saveLatestPosition(state.positionX, state.positionY)
+
         setCanvas({ zoom: finalScale })
       }}
     >
-      {({ zoomIn, zoomOut, state, centerView }) => (
+      {({ zoomIn, zoomOut, state, centerView, setTransform }) => (
         <>
           <TransformComponent wrapperClass={classes.background}>
             <Resizable
@@ -104,7 +136,20 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit }) => {
                   {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom}x`}
                 </span>
                 <div className={classes.canvas} id={CANVAS_ID}>
-                  <ConfiguratorItems onEdit={onEdit} />
+                  <ConfiguratorItems
+                    onEdit={(value, { finalLeft, initialLeft }) => {
+                      onEdit(value)
+
+                      const panX = panRef.current?.state.positionX || 0
+
+                      saveLatestPosition()
+
+                      const newX = finalLeft + panX - initialLeft + DRAWER_WIDTH
+                      const newY = panRef.current?.state.positionY || 0
+
+                      setTransform(newX, newY, canvas.zoom)
+                    }}
+                  />
                 </div>
               </div>
             </Resizable>
