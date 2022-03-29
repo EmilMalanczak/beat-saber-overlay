@@ -6,5 +6,7 @@ module.exports = {
   quoteProps: 'as-needed',
   tabWidth: 2,
   trailingComma: 'none',
-  endOfLine: 'auto'
+  endOfLine: 'auto',
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true
 }
