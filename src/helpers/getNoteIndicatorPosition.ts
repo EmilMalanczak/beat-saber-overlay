@@ -1,4 +1,4 @@
-import type { NoteCut } from '../store/score'
+import type { NoteCut } from 'store/cuts'
 
 export const getNoteIndicatorPosition = (direction: NoteCut['direction']) => {
   if (direction === 'Any') {

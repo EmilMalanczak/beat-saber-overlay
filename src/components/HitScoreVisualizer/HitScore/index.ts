@@ -1,1 +1,1 @@
-export { HitScore } from './HitScore'
+export * from './HitScore'

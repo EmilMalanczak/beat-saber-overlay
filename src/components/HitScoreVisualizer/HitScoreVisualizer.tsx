@@ -1,8 +1,8 @@
 import type { FC, CSSProperties } from 'react'
 
-import { useScoreStore } from '../../store/score'
-import { HitScore, HitScoreSharedProps } from './HitScore/HitScore'
+import { useCutsStore } from 'store/cuts'
 
+import { HitScore, HitScoreSharedProps } from './HitScore'
 import classes from './HitScoreVisualizer.module.scss'
 
 export type HitScoreVisualizerProps = HitScoreSharedProps & {
@@ -14,7 +14,7 @@ export type HitScoreVisualizerProps = HitScoreSharedProps & {
 
 export const HitScoreVisualizer: FC<HitScoreVisualizerProps> = (props) => {
   const { rows, style, width, rowHeight, ...scoreProps } = props
-  const noteScores = useScoreStore((state) => state.noteScores)
+  const noteScores = useCutsStore((state) => state.noteScores)
 
   return (
     <div

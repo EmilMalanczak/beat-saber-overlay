@@ -14,14 +14,11 @@ module.exports = {
   plugins: ['react-hooks', '@typescript-eslint', 'prettier', 'react'],
   settings: {
     'import/resolver': {
-      node: {
-        paths: ['src'],
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
-      }
+      typescript: {}
     }
   },
+
   rules: {
-    'import/no-unresolved': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'import/extensions': 'off',
@@ -66,6 +63,25 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'no-console': 'off',
-    'operator-linebreak': 'off'
+    'operator-linebreak': 'off',
+    'import/no-unresolved': 'error',
+    'import/order': [
+      1,
+      {
+        groups: [['external', 'builtin'], 'type', 'internal', 'sibling', 'parent', 'index'],
+        pathGroups: [
+          {
+            pattern: 'components|hooks|helpers|utils|store|types|constants|contexts|api',
+            group: 'internal'
+          }
+        ],
+        pathGroupsExcludedImportTypes: ['internal'],
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true
+        },
+        'newlines-between': 'always'
+      }
+    ]
   }
 }

@@ -1,11 +1,13 @@
-import type { VFC } from 'react'
 import { Group, Drawer, Text, Button, Switch, Title } from '@mantine/core'
 
+import type { VFC } from 'react'
+
+import { DRAWER_WIDTH } from 'constants/dom'
+import { useConfiguratorStore } from 'store/configurator'
+import { Option, TogglePropOptions } from 'types/Options'
+
 import { useStyles } from './EditDrawer.styles'
-import { useConfiguratorStore } from '../../store/configurator'
 import { optionsInputs } from './optionsInputs'
-import { Option, TogglePropOptions } from '../../types/Options'
-import { DRAWER_WIDTH } from '../../constants/dom'
 
 type EditDrawerProps = {
   opened: boolean

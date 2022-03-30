@@ -1,18 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
-import type { VFC } from 'react'
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
-import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { ActionIcon, Group, Portal } from '@mantine/core'
-import { RiZoomInLine, RiZoomOutLine, RiFullscreenLine, RiFullscreenExitLine } from 'react-icons/ri'
 import { useFullscreen } from '@mantine/hooks'
+import { useEffect, useRef, useState } from 'react'
+import { RiZoomInLine, RiZoomOutLine, RiFullscreenLine, RiFullscreenExitLine } from 'react-icons/ri'
 import { Resizable } from 'react-resizable'
-import type { ResizableProps } from 'react-resizable'
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 
-import { useConfiguratorStore } from '../../store/configurator'
-import { useStyles } from './ConfiguratorCanvas.styles'
-import { roundZoomScale } from '../../helpers/roundZoomScale'
+import type { VFC } from 'react'
+import type { ResizableProps } from 'react-resizable'
+import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
+
+import { CANVAS_ID, DRAWER_WIDTH } from 'constants/dom'
+import { roundZoomScale } from 'helpers/roundZoomScale'
+import { useConfiguratorStore } from 'store/configurator'
+
 import { ConfiguratorItems } from './components/ConfiguratorItems'
-import { CANVAS_ID, DRAWER_WIDTH } from '../../constants/dom'
+import { useStyles } from './ConfiguratorCanvas.styles'
 
 const maxScale = 3
 const minScale = 0.5
@@ -67,9 +69,6 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit, editing }) 
   }
   useEffect(() => {
     if (!editing && wasInitiallyZoomed && latestPosition.current?.x && latestPosition.current?.y) {
-      console.log('back to prev transform')
-      console.log(latestPosition.current)
-
       panRef.current?.setTransform(latestPosition.current.x, latestPosition.current.y, canvas.zoom)
     }
   }, [canvas.zoom, editing, wasInitiallyZoomed])

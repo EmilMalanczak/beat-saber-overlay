@@ -1,4 +1,4 @@
-import type { HitScoreConfig } from '../components/HitScoreVisualizer/HitScore/HitScore'
+import type { HitScoreConfig } from 'components/HitScoreVisualizer/HitScore/HitScore'
 
 export const getScoreQualityStyles = (score: number, config: HitScoreConfig) => {
   const scoreStyles = config?.find(({ above }) => above <= score)

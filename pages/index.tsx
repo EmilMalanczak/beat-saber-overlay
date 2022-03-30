@@ -1,11 +1,11 @@
-import { useState } from 'react'
 import { createStyles, useMantineTheme } from '@mantine/styles'
+import { useState } from 'react'
 
 import { CutVisualizer } from '../src/components/CutVisualizer'
 import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
-import { useInterval } from '../src/hooks/useInterval'
-import { useScoreStore } from '../src/store/score'
 import { generateRandomCut } from '../src/helpers/generateRandomCut'
+import { useInterval } from '../src/hooks/useInterval'
+import { useCutsStore } from '../src/store/cuts'
 
 export const useStyles = createStyles(() => ({
   visualizers: {
@@ -21,7 +21,7 @@ export const useStyles = createStyles(() => ({
 const Home = () => {
   // const { loading, player } = usePlayerStore()
   const theme = useMantineTheme()
-  const cutNote = useScoreStore((state) => state.cutNote)
+  const cutNote = useCutsStore((state) => state.cutNote)
   const [isDemoOn, toggleDemo] = useState(false)
 
   const { classes } = useStyles()

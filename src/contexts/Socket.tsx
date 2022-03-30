@@ -1,18 +1,21 @@
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useEffect, useState } from 'react'
+
 import type { FC } from 'react'
 
-import { DEFAULT_IP, HTTPStatus, CONNECTION_RECONNECT_TIME } from '../constants'
-import { useStatusStore } from '../store/status'
-import { useInterval } from '../hooks/useInterval'
-import { useScoreStore } from '../store/score'
-import { useSongStore } from '../store/song'
-import { SocketEvent } from '../types/SocketEvent'
-import { HTTPEventData } from '../types/Events'
-import { transformCoordinatesToRadians } from '../utils/transformCoordinatesToRadians'
-import { Saber } from '../types/Saber'
-import { useUIStore } from '../store/ui'
-import { transformRadiansToAngle } from '../utils/transformRadiansToAngle'
+import { CONNECTION_RECONNECT_TIME, DEFAULT_IP, HTTPStatus } from 'constants/api'
+import { HP_COSTS } from 'constants/score'
+import { useInterval } from 'hooks/useInterval'
+import { useCutsStore } from 'store/cuts'
+import { useScoreStore } from 'store/score'
+import { useSongStore } from 'store/song'
+import { useStatusStore } from 'store/status'
+import { useUIStore } from 'store/ui'
+import { HTTPEventData } from 'types/Events'
+import { Saber } from 'types/Saber'
+import { SocketEvent } from 'types/SocketEvent'
+import { transformCoordinatesToRadians } from 'utils/transformCoordinatesToRadians'
+import { transformRadiansToAngle } from 'utils/transformRadiansToAngle'
 
 export const SocketContext = createContext<WebSocket | null>(null)
 
@@ -23,9 +26,16 @@ export const SocketProvider: FC = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null)
   const { connect, disconnect, connected } = useStatusStore()
   const { getSong } = useSongStore()
-  const cutNote = useScoreStore((state) => state.cutNote)
-  const resetStore = useScoreStore((state) => state.resetStore)
+  const cutNote = useCutsStore((state) => state.cutNote)
+  const resetStore = useCutsStore((state) => state.resetStore)
   const { setSaberColors, colors } = useUIStore()
+  const {
+    increaseHealth,
+    decreaseHealth,
+    startObstacleHealthLoss,
+    stopObstacleHealthLoss,
+    setScore
+  } = useScoreStore()
 
   const handleConnectToHTTP = useCallback(() => {
     const HTTPSocket = new WebSocket(
@@ -66,6 +76,29 @@ export const SocketProvider: FC = ({ children }) => {
           resetStore()
           break
 
+        case SocketEvent.OBSTACLE_ENTER:
+          startObstacleHealthLoss(data.time)
+          break
+
+        case SocketEvent.BOMB_CUT:
+          decreaseHealth(HP_COSTS.miss)
+          break
+
+        case SocketEvent.NOTE_MISSED:
+          decreaseHealth(HP_COSTS[data.noteCut.saberType === null ? 'miss' : 'wrongCut'])
+          break
+
+        case SocketEvent.OBSTACLE_EXIT:
+          stopObstacleHealthLoss(data.time)
+          break
+        // need to handle custom mods like insta fail etc.
+
+        case SocketEvent.SCORE_CHANGED:
+          const { score, currentMaxScore } = data.status.performance!
+
+          setScore(score, currentMaxScore)
+          break
+
         case SocketEvent.NOTE_FULLY_CUT:
           const {
             noteID,
@@ -81,7 +114,7 @@ export const SocketProvider: FC = ({ children }) => {
           } = data.noteCut
 
           console.log(data.noteCut)
-
+          increaseHealth(HP_COSTS.correctCut)
           cutNote({
             id: noteID,
             x: noteLine,
@@ -103,7 +136,8 @@ export const SocketProvider: FC = ({ children }) => {
           break
       }
     },
-    [colors, cutNote, getSong, resetStore, setSaberColors]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   )
 
   useEffect(() => {

@@ -1,7 +1,8 @@
-import { Option } from '../types/Options'
-import type { ComponentOptions } from '../types/Options'
-import { AccuracyPercentage } from '../components/AccuracyPercentage'
-import { NUMBER_FONT_FAMILIES } from '../constants/ui'
+import type { ComponentOptions } from 'types/Options'
+
+import { AccuracyPercentage } from 'components/AccuracyPercentage'
+import { NUMBER_FONT_FAMILIES } from 'constants/ui'
+import { Option } from 'types/Options'
 
 export const options: ComponentOptions = {
   name: 'Accuracy percentage',

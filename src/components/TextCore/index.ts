@@ -1,1 +1,1 @@
-export { TextCore } from './TextCore'
+export * from './TextCore'

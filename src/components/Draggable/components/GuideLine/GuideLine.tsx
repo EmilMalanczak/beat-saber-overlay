@@ -1,4 +1,5 @@
-import { VFC } from 'react'
+import type { VFC } from 'react'
+
 import { useStyles } from './GuideLine.styles'
 
 enum Direction {

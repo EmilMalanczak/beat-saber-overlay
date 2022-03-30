@@ -6,7 +6,8 @@ import {
   InputWrapper,
   Select
 } from '@mantine/core'
-import { Option } from '../../types/Options'
+
+import { Option } from 'types/Options'
 
 type Handler = (...values: any[]) => void
 

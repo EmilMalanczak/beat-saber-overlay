@@ -1,6 +1,7 @@
 import create from 'zustand'
-import { BeatmapObject } from '../types/Events'
-import { Song } from '../types/Song'
+
+import { BeatmapObject } from 'types/Events'
+import { Song } from 'types/Song'
 
 type SongDetails = {
   author: BeatmapObject['songAuthorName']

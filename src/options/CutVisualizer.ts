@@ -1,6 +1,7 @@
-import { CutVisualizer } from '../components/CutVisualizer'
-import { Option } from '../types/Options'
-import type { ComponentOptions } from '../types/Options'
+import type { ComponentOptions } from 'types/Options'
+
+import { CutVisualizer } from 'components/CutVisualizer'
+import { Option } from 'types/Options'
 
 export const options: ComponentOptions = {
   name: 'CutVisualizer',

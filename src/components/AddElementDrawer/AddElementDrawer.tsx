@@ -1,7 +1,8 @@
-import { VFC } from 'react'
 import { Button, Drawer, Group } from '@mantine/core'
-import { options } from '../../options'
-import { useConfiguratorStore } from '../../store/configurator'
+import { VFC } from 'react'
+
+import { options } from 'options/index'
+import { useConfiguratorStore } from 'store/configurator'
 
 type AddElementDrawerProps = {
   opened: boolean

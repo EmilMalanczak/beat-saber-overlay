@@ -1,5 +1,6 @@
 import { createStyles } from '@mantine/styles'
-import { CANVAS_PADDING } from '../../constants/dom'
+
+import { CANVAS_PADDING } from 'constants/dom'
 
 export const useStyles = createStyles(
   (theme, { width, height, zoom }: { width: number; height: number; zoom: number }) => ({

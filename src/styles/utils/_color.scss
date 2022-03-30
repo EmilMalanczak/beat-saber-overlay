@@ -1,15 +1,15 @@
-@use '../constants' as *;
+@use 'types' as *;
 
 @function color($key, $opacity: 1, $theme-name: null) {
   @if $theme-name != null and map-has-key($themes, $theme-name) {
-    $selected-theme: map-get($themes, $theme-name );
+    $selected-theme: map-get($themes, $theme-name);
 
     @if not map-has-key($selected-theme, '#{$key}') {
       @error "Color `#{$key}` not found in selected theme";
     }
- 
+
     @return map-get($selected-theme, '#{$key}');
   }
 
-  @return rgba(var(--color-#{$key}), $opacity); 
-} 
+  @return rgba(var(--color-#{$key}), $opacity);
+}

@@ -1,6 +1,7 @@
 import create from 'zustand'
-import { Player } from '../types/Player'
-import { scoresaber } from '../api/scoresaber'
+
+import { scoresaber } from 'api/scoresaber'
+import { Player } from 'types/Player'
 
 type PlayerStore = {
   loading: boolean

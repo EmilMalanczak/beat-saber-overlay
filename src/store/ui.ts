@@ -1,5 +1,6 @@
 import create from 'zustand'
-import { Saber } from '../types/Saber'
+
+import { Saber } from 'types/Saber'
 
 type UIStore = {
   colors: Record<Saber, string>
