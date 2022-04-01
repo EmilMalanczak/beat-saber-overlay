@@ -1,18 +1,16 @@
 import type { ComponentOptions } from 'types/Options'
 
-import { AccuracyPercentage } from 'components/AccuracyPercentage'
 import { NUMBER_FONT_FAMILIES } from 'constants/ui'
 import { Option } from 'types/Options'
 
-export const options: ComponentOptions = {
-  name: 'Accuracy percentage',
-  slug: 'accuracy-percentage',
-  component: AccuracyPercentage,
-  category: 'performance',
-  order: 0,
-  image: '',
-  description: 'Display cuts from the game',
-  options: [
+type PropNames = 'size' | 'weight' | 'font'
+
+export const textOptions = (
+  defaultValues: Partial<Record<PropNames, unknown>> = {}
+): ComponentOptions['options'] => {
+  const { size = 14, weight = 400, font = 'Montserrat Alternates' } = defaultValues
+
+  return [
     {
       id: 'font-size',
       propName: 'size',
@@ -21,27 +19,25 @@ export const options: ComponentOptions = {
       //   description: 'size of each note',
       min: 6,
       max: 32,
-      value: 14
+      value: size as number
     },
     {
       id: 'font-weight',
       propName: 'weight',
       inputTypeName: Option.SLIDER,
       label: 'Font weight',
-      //   description: 'size of each note',
       min: 300,
       max: 900,
       step: 100,
-      value: 400
+      value: weight as number
     },
     {
       id: 'font-family',
       propName: 'font',
       inputTypeName: Option.SELECT,
       label: 'Font',
-      //   description: 'size of each note',
       data: NUMBER_FONT_FAMILIES,
-      value: 'Montserrat Alternates',
+      value: font as string,
       placeholder: 'Pick one'
     }
   ]

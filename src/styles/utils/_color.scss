@@ -1,4 +1,4 @@
-@use 'types' as *;
+@use '../constants' as *;
 
 @function color($key, $opacity: 1, $theme-name: null) {
   @if $theme-name != null and map-has-key($themes, $theme-name) {

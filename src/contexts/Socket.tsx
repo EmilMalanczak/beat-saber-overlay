@@ -91,7 +91,7 @@ export const SocketProvider: FC = ({ children }) => {
         case SocketEvent.OBSTACLE_EXIT:
           stopObstacleHealthLoss(data.time)
           break
-        // need to handle custom mods like insta fail etc.
+        // TODO need to handle custom mods like insta fail etc.
 
         case SocketEvent.SCORE_CHANGED:
           const { score, currentMaxScore } = data.status.performance!
