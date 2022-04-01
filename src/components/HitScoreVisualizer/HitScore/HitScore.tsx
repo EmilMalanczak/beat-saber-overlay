@@ -1,14 +1,14 @@
+import { animated, useSpring } from '@react-spring/web'
 import { useMemo } from 'react'
+
 import type { FC } from 'react'
-import { useSpring, animated } from '@react-spring/web'
+import type { NoteCut } from 'store/cuts'
 
-import { useScoreStore } from '../../../store/score'
-import { getScoreAngle } from '../../../helpers/getScoreAngle'
-import { getScoreTransformDistance } from '../../../helpers/getScoreTransformDistance'
-import { useTimeout } from '../../../hooks/useTimeout'
-import { getScoreQualityStyles } from '../../../helpers/getScoreQualityStyles'
-
-import type { NoteCut } from '../../../store/score'
+import { getScoreAngle } from 'helpers/getScoreAngle'
+import { getScoreQualityStyles } from 'helpers/getScoreQualityStyles'
+import { getScoreTransformDistance } from 'helpers/getScoreTransformDistance'
+import { useTimeout } from 'hooks/useTimeout'
+import { useCutsStore } from 'store/cuts'
 
 import classes from './HitScore.module.scss'
 
@@ -40,7 +40,7 @@ export const HitScore: FC<HitScoreProps> = ({
   config
 }) => {
   const { radians = 0, x, y, score, id } = note
-  const unmountScoreNote = useScoreStore((state) => state.unmountScoreNote)
+  const unmountScoreNote = useCutsStore((state) => state.unmountScoreNote)
 
   const { transform, rotate, ...qualityStyles } = useMemo(() => {
     const { x0, x1, y0, y1 } = getScoreTransformDistance(radians, scoreCutShift)

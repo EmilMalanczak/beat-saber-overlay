@@ -1,119 +1,85 @@
 import create from 'zustand'
-import { NoteCutObject } from '../types/Events'
 
-type Cords = {
-  x: NoteCutObject['noteLine']
-  y: NoteCutObject['noteLayer']
-}
+import { HP_COSTS } from 'constants/score'
 
-export type NoteCut = Cords & {
-  id?: NoteCutObject['noteID']
-  score?: NoteCutObject['finalScore']
-  radians?: number
-  direction?: NoteCutObject['noteCutDirection']
-  deviation?: number
-  fromCenter?: number
-  active: boolean
-  color?: string
-  badCut?: boolean
-}
-
-type Scores = Cords & {
-  scores: Omit<NoteCut, 'active'>[]
-}
+export type Health = number | 'failed'
 
 type ScoreStore = {
   score: number
-  noteScores: Scores[][]
-  noteCuts: NoteCut[][]
-  unmountScoreNote: (
-    cut: Cords & {
-      id: NoteCutObject['noteID']
-    }
-  ) => void
-  cutNote: (note: Omit<NoteCut, 'active'>) => void
-  hideCut: (params: Cords) => void
-  resetStore: () => void
+  health: Health
+  misses: number
+  accuracy: string
+  obstacleEnteredTime: number | null
+  initializeScore: () => void
+  increaseHealth: (health: number) => void
+  decreaseHealth: (health: number) => void
+  incrementMisses: () => void
+  startObstacleHealthLoss: (timestamp: number) => void
+  stopObstacleHealthLoss: (timestamp: number) => void
+  setScore: (score: number, maxScore: number) => void
 }
-
-const rows = [0, 1, 2] as Cords['y'][]
-const columns = [0, 1, 2, 3] as Cords['x'][]
-
-const generateGridCells = <T>(defaultState: (cord: { x: Cords['x']; y: Cords['y'] }) => T): T[][] =>
-  rows.map((row) => columns.map((column): T => defaultState({ y: row, x: column }) as T))
-
-const defaultScores = generateGridCells<Scores>((cords) => ({
-  ...cords,
-  scores: []
-}))
-
-const defaultCuts = generateGridCells((cords) => ({
-  ...cords,
-  active: false
-}))
 
 export const useScoreStore = create<ScoreStore>((set, get) => ({
   score: 0,
-  noteScores: defaultScores,
-  noteCuts: defaultCuts,
-  unmountScoreNote: ({ id: noteId, x, y }) => {
-    const { noteScores } = get()
-
-    const scores = [...noteScores]
-    /*
-      its faster way of finding index than findIndex
-      benchmark:
-      https://www.measurethat.net/Benchmarks/Show/17459/0/findindex-vs-indexof---javascript-performancedsadsadas
-    */
-    const noteIndex = scores[2 - y][x].scores.map(({ id }) => id).indexOf(noteId)
-
-    if (noteIndex !== -1) {
-      scores[2 - y][x].scores.splice(noteIndex, 1)
-    }
-
+  health: 50,
+  misses: 0,
+  accuracy: '0',
+  obstacleEnteredTime: null,
+  initializeScore: () => {
     set({
-      noteScores: scores
+      score: 0,
+      health: 50,
+      misses: 0,
+      accuracy: '100.00'
     })
   },
-  cutNote: (note) => {
-    const { noteCuts, noteScores } = get()
-    const { x, y } = note
+  increaseHealth: (hp) => {
+    const { health } = get()
 
-    const cuts = [...noteCuts]
-    const scores = [...noteScores]
-
-    cuts[2 - y][x] = {
-      active: true,
-      ...note
+    if (health !== 'failed') {
+      set({
+        health: health + hp > 100 ? 100 : health + hp
+      })
     }
+  },
+  decreaseHealth: (hp) => {
+    const { health } = get()
 
-    scores[2 - y][x].scores.push(note)
-
+    if (health !== 'failed') {
+      set({
+        health: health - hp < 0 ? 0 : health - hp
+      })
+    }
+  },
+  startObstacleHealthLoss: (timestamp) => {
     set({
-      noteCuts: cuts,
-      noteScores: scores
+      obstacleEnteredTime: timestamp
     })
   },
-  hideCut: ({ x, y }) => {
-    const { noteCuts } = get()
+  stopObstacleHealthLoss: (timestamp) => {
+    const { decreaseHealth, obstacleEnteredTime } = get()
 
-    const cuts = [...noteCuts]
+    const delta = timestamp - (obstacleEnteredTime || 0)
 
-    cuts[2 - y][x] = {
-      ...cuts[2 - y][x],
-      active: false,
-      x,
-      y
-    }
+    decreaseHealth(delta * HP_COSTS.obstacle)
 
     set({
-      noteCuts: cuts
+      obstacleEnteredTime: null
     })
   },
-  resetStore: () => {
+  setScore: (score, maxScore) => {
+    const accuracy = maxScore > 0 ? ((score / maxScore) * 100).toFixed(2) : '100.00'
+
     set({
-      noteScores: defaultScores,
-      noteCuts: defaultCuts
+      score,
+      accuracy
+    })
+  },
+  incrementMisses: () => {
+    const { misses } = get()
+
+    set({
+      misses: misses + 1
     })
   }
 }))

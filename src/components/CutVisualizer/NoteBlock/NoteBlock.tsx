@@ -1,12 +1,13 @@
-import type { FC, CSSProperties } from 'react'
 import { useSpring, animated } from '@react-spring/web'
 
-import { useTimeout } from '../../../hooks/useTimeout'
-import { NoteCut, useScoreStore } from '../../../store/score'
+import type { FC, CSSProperties } from 'react'
+
+import { getNoteIndicatorPosition } from 'helpers/getNoteIndicatorPosition'
+import { getRotationAngle } from 'helpers/getRotationAngle'
+import { useTimeout } from 'hooks/useTimeout'
+import { NoteCut, useCutsStore } from 'store/cuts'
 
 import classes from './NoteBlock.module.scss'
-import { getNoteIndicatorPosition } from '../../../helpers/getNoteIndicatorPosition'
-import { getRotationAngle } from '../../../helpers/getRotationAngle'
 
 type Color = (color: string) => string
 
@@ -42,7 +43,7 @@ export type NoteBlockProps = {
 }
 
 export const NoteBlock: FC<NoteBlockProps> = (props) => {
-  const hideCut = useScoreStore((state) => state.hideCut)
+  const hideCut = useCutsStore((state) => state.hideCut)
   const {
     noteConfig,
     fadeTime = 300,

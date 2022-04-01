@@ -1,8 +1,10 @@
 import { useLocalStorageValue } from '@mantine/hooks'
 import { useEffect } from 'react'
 import create from 'zustand'
+
 import type { SetState, StateSelector } from 'zustand'
-import { ComponentOptions, Option } from '../types/Options'
+
+import { ComponentOptions, Option } from 'types/Options'
 
 type ElementType = ComponentOptions & { cords: { x: number; y: number } }
 

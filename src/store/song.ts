@@ -1,6 +1,8 @@
 import create from 'zustand'
-import { BeatmapObject } from '../types/Events'
-import { Song } from '../types/Song'
+
+import { beatsaver } from 'api/beatsaver'
+import { BeatmapObject } from 'types/Events'
+import { Song } from 'types/Song'
 
 type SongDetails = {
   author: BeatmapObject['songAuthorName']
@@ -32,9 +34,10 @@ export const useSongStore = create<SongStore>((set, get) => ({
     try {
       get().setLoading(true)
 
-      const song = { hash } as any // TODO fetch song from beatsaver
+      const song = beatsaver.get(`/maps/hash/${hash}`) // TODO fetch song from beatsaver
+      console.log(song)
 
-      set({ song, loading: false, error: false })
+      set({ song: {}, loading: false, error: false })
     } catch (e) {
       console.error('[Beatsaver]: there was a problem with fetching song info')
       console.error(e)

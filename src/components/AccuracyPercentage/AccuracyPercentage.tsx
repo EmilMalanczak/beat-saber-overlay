@@ -1,6 +1,7 @@
 import { VFC } from 'react'
-import { useConfiguratorStoreBare } from '../../store/configurator'
-import { TextCore, TextCoreProps } from '../TextCore/TextCore'
+
+import { TextCore, TextCoreProps } from 'components/TextCore'
+import { useConfiguratorStoreBare } from 'store/configurator'
 
 export const AccuracyPercentage: VFC<TextCoreProps> = (props) => {
   const x = useConfiguratorStoreBare()

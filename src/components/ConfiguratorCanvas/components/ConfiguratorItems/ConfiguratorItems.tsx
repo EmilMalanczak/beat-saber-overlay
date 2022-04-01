@@ -1,10 +1,11 @@
 import { memo } from 'react'
+
 import type { FC } from 'react'
 
-import { useConfiguratorStore, useConfiguratorStoreBare } from '../../../../store/configurator'
-import { options } from '../../../../options'
-import { Draggable } from '../../../Draggable/Draggable'
-import { Option } from '../../../../types/Options'
+import { Draggable } from 'components/Draggable'
+import { options } from 'options/index'
+import { useConfiguratorStore, useConfiguratorStoreBare } from 'store/configurator'
+import { Option } from 'types/Options'
 
 type ConfiguratorItemProps = {
   onEdit: (value: boolean, params: { initialLeft: number; finalLeft: number; y: number }) => void

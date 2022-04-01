@@ -1,11 +1,12 @@
 import { lighten, rgba } from 'polished'
 import { useMemo } from 'react'
+
 import type { FC } from 'react'
 
-import { useScoreStore } from '../../store/score'
-import { NoteBlock } from './NoteBlock'
-import { NoteBlockConfig } from './NoteBlock/NoteBlock'
+import { useCutsStore } from 'store/cuts'
+
 import classes from './CutVisualizer.module.scss'
+import { NoteBlock, NoteBlockConfig } from './NoteBlock'
 
 export type CutVisualizerProps = {
   cellSize?: number
@@ -28,7 +29,7 @@ export const CutVisualizer: FC<CutVisualizerProps> = ({
   style,
   gap
 }) => {
-  const noteCuts = useScoreStore((state) => state.noteCuts)
+  const noteCuts = useCutsStore((state) => state.noteCuts)
 
   const { noteConfig, notePadding }: { noteConfig: NoteBlockConfig; notePadding: number } = useMemo(
     () => ({

@@ -1,20 +1,20 @@
 import { UnstyledButton } from '@mantine/core'
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
-import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactDraggable from 'react-draggable'
 import { useTransition, animated } from 'react-spring'
+import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
 
-import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
 import type { FC, CSSProperties, MouseEvent, MouseEventHandler } from 'react'
+import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
 
-import { useStyles } from './Draggable.styles'
+import { getConfiguratorElement } from 'helpers/getConfiguratorElement'
+import { useConfiguratorStoreBare } from 'store/configurator'
+
+import { DraggableOptions } from './components/DraggableOptions'
 import { GuideLine } from './components/GuideLine'
+import { useStyles } from './Draggable.styles'
 import { recalculatePosition } from './recalculatePosition'
-import { useConfiguratorStoreBare } from '../../store/configurator'
-import { getConfiguratorElement } from '../../helpers/getConfiguratorElement'
-import { DraggableOptions } from './components/DraggableOptions/DraggableOptions'
-import { CANVAS_PADDING } from '../../constants/dom'
 
 type Bounds = {
   top: number

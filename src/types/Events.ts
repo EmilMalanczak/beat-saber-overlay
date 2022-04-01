@@ -144,7 +144,7 @@ export type BeatmapObject = {
   }
 }
 
-export type PerformanceObject = null | {
+export type PerformanceObject = {
   rawScore: number // Current score without the modifier multiplier
   score: number // Current score with modifier multiplier
   currentMaxScore: number // Maximum score with modifier multiplier achievable at current passed notes

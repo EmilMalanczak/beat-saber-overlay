@@ -1,4 +1,5 @@
 import type { FC, CSSProperties } from 'react'
+
 import classes from './TextCore.module.scss'
 
 export type TextCoreProps = {
