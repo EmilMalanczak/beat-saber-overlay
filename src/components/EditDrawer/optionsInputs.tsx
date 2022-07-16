@@ -3,8 +3,10 @@ import {
   ColorInput,
   Switch,
   Slider as MSlider,
+  HueSlider as MHueSlider,
   InputWrapper,
-  Select
+  Select,
+  TextInput
 } from '@mantine/core'
 
 import { Option } from 'types/Options'
@@ -16,6 +18,11 @@ const defaultHandler: Handler = (value) => value
 const Slider = ({ label, description, ...props }: any) => (
   <InputWrapper label={label} description={description}>
     <MSlider {...props} />
+  </InputWrapper>
+)
+const HueSlider = ({ label, description, ...props }: any) => (
+  <InputWrapper label={label} description={description}>
+    <MHueSlider {...props} />
   </InputWrapper>
 )
 
@@ -39,6 +46,10 @@ export const optionsInputs: Record<
     component: ColorInput,
     handler: defaultHandler
   },
+  [Option.HUE]: {
+    component: HueSlider,
+    handler: defaultHandler
+  },
   [Option.OBJECT]: {
     component: NumberInput,
     handler: defaultHandler
@@ -58,6 +69,10 @@ export const optionsInputs: Record<
   [Option.TOGGLE]: {
     component: Switch,
     handler: defaultHandler
+  },
+  [Option.TEXT]: {
+    component: TextInput,
+    handler: (event) => event.target.value
   },
   [Option.TOGGLE_COMPONENTS]: {
     component: Switch,

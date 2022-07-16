@@ -1,10 +1,12 @@
 import type {
   ColorInputProps,
+  HueSliderProps,
   InputWrapperBaseProps,
   NumberInputProps,
   SelectProps,
   SliderProps,
-  SwitchProps
+  SwitchProps,
+  TextInputProps
 } from '@mantine/core'
 
 export enum Option {
@@ -14,6 +16,8 @@ export enum Option {
   OBJECT,
   SELECT,
   COLOR,
+  HUE,
+  TEXT,
   SCORE_VISUALIZER_CONFIG,
   TOGGLE,
   TOGGLE_COMPONENTS
@@ -30,8 +34,10 @@ type PropOptions =
   | OptionsBase<Option.NUMBER, NumberInputProps>
   | OptionsBase<Option.SELECT, SelectProps>
   | OptionsBase<Option.COLOR, ColorInputProps>
+  | OptionsBase<Option.HUE, InputWrapperBaseProps & Omit<HueSliderProps, 'onChange'>>
   | OptionsBase<Option.SLIDER, InputWrapperBaseProps & SliderProps>
   | OptionsBase<Option.TOGGLE, SwitchProps>
+  | OptionsBase<Option.TEXT, TextInputProps>
 
 type ToggleOptions = PropOptions & {
   visibleWhenChecked: boolean

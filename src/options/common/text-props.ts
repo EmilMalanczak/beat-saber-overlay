@@ -5,7 +5,8 @@ import { Option } from 'types/Options'
 
 type PropNames = 'size' | 'weight' | 'font'
 
-export const textOptions = (
+// TODO: add support for generic types
+export const getTextOptions = (
   defaultValues: Partial<Record<PropNames, unknown>> = {}
 ): ComponentOptions['options'] => {
   const { size = 14, weight = 400, font = 'Montserrat Alternates' } = defaultValues
