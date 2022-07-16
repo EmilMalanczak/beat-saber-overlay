@@ -12,6 +12,7 @@ export const options: ComponentOptions = {
   category: 'other',
   order: 0,
   image: '',
+  unique: false,
   description: 'Show neon text',
   options: [
     {

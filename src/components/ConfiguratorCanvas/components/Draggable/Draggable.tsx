@@ -134,6 +134,10 @@ export const Draggable: FC<DraggableProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canvas.height, canvas.width, id, childHeight, childWidth])
 
+  useEffect(() => {
+    setPosition(defaultPosition)
+  }, [defaultPosition])
+
   return (
     <ReactDraggable
       bounds={bounds}

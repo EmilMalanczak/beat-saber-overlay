@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 import type { FC } from 'react'
 
-import { Draggable } from 'components/Draggable'
+import { Draggable } from 'components/ConfiguratorCanvas/components/Draggable'
 import { options } from 'options/index'
 import { useConfiguratorStore, useConfiguratorStoreBare } from 'store/configurator'
 import { Option } from 'types/Options'
@@ -20,10 +20,11 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
     removeElement: state.removeElement,
     selectElement: state.selectElement
   }))
+  console.log(elements)
 
   return (
     <>
-      {Object.values(elements).map(({ name, slug, options: elementOptions }) => {
+      {elements.map(({ name, options: elementOptions, cords }, index) => {
         const Item = options.find((opt) => opt.name === name)?.component
 
         if (!Item) return null
@@ -52,20 +53,22 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
           <Draggable
             id={name}
             onStop={(_, { x, y }) => {
+              console.log('STOP DRAGGIN WITH ', { x, y })
+
               dragElement({
-                slug,
+                index,
                 x,
                 y
               })
             }}
             bounds="parent"
             zoom={zoom as unknown as number}
-            defaultPosition={elements[slug].cords}
+            defaultPosition={cords}
             propsDependencies={[elementOptions.map(({ value }) => value)]}
-            onRemove={() => removeElement(slug)}
+            onRemove={() => removeElement(index)}
             onEdit={(params) => {
               onEdit(true, params)
-              selectElement(slug)
+              selectElement(index)
             }}
           >
             <Item {...elementProps} />

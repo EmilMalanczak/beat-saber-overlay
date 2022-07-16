@@ -59,6 +59,7 @@ export type ComponentOptions = {
   category: string
   order: number
   image: string
+  unique: boolean
   description: string
   options: OptionsType[]
   component: any

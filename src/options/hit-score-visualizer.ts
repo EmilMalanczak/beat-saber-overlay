@@ -9,6 +9,7 @@ export const options: ComponentOptions = {
   category: 'visualizers',
   order: 0,
   image: '',
+  unique: true,
   description: 'Display cut scores from the game',
   options: []
 }

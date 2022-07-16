@@ -40,6 +40,7 @@
   "dependencies": {
     "@mantine/core": "^4.0.4",
     "@mantine/hooks": "^4.0.4",
+    "@mantine/notifications": "^4.2.12",
     "@mantine/ssr": "^4.0.4",
     "@mantine/styles": "^4.0.4",
     "axios": "^0.25.0",

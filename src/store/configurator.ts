@@ -1,4 +1,5 @@
 import { useLocalStorageValue } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
 import { useEffect } from 'react'
 import create from 'zustand'
 
@@ -6,13 +7,13 @@ import type { SetState, StateSelector } from 'zustand'
 
 import { ComponentOptions, Option } from 'types/Options'
 
-type ElementType = ComponentOptions & { cords: { x: number; y: number } }
+type ElementType = ComponentOptions & { cords: { x: number; y: number }; index: number }
 
 type ConfiguratorStore = {
   isDragging: boolean
   // each components has its own config in /options folder
   // we will edit the default props from options drawer later
-  elements: Record<string, ElementType>
+  elements: Omit<ElementType, 'index'>[]
   activeElement: ElementType | null
   canvas: {
     width: number
@@ -20,10 +21,10 @@ type ConfiguratorStore = {
     zoom: number
   }
   setCanvas: (params: { width?: number; height?: number; zoom?: number }) => void
-  dragElement: (params: { slug: string; x: number; y: number }) => void
+  dragElement: (params: { index: number; x: number; y: number }) => void
   addElement: (element: ComponentOptions) => void
-  removeElement: (slug: string) => void
-  selectElement: (slug: string) => void
+  removeElement: (index: number) => void
+  selectElement: (index: number) => void
   editActiveElement: (id: string, value: any) => void
   setInitialElements: (initialElements: any) => void
   saveConfig: () => void
@@ -34,7 +35,7 @@ type ConfiguratorStore = {
 }
 
 export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
-  elements: {},
+  elements: [],
   isDragging: false,
   activeElement: null,
   canvas: {
@@ -47,35 +48,55 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
       elements: initialElements
     })
   ],
-  removeElement: (slug) => {
+  removeElement: (index) => {
     const currentElements = get().elements
 
-    delete currentElements[slug]
+    // currentElements.splice(index, 1)
+    // TODO remove element from canvas
+    // delete currentElements[slug]
+
+    console.log('currentElements', currentElements)
+    console.log('filtered', currentElements.splice(index, 1))
 
     set({
-      elements: currentElements
+      elements: [...currentElements]
     })
   },
   addElement: (element) => {
     const currentElements = get().elements
 
-    set({
-      elements: {
-        ...currentElements,
-        [element.slug]: {
-          ...element,
-          cords: {
-            x: 0,
-            y: 0
-          }
-        }
-      }
-    })
-  },
-  selectElement: (slug) => {
-    if (slug) {
+    const ableToAdd = !element.unique || !currentElements.some((e) => e.slug === element.slug)
+
+    if (ableToAdd) {
       set({
-        activeElement: Object.values(get().elements).find((el) => el.slug === slug) || null
+        elements: [
+          ...currentElements,
+          {
+            ...element,
+            cords: {
+              x: 0,
+              y: 0
+            }
+          }
+        ]
+      })
+    } else {
+      showNotification({
+        color: 'red',
+        title: 'Cannot add this element',
+        message: 'Element with this slug already exists'
+      })
+    }
+  },
+  selectElement: (index) => {
+    if (index > -1) {
+      set({
+        activeElement: get().elements[index]
+          ? {
+              ...get().elements[index],
+              index
+            }
+          : null
       })
     } else {
       set({
@@ -166,31 +187,24 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
     }
   },
   editActiveELementState: (callback) => callback(get(), set),
-  dragElement: ({ slug, x, y }) => {
+  dragElement: ({ x, y, index }) => {
     const currentElements = get().elements
 
+    currentElements[index].cords = { x, y }
+
     set({
-      elements: {
-        ...currentElements,
-        [slug]: {
-          ...currentElements[slug],
-          cords: {
-            x,
-            y
-          }
-        }
-      }
+      // without spread equality doesnt get difference since we mutate nested object
+      elements: [...currentElements]
     })
   },
   saveConfig: () => {
     const { activeElement, elements } = get()
 
-    if (activeElement?.slug) {
+    if (activeElement) {
+      elements[activeElement.index] = activeElement
+
       set({
-        elements: {
-          ...elements,
-          [activeElement.slug]: activeElement
-        }
+        elements
       })
     }
   },

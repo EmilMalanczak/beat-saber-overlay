@@ -10,6 +10,7 @@ export const options: ComponentOptions = {
   category: 'visualizers',
   order: 0,
   image: '',
+  unique: true,
   description: 'Display cuts from the game',
   options: [
     {
