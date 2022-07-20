@@ -1,13 +1,20 @@
 import { UnstyledButton } from '@mantine/core'
-import { useBooleanToggle, useClickOutside, useElementSize, useMergedRef } from '@mantine/hooks'
+import {
+  useBooleanToggle,
+  useClickOutside,
+  useElementSize,
+  useHotkeys,
+  useMergedRef
+} from '@mantine/hooks'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import ReactDraggable from 'react-draggable'
+import ReactDraggable, { DraggableData } from 'react-draggable'
 import { useTransition, animated } from 'react-spring'
 import { useDebouncedCallback, useThrottledCallback } from 'use-debounce'
 
 import type { FC, CSSProperties, MouseEvent, MouseEventHandler } from 'react'
 import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } from 'react-draggable'
 
+import { CANVAS_PADDING } from 'constants/dom'
 import { getConfiguratorElement } from 'helpers/getConfiguratorElement'
 import { useConfiguratorStoreBare } from 'store/configurator'
 
@@ -30,9 +37,10 @@ const defaultBounds = {
   bottom: 0
 }
 
-type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName'>> & {
+type DraggableProps = Partial<Omit<ReactDraggableProps, 'defaultClassName' | 'onStop'>> & {
   onRemove: MouseEventHandler<HTMLButtonElement>
   onEdit: (params: { initialLeft: number; finalLeft: number; y: number }) => void
+  onStop: (data: Pick<DraggableData, 'x' | 'y'>) => void
   propsDependencies: any[]
   id: string
   zoom: number
@@ -87,16 +95,18 @@ export const Draggable: FC<DraggableProps> = ({
     canvasBounds.current = canvasNode?.getBoundingClientRect() || defaultBounds
   }
 
-  const debouncedSetBounds = useDebouncedCallback(() => {
+  const getBounds = () => {
     const { top, left, bottom, right } = boxRef.current?.getBoundingClientRect() || defaultBounds
 
-    setBounds({
+    return {
       top: Math.abs(Math.round((top - canvasBounds.current.top) / zoom)),
       right: Math.abs(Math.round((right - canvasBounds.current.right) / zoom)),
       bottom: Math.abs(Math.round((bottom - canvasBounds.current.bottom) / zoom)),
       left: Math.abs(Math.round((left - canvasBounds.current.left) / zoom))
-    })
-  }, 8)
+    }
+  }
+
+  const debouncedSetBounds = useDebouncedCallback(() => setBounds(getBounds()), 8, { maxWait: 50 })
 
   const getCenterXPosition = () => {
     const { left } = boxRef.current?.getBoundingClientRect() || defaultBounds
@@ -127,6 +137,33 @@ export const Draggable: FC<DraggableProps> = ({
 
     setPosition(updatedPosition)
   }, 500)
+
+  const handleKeyDown = useCallback(
+    ({ dx, dy }: { dx: number; dy: number }) =>
+      () => {
+        console.log('dupa')
+
+        if (opened && position) {
+          const { x, y } = position
+          const { top, bottom, left, right } = getBounds()
+
+          const newtPosition = {
+            x: right - dx >= CANVAS_PADDING && left + dx >= CANVAS_PADDING ? x + dx : x,
+            y: top + dy >= CANVAS_PADDING && bottom - dy >= CANVAS_PADDING ? y + dy : y
+          }
+
+          setPosition(newtPosition)
+          if (onStop) onStop(newtPosition)
+        }
+      },
+    [onStop, opened, position]
+  )
+  useHotkeys([
+    ['ArrowDown', handleKeyDown({ dx: 0, dy: 1 })],
+    ['ArrowUp', handleKeyDown({ dx: 0, dy: -1 })],
+    ['ArrowLeft', handleKeyDown({ dx: -1, dy: 0 })],
+    ['ArrowRight', handleKeyDown({ dx: 1, dy: 0 })]
+  ])
 
   useEffect(() => {
     throttledRecalculatePosition()
@@ -159,7 +196,7 @@ export const Draggable: FC<DraggableProps> = ({
         setDragging(true)
       }}
       onStop={(e, state) => {
-        if (onStop) onStop(e, state)
+        if (onStop) onStop(state)
 
         if (!isOnOptionsNode(e as MouseEvent<HTMLButtonElement>)) {
           setPosition({ x: state.x, y: state.y })
