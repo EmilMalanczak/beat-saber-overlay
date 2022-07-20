@@ -1,9 +1,5 @@
-import { DEFAULT_THEME } from '@mantine/styles'
-
-import type { ComponentOptions } from 'types/Options'
-
 import { NeonText } from 'components/NeonText'
-import { Option } from 'types/Options'
+import { ComponentOptions, ScreenType, Option } from 'types/Options'
 
 export const options: ComponentOptions = {
   name: 'Neon text',
@@ -14,6 +10,7 @@ export const options: ComponentOptions = {
   image: '',
   unique: false,
   description: 'Show neon text',
+  screen: [ScreenType.InGame, ScreenType.Lobby],
   options: [
     {
       id: 'text-content',

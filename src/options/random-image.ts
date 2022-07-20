@@ -1,7 +1,5 @@
-import type { ComponentOptions } from 'types/Options'
-
 import { CustomText } from 'components/CustomText'
-import { Option } from 'types/Options'
+import { ComponentOptions, ScreenType, Option } from 'types/Options'
 
 import { getImageOptions } from './common/image-props'
 
@@ -14,6 +12,7 @@ export const options: ComponentOptions = {
   image: '',
   unique: false,
   description: 'Show custom text',
+  screen: [ScreenType.InGame, ScreenType.Lobby],
   options: [
     {
       id: 'text-content',

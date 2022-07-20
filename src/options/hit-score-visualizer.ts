@@ -1,7 +1,5 @@
-import type { ComponentOptions } from 'types/Options'
-
 import { HitScoreVisualizer } from 'components/HitScoreVisualizer'
-import { Option } from 'types/Options'
+import { ComponentOptions, ScreenType, Option } from 'types/Options'
 
 export type HitScoreConfig = Array<{
   above: number
@@ -25,6 +23,7 @@ export const options: ComponentOptions = {
   image: '',
   unique: true,
   description: 'Display cut scores from the game',
+  screen: [ScreenType.InGame],
   options: [
     {
       id: 'row-height',

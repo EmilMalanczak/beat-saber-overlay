@@ -11,7 +11,6 @@ export type NeonTextProps = {
 }
 
 const textColor = lighten(0.5)
-const neonColor = lighten(0.2)
 
 export const NeonText = ({ children = 'Text', hue, size, intensity }: NeonTextProps) => (
   <p

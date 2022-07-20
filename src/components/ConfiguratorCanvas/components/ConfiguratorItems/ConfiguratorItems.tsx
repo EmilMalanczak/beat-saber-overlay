@@ -14,16 +14,13 @@ type ConfiguratorItemProps = {
 export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) => {
   const zoom = useConfiguratorStoreBare((state) => state.canvas.zoom)
 
-  const { dragElement, elements, removeElement, selectElement } = useConfiguratorStore((state) => ({
-    elements: state.elements,
-    dragElement: state.dragElement,
-    removeElement: state.removeElement,
-    selectElement: state.selectElement
-  }))
+  // TODO: selector for this
+  const { dragElement, elements, removeElement, selectElement, activeScreen } =
+    useConfiguratorStore()
 
   return (
     <>
-      {elements.map(({ name, options: elementOptions, cords }, index) => {
+      {elements[activeScreen].map(({ name, options: elementOptions, cords }, index) => {
         const Item = options.find((opt) => opt.name === name)?.component
 
         if (!Item) return null

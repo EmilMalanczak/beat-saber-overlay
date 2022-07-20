@@ -5,7 +5,7 @@ import create from 'zustand'
 
 import type { SetState, StateSelector } from 'zustand'
 
-import { ComponentOptions, Option } from 'types/Options'
+import { ComponentOptions, Option, ScreenType } from 'types/Options'
 
 type ElementType = ComponentOptions & { cords: { x: number; y: number }; index: number }
 
@@ -13,8 +13,9 @@ type ConfiguratorStore = {
   isDragging: boolean
   // each components has its own config in /options folder
   // we will edit the default props from options drawer later
-  elements: Omit<ElementType, 'index'>[]
+  elements: Record<ScreenType, Omit<ElementType, 'index'>[]>
   activeElement: ElementType | null
+  activeScreen: ScreenType
   canvas: {
     width: number
     height: number
@@ -25,6 +26,7 @@ type ConfiguratorStore = {
   addElement: (element: ComponentOptions) => void
   removeElement: (index: number) => void
   selectElement: (index: number) => void
+  changeActiveScreen: (screen: ScreenType) => void
   editActiveElement: (id: string, value: any) => void
   setInitialElements: (initialElements: any) => void
   saveConfig: () => void
@@ -35,9 +37,13 @@ type ConfiguratorStore = {
 }
 
 export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
-  elements: [],
+  elements: {
+    [ScreenType.InGame]: [],
+    [ScreenType.Lobby]: []
+  },
   isDragging: false,
   activeElement: null,
+  activeScreen: ScreenType.InGame,
   canvas: {
     width: 960,
     height: 720,
@@ -49,31 +55,39 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
     })
   ],
   removeElement: (index) => {
-    const currentElements = get().elements
+    const { activeScreen, elements } = get()
+    const currentElements = elements[activeScreen]
 
     currentElements.splice(index, 1)
 
     set({
-      elements: [...currentElements]
+      elements: {
+        ...elements,
+        [activeScreen]: currentElements
+      }
     })
   },
   addElement: (element) => {
-    const currentElements = get().elements
+    const { activeScreen, elements } = get()
+    const currentElements = elements[activeScreen]
 
     const ableToAdd = !element.unique || !currentElements.some((e) => e.slug === element.slug)
 
     if (ableToAdd) {
       set({
-        elements: [
-          ...currentElements,
-          {
-            ...element,
-            cords: {
-              x: 0,
-              y: 0
+        elements: {
+          ...elements,
+          [activeScreen]: [
+            ...currentElements,
+            {
+              ...element,
+              cords: {
+                x: 0,
+                y: 0
+              }
             }
-          }
-        ]
+          ]
+        }
       })
     } else {
       showNotification({
@@ -84,11 +98,14 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
     }
   },
   selectElement: (index) => {
+    const { activeScreen, elements } = get()
+    const currentElements = elements[activeScreen]
+
     if (index > -1) {
       set({
-        activeElement: get().elements[index]
+        activeElement: currentElements[index]
           ? {
-              ...get().elements[index],
+              ...currentElements[index],
               index
             }
           : null
@@ -183,23 +200,31 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
   },
   editActiveELementState: (callback) => callback(get(), set),
   dragElement: ({ x, y, index }) => {
-    const currentElements = get().elements
+    const { elements, activeScreen } = get()
+    const currentElements = elements[activeScreen]
 
     currentElements[index].cords = { x, y }
 
     set({
       // without spread equality doesnt get difference since we mutate nested object
-      elements: [...currentElements]
+      elements: {
+        ...elements,
+        [activeScreen]: currentElements
+      }
     })
   },
   saveConfig: () => {
-    const { activeElement, elements } = get()
+    const { activeElement, elements, activeScreen } = get()
+    const currentElements = elements[activeScreen]
 
     if (activeElement) {
-      elements[activeElement.index] = activeElement
+      currentElements[activeElement.index] = activeElement
 
       set({
-        elements
+        elements: {
+          ...elements,
+          [activeScreen]: currentElements
+        }
       })
     }
   },
@@ -211,6 +236,11 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
         ...canvas,
         ...params
       }
+    })
+  },
+  changeActiveScreen: (screen) => {
+    set({
+      activeScreen: screen
     })
   }
 }))
@@ -230,6 +260,8 @@ export const useConfiguratorStore = (
 
   useEffect(() => {
     if (localConfig) {
+      console.log(JSON.parse(localConfig))
+
       setInitialElements(JSON.parse(localConfig))
     }
     // it causes infinite loop

@@ -24,6 +24,11 @@ export enum Option {
   DYNAMIC_OPTIONS
 }
 
+export enum ScreenType {
+  InGame = 'in-game',
+  Lobby = 'lobby'
+}
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionsBase<N extends Option, Props extends object = {}> = {
   id: string
@@ -70,6 +75,7 @@ export type ComponentOptions = {
   image: string
   unique: boolean
   description: string
+  screen: ScreenType[]
   options: OptionsType[]
   component: any
 }

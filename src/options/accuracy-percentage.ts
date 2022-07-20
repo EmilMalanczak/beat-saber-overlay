@@ -1,6 +1,5 @@
-import type { ComponentOptions } from 'types/Options'
-
 import { AccuracyPercentage } from 'components/AccuracyPercentage'
+import { ComponentOptions, ScreenType } from 'types/Options'
 
 import { getTextOptions } from './common/text-props'
 
@@ -13,5 +12,6 @@ export const options: ComponentOptions = {
   image: '',
   unique: true,
   description: 'Display cuts from the game',
+  screen: [ScreenType.InGame, ScreenType.Lobby],
   options: [...getTextOptions()]
 }

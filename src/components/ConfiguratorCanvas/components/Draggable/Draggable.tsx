@@ -141,8 +141,6 @@ export const Draggable: FC<DraggableProps> = ({
   const handleKeyDown = useCallback(
     ({ dx, dy }: { dx: number; dy: number }) =>
       () => {
-        console.log('dupa')
-
         if (opened && position) {
           const { x, y } = position
           const { top, bottom, left, right } = getBounds()

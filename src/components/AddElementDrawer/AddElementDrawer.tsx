@@ -10,7 +10,7 @@ type AddElementDrawerProps = {
 }
 
 export const AddElementDrawer: VFC<AddElementDrawerProps> = ({ opened, setOpened }) => {
-  const { addElement } = useConfiguratorStore()
+  const { addElement, activeScreen } = useConfiguratorStore()
 
   return (
     <Drawer
@@ -21,16 +21,18 @@ export const AddElementDrawer: VFC<AddElementDrawerProps> = ({ opened, setOpened
       size="xl"
     >
       <Group direction="column" spacing={16}>
-        {options.map((component) => (
-          <Button
-            onClick={() => {
-              addElement(component)
-              setOpened(false)
-            }}
-          >
-            {`add ${component.name}`}
-          </Button>
-        ))}
+        {options
+          .filter((option) => option.screen.some((screen) => screen === activeScreen))
+          .map((component) => (
+            <Button
+              onClick={() => {
+                addElement(component)
+                setOpened(false)
+              }}
+            >
+              {`add ${component.name}`}
+            </Button>
+          ))}
       </Group>
     </Drawer>
   )

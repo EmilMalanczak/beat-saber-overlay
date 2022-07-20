@@ -1,7 +1,5 @@
-import type { ComponentOptions } from 'types/Options'
-
 import { CutVisualizer } from 'components/CutVisualizer'
-import { Option } from 'types/Options'
+import { ComponentOptions, ScreenType, Option } from 'types/Options'
 
 export const options: ComponentOptions = {
   name: 'CutVisualizer',
@@ -12,6 +10,7 @@ export const options: ComponentOptions = {
   image: '',
   unique: true,
   description: 'Display cuts from the game',
+  screen: [ScreenType.InGame],
   options: [
     {
       id: 'cell-size',
