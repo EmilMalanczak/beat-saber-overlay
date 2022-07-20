@@ -1,5 +1,5 @@
-import Document, { Head, Main, NextScript, Html } from 'next/document'
 import { ServerStyles, createStylesServer } from '@mantine/ssr'
+import Document, { Head, Main, NextScript, Html } from 'next/document'
 
 export default class MyDocument extends Document {
   render() {
@@ -38,6 +38,19 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Oswald:wght@200;300;400;500;600;700&family=Teko:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
           />
+          {/* <script
+            type="text/javascript"
+            src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
+            data-name="bmc-button"
+            data-slug="Missit"
+            data-color="#1c73d6"
+            data-emoji=""
+            data-font="Cookie"
+            data-text="Buy me a coffee"
+            data-outline-color="#ffffff"
+            data-font-color="#ffffff"
+            data-coffee-color="#FFDD00"
+          /> */}
         </Head>
         <body>
           <Main />

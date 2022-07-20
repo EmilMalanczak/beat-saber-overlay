@@ -11,7 +11,14 @@ import {
 
 import { Option } from 'types/Options'
 
+import { DynamicOptionsInput } from './DynamicOptionsInput'
+
 type Handler = (...values: any[]) => void
+type OptionObject = {
+  component: any
+  // just to avoid potential scenario like onChange => (e, value) => {}
+  handler: Handler
+}
 
 const defaultHandler: Handler = (value) => value
 
@@ -26,14 +33,7 @@ const HueSlider = ({ label, description, ...props }: any) => (
   </InputWrapper>
 )
 
-export const optionsInputs: Record<
-  Option,
-  {
-    component: any
-    // just to avoid potential scenario like onChange => (e, value) => {}
-    handler: Handler
-  }
-> = {
+export const optionsInputsBase: Record<Exclude<Option, Option.DYNAMIC_OPTIONS>, OptionObject> = {
   [Option.NUMBER]: {
     component: NumberInput,
     handler: defaultHandler
@@ -78,4 +78,15 @@ export const optionsInputs: Record<
     component: Switch,
     handler: defaultHandler
   }
+}
+
+export const getOptionInput = (option: Option): OptionObject => {
+  if (option === Option.DYNAMIC_OPTIONS) {
+    return {
+      component: DynamicOptionsInput,
+      handler: defaultHandler
+    }
+  }
+
+  return optionsInputsBase[option]
 }

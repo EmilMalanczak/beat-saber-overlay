@@ -1,3 +1,4 @@
+import { NotificationsProvider } from '@mantine/notifications'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
@@ -9,7 +10,6 @@ import { usePlayerStore } from '../src/store/player'
 
 import '../src/styles/global.scss'
 import '../src/styles/fonts.scss'
-import { NotificationsProvider } from '@mantine/notifications'
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter()

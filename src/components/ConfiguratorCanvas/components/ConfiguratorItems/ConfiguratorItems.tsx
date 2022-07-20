@@ -20,7 +20,6 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
     removeElement: state.removeElement,
     selectElement: state.selectElement
   }))
-  console.log(elements)
 
   return (
     <>
@@ -53,8 +52,6 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
           <Draggable
             id={name}
             onStop={(_, { x, y }) => {
-              console.log('STOP DRAGGIN WITH ', { x, y })
-
               dragElement({
                 index,
                 x,

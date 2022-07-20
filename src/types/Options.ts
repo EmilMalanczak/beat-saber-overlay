@@ -20,7 +20,8 @@ export enum Option {
   TEXT,
   SCORE_VISUALIZER_CONFIG,
   TOGGLE,
-  TOGGLE_COMPONENTS
+  TOGGLE_COMPONENTS,
+  DYNAMIC_OPTIONS
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -51,7 +52,15 @@ export type TogglePropOptions = {
   options: ToggleOptions[]
 } & SwitchProps
 
-type OptionsType = PropOptions | TogglePropOptions
+export type DynamicPropOptions = InputWrapperBaseProps & {
+  id: string
+  inputTypeName: Option.DYNAMIC_OPTIONS
+  schema: PropOptions[]
+  propName: string
+  value: Record<string, any>[]
+}
+
+type OptionsType = PropOptions | TogglePropOptions | DynamicPropOptions
 
 export type ComponentOptions = {
   name: string

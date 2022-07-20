@@ -51,12 +51,7 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
   removeElement: (index) => {
     const currentElements = get().elements
 
-    // currentElements.splice(index, 1)
-    // TODO remove element from canvas
-    // delete currentElements[slug]
-
-    console.log('currentElements', currentElements)
-    console.log('filtered', currentElements.splice(index, 1))
+    currentElements.splice(index, 1)
 
     set({
       elements: [...currentElements]

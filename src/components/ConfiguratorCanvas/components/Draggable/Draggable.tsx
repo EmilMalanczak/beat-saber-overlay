@@ -66,7 +66,7 @@ export const Draggable: FC<DraggableProps> = ({
   const canvas = useConfiguratorStoreBare((state) => state.canvas)
   const { ref: sizeRef, width: childWidth, height: childHeight } = useElementSize()
 
-  const { classes, cx } = useStyles({ zoom })
+  const { classes, cx } = useStyles({ zoom, locked: isLocked })
 
   const guideLinesTransition = useTransition(isDragging, {
     from: { opacity: 0 },

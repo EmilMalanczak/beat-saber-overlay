@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2021",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": false,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -9,7 +13,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
@@ -17,19 +21,45 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "hooks/*": ["src/hooks/*"],
-      "constants/*": ["src/constants/*"],
-      "utils/*": ["src/utils/*"],
-      "helpers/*": ["src/helpers/*"],
-      "store/*": ["src/store/*"],
-      "types/*": ["src/types/*"],
-      "components/*": ["src/components/*"],
-      "api/*": ["src/api/*"],
-      "contexts/*": ["src/contexts/*"],
-      "styles/*": ["src/styles/*"],
-      "options/*": ["src/options/*"]
+      "hooks/*": [
+        "src/hooks/*"
+      ],
+      "constants/*": [
+        "src/constants/*"
+      ],
+      "utils/*": [
+        "src/utils/*"
+      ],
+      "helpers/*": [
+        "src/helpers/*"
+      ],
+      "store/*": [
+        "src/store/*"
+      ],
+      "types/*": [
+        "src/types/*"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "api/*": [
+        "src/api/*"
+      ],
+      "contexts/*": [
+        "src/contexts/*"
+      ],
+      "styles/*": [
+        "src/styles/*"
+      ],
+      "options/*": [
+        "src/options/*"
+      ]
     }
   },
-  "exclude": ["node_modules"],
-  "include": ["."]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "."
+  ]
 }

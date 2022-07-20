@@ -3,6 +3,8 @@ import { useBooleanToggle } from '@mantine/hooks'
 import { useState } from 'react'
 import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
 
+import { Navbar } from 'components/Navbar/Navbar'
+
 import { AddElementDrawer } from '../src/components/AddElementDrawer/AddElementDrawer'
 import { ConfiguratorCanvas } from '../src/components/ConfiguratorCanvas/ConfiguratorCanvas'
 import { EditDrawer } from '../src/components/EditDrawer'
@@ -12,7 +14,7 @@ import { useCutsStore } from '../src/store/cuts'
 
 const Home = () => {
   const cutNote = useCutsStore((state) => state.cutNote)
-  const [isDemoOn, toggleDemo] = useBooleanToggle(true)
+  const [isDemoOn, toggleDemo] = useBooleanToggle(false)
   const [isEditOpen, setIsEditOpen] = useBooleanToggle(false)
   const [isAddOpen, setAddOpen] = useState(false)
 
@@ -21,11 +23,12 @@ const Home = () => {
       // @ts-ignore
       cutNote(generateRandomCut())
     },
-    isDemoOn ? 150 : null
+    isDemoOn ? 500 : null
   )
 
   return (
     <>
+      <Navbar />
       <ConfiguratorCanvas editing={isEditOpen} onEdit={(val) => setIsEditOpen(val)} />
 
       <Portal zIndex={5}>
