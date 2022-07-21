@@ -45,28 +45,29 @@ const Home = () => {
       <div className={classes.visualizers}>
         <div className={classes.wrapper}>
           <CutVisualizer
-            cellSize={50}
-            fadeTime={150}
+            cellSize={70}
+            fadeTime={50}
             gridColor="#fff"
-            gridBorderSize={2}
+            gridBorderSize={0}
             style={{
-              border: '1px solid red'
+              border: '0px solid white'
             }}
           />
 
-          <div style={{ margin: 20 - (100 - (70 + (Math.SQRT2 - 1.08) * 70)) }} />
+          <div style={{ margin: -30 + (100 - (70 + (Math.SQRT2 - 1.08) * 70)) }} />
 
           <HitScoreVisualizer
             rows={1}
             width="100%"
-            unmountTime={350}
+            unmountTime={300}
             rowHeight={70 + (Math.SQRT2 - 1.08) * 70}
             // rowHeight={100}
             maxRotate={12}
             scoreCutShift={10}
-            style={{
-              border: '1px solid red'
-            }}
+            // style={{
+            //   border: '1px solid white'
+            // }}
+            style={{}}
             config={[
               {
                 above: 113,
