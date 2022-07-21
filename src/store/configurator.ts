@@ -1,29 +1,32 @@
 import { useLocalStorageValue } from '@mantine/hooks'
+import { showNotification } from '@mantine/notifications'
 import { useEffect } from 'react'
 import create from 'zustand'
 
 import type { SetState, StateSelector } from 'zustand'
 
-import { ComponentOptions, Option } from 'types/Options'
+import { ComponentOptions, Option, ScreenType } from 'types/Options'
 
-type ElementType = ComponentOptions & { cords: { x: number; y: number } }
+type ElementType = ComponentOptions & { cords: { x: number; y: number }; index: number }
 
 type ConfiguratorStore = {
   isDragging: boolean
   // each components has its own config in /options folder
   // we will edit the default props from options drawer later
-  elements: Record<string, ElementType>
+  elements: Record<ScreenType, Omit<ElementType, 'index'>[]>
   activeElement: ElementType | null
+  activeScreen: ScreenType
   canvas: {
     width: number
     height: number
     zoom: number
   }
   setCanvas: (params: { width?: number; height?: number; zoom?: number }) => void
-  dragElement: (params: { slug: string; x: number; y: number }) => void
+  dragElement: (params: { index: number; x: number; y: number }) => void
   addElement: (element: ComponentOptions) => void
-  removeElement: (slug: string) => void
-  selectElement: (slug: string) => void
+  removeElement: (index: number) => void
+  selectElement: (index: number) => void
+  changeActiveScreen: (screen: ScreenType) => void
   editActiveElement: (id: string, value: any) => void
   setInitialElements: (initialElements: any) => void
   saveConfig: () => void
@@ -34,9 +37,13 @@ type ConfiguratorStore = {
 }
 
 export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
-  elements: {},
+  elements: {
+    [ScreenType.InGame]: [],
+    [ScreenType.Lobby]: []
+  },
   isDragging: false,
   activeElement: null,
+  activeScreen: ScreenType.InGame,
   canvas: {
     width: 960,
     height: 720,
@@ -47,35 +54,61 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
       elements: initialElements
     })
   ],
-  removeElement: (slug) => {
-    const currentElements = get().elements
+  removeElement: (index) => {
+    const { activeScreen, elements } = get()
+    const currentElements = elements[activeScreen]
 
-    delete currentElements[slug]
-
-    set({
-      elements: currentElements
-    })
-  },
-  addElement: (element) => {
-    const currentElements = get().elements
+    currentElements.splice(index, 1)
 
     set({
       elements: {
-        ...currentElements,
-        [element.slug]: {
-          ...element,
-          cords: {
-            x: 0,
-            y: 0
-          }
-        }
+        ...elements,
+        [activeScreen]: currentElements
       }
     })
   },
-  selectElement: (slug) => {
-    if (slug) {
+  addElement: (element) => {
+    const { activeScreen, elements } = get()
+    const currentElements = elements[activeScreen]
+
+    const ableToAdd = !element.unique || !currentElements.some((e) => e.slug === element.slug)
+
+    if (ableToAdd) {
       set({
-        activeElement: Object.values(get().elements).find((el) => el.slug === slug) || null
+        elements: {
+          ...elements,
+          [activeScreen]: [
+            ...currentElements,
+            {
+              ...element,
+              cords: {
+                x: 0,
+                y: 0
+              }
+            }
+          ]
+        }
+      })
+    } else {
+      showNotification({
+        color: 'red',
+        title: 'Cannot add this element',
+        message: 'Element with this slug already exists'
+      })
+    }
+  },
+  selectElement: (index) => {
+    const { activeScreen, elements } = get()
+    const currentElements = elements[activeScreen]
+
+    if (index > -1) {
+      set({
+        activeElement: currentElements[index]
+          ? {
+              ...currentElements[index],
+              index
+            }
+          : null
       })
     } else {
       set({
@@ -166,30 +199,31 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
     }
   },
   editActiveELementState: (callback) => callback(get(), set),
-  dragElement: ({ slug, x, y }) => {
-    const currentElements = get().elements
+  dragElement: ({ x, y, index }) => {
+    const { elements, activeScreen } = get()
+    const currentElements = elements[activeScreen]
+
+    currentElements[index].cords = { x, y }
 
     set({
+      // without spread equality doesnt get difference since we mutate nested object
       elements: {
-        ...currentElements,
-        [slug]: {
-          ...currentElements[slug],
-          cords: {
-            x,
-            y
-          }
-        }
+        ...elements,
+        [activeScreen]: currentElements
       }
     })
   },
   saveConfig: () => {
-    const { activeElement, elements } = get()
+    const { activeElement, elements, activeScreen } = get()
+    const currentElements = elements[activeScreen]
 
-    if (activeElement?.slug) {
+    if (activeElement) {
+      currentElements[activeElement.index] = activeElement
+
       set({
         elements: {
           ...elements,
-          [activeElement.slug]: activeElement
+          [activeScreen]: currentElements
         }
       })
     }
@@ -202,6 +236,11 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
         ...canvas,
         ...params
       }
+    })
+  },
+  changeActiveScreen: (screen) => {
+    set({
+      activeScreen: screen
     })
   }
 }))
@@ -221,6 +260,8 @@ export const useConfiguratorStore = (
 
   useEffect(() => {
     if (localConfig) {
+      console.log(JSON.parse(localConfig))
+
       setInitialElements(JSON.parse(localConfig))
     }
     // it causes infinite loop

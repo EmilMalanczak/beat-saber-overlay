@@ -9,7 +9,7 @@ export const useStyles = createStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    overflow: 'scroll',
+    overflow: 'hidden',
     flexWrap: 'nowrap',
 
     '& > *': {

@@ -1,10 +1,12 @@
 import type {
   ColorInputProps,
+  HueSliderProps,
   InputWrapperBaseProps,
   NumberInputProps,
   SelectProps,
   SliderProps,
-  SwitchProps
+  SwitchProps,
+  TextInputProps
 } from '@mantine/core'
 
 export enum Option {
@@ -14,9 +16,17 @@ export enum Option {
   OBJECT,
   SELECT,
   COLOR,
+  HUE,
+  TEXT,
   SCORE_VISUALIZER_CONFIG,
   TOGGLE,
-  TOGGLE_COMPONENTS
+  TOGGLE_COMPONENTS,
+  DYNAMIC_OPTIONS
+}
+
+export enum ScreenType {
+  InGame = 'in-game',
+  Lobby = 'lobby'
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -30,8 +40,10 @@ type PropOptions =
   | OptionsBase<Option.NUMBER, NumberInputProps>
   | OptionsBase<Option.SELECT, SelectProps>
   | OptionsBase<Option.COLOR, ColorInputProps>
+  | OptionsBase<Option.HUE, InputWrapperBaseProps & Omit<HueSliderProps, 'onChange'>>
   | OptionsBase<Option.SLIDER, InputWrapperBaseProps & SliderProps>
   | OptionsBase<Option.TOGGLE, SwitchProps>
+  | OptionsBase<Option.TEXT, TextInputProps>
 
 type ToggleOptions = PropOptions & {
   visibleWhenChecked: boolean
@@ -45,7 +57,15 @@ export type TogglePropOptions = {
   options: ToggleOptions[]
 } & SwitchProps
 
-type OptionsType = PropOptions | TogglePropOptions
+export type DynamicPropOptions = InputWrapperBaseProps & {
+  id: string
+  inputTypeName: Option.DYNAMIC_OPTIONS
+  schema: PropOptions[]
+  propName: string
+  value: Record<string, any>[]
+}
+
+type OptionsType = PropOptions | TogglePropOptions | DynamicPropOptions
 
 export type ComponentOptions = {
   name: string
@@ -53,7 +73,9 @@ export type ComponentOptions = {
   category: string
   order: number
   image: string
+  unique: boolean
   description: string
+  screen: ScreenType[]
   options: OptionsType[]
   component: any
 }

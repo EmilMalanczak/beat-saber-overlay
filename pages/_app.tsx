@@ -1,10 +1,12 @@
+import { NotificationsProvider } from '@mantine/notifications'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+
 import type { AppProps } from 'next/app'
 
-import { usePlayerStore } from '../src/store/player'
 import { SocketProvider } from '../src/contexts/Socket'
 import { ThemeContext } from '../src/contexts/Theme'
+import { usePlayerStore } from '../src/store/player'
 
 import '../src/styles/global.scss'
 import '../src/styles/fonts.scss'
@@ -21,9 +23,11 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <ThemeContext>
-      <SocketProvider>
-        <Component {...pageProps} />
-      </SocketProvider>
+      <NotificationsProvider>
+        <SocketProvider>
+          <Component {...pageProps} />
+        </SocketProvider>
+      </NotificationsProvider>
     </ThemeContext>
   )
 }

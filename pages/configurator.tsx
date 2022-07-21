@@ -1,7 +1,11 @@
-import { ActionIcon, Group, Portal } from '@mantine/core'
+import { ActionIcon, Group, Portal, SegmentedControl } from '@mantine/core'
 import { useBooleanToggle } from '@mantine/hooks'
 import { useState } from 'react'
 import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
+
+import { Navbar } from 'components/Navbar/Navbar'
+import { useConfiguratorStoreBare } from 'store/configurator'
+import { ScreenType } from 'types/Options'
 
 import { AddElementDrawer } from '../src/components/AddElementDrawer/AddElementDrawer'
 import { ConfiguratorCanvas } from '../src/components/ConfiguratorCanvas/ConfiguratorCanvas'
@@ -12,7 +16,11 @@ import { useCutsStore } from '../src/store/cuts'
 
 const Home = () => {
   const cutNote = useCutsStore((state) => state.cutNote)
-  const [isDemoOn, toggleDemo] = useBooleanToggle(true)
+  const [activeScreen, setActiveScreen] = useConfiguratorStoreBare((state) => [
+    state.activeScreen,
+    state.changeActiveScreen
+  ])
+  const [isDemoOn, toggleDemo] = useBooleanToggle(false)
   const [isEditOpen, setIsEditOpen] = useBooleanToggle(false)
   const [isAddOpen, setAddOpen] = useState(false)
 
@@ -21,11 +29,12 @@ const Home = () => {
       // @ts-ignore
       cutNote(generateRandomCut())
     },
-    isDemoOn ? 150 : null
+    isDemoOn ? 500 : null
   )
 
   return (
     <>
+      <Navbar />
       <ConfiguratorCanvas editing={isEditOpen} onEdit={(val) => setIsEditOpen(val)} />
 
       <Portal zIndex={5}>
@@ -58,6 +67,14 @@ const Home = () => {
           >
             {isDemoOn ? <RiPauseFill size={20} /> : <RiPlayFill size={20} />}
           </ActionIcon>
+          <SegmentedControl
+            value={activeScreen}
+            onChange={setActiveScreen}
+            data={[
+              { label: 'Lobby', value: ScreenType.Lobby },
+              { label: 'In game', value: ScreenType.InGame }
+            ]}
+          />
         </Group>
       </Portal>
 

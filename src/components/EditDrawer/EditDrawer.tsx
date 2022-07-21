@@ -1,13 +1,17 @@
-import { Group, Drawer, Text, Button, Switch, Title } from '@mantine/core'
+import { Group, Drawer, Text, Button, Title, InputWrapper, ScrollArea } from '@mantine/core'
+import { RiAddLine } from 'react-icons/ri'
 
 import type { VFC } from 'react'
 
+import { DynamicOptionsInput } from 'components/OptionInputs/DynamicOptionsInput'
+import { ToggleOptions } from 'components/OptionInputs/ToggleOptions'
 import { DRAWER_WIDTH } from 'constants/dom'
 import { useConfiguratorStore } from 'store/configurator'
-import { Option, TogglePropOptions } from 'types/Options'
+import { DynamicPropOptions, Option, TogglePropOptions } from 'types/Options'
 
 import { useStyles } from './EditDrawer.styles'
-import { optionsInputs } from './optionsInputs'
+
+import { getOptionInput } from '../OptionInputs/optionsInputs'
 
 type EditDrawerProps = {
   opened: boolean
@@ -16,8 +20,7 @@ type EditDrawerProps = {
 
 export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
   const { classes } = useStyles()
-  const { activeElement, saveConfig, editActiveElement, toggleActiveElementComponents } =
-    useConfiguratorStore()
+  const { activeElement, saveConfig, editActiveElement } = useConfiguratorStore()
 
   return (
     <Drawer
@@ -27,7 +30,7 @@ export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
       }}
       onClose={() => setOpened(false)}
       title={<Title order={4}>Edit element</Title>}
-      padding="xl"
+      padding={16}
       overlayOpacity={0}
       size={DRAWER_WIDTH}
     >
@@ -36,58 +39,41 @@ export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
           {activeElement?.description}
         </Text>
       )}
-      <Group direction="column" spacing={12} className={classes.content}>
-        {activeElement?.options.map(({ inputTypeName, id, ...props }) => {
-          const { component: Input, handler } = optionsInputs[inputTypeName]
+      <ScrollArea
+        type="always"
+        offsetScrollbars
+        style={{
+          flex: 1
+        }}
+      >
+        <Group direction="column" spacing={12} className={classes.content}>
+          {activeElement?.options.map(({ inputTypeName, id, ...props }) => {
+            const { component: Input, handler } = getOptionInput(inputTypeName)
+            const onChange = (...args: any[]) => {
+              editActiveElement(id, handler(...args))
+              saveConfig()
+            }
 
-          if (inputTypeName === Option.TOGGLE_COMPONENTS) {
-            const { options, checked, ...switchProps } = props as TogglePropOptions
+            if (inputTypeName === Option.TOGGLE_COMPONENTS) {
+              return <ToggleOptions {...(props as TogglePropOptions)} onChange={onChange} id={id} />
+            }
 
-            return (
-              <>
-                <Switch
-                  checked={checked}
-                  onChange={(e) => {
-                    toggleActiveElementComponents(id, e.target.checked)
-                    saveConfig()
-                  }}
-                  {...switchProps}
+            if (inputTypeName === Option.DYNAMIC_OPTIONS) {
+              return (
+                <DynamicOptionsInput
+                  {...(props as DynamicPropOptions)}
+                  onChange={onChange}
+                  id={id}
                 />
-                {options.map(
-                  ({ id: optId, visibleWhenChecked, inputTypeName: optInputType, ...optProps }) => {
-                    if (visibleWhenChecked !== checked) return null
+              )
+            }
 
-                    const { component: NestedInput, handler: nestedHandler } =
-                      optionsInputs[optInputType]
+            return <Input {...props} onChange={onChange} />
+          })}
+        </Group>
+      </ScrollArea>
 
-                    return (
-                      <NestedInput
-                        {...optProps}
-                        onChange={(...args: any[]) => {
-                          editActiveElement(optId, nestedHandler(...args))
-                          saveConfig()
-                        }}
-                      />
-                    )
-                  }
-                )}
-              </>
-            )
-          }
-
-          return (
-            <Input
-              {...props}
-              onChange={(...args: any[]) => {
-                editActiveElement(id, handler(...args))
-                saveConfig()
-              }}
-            />
-          )
-        })}
-      </Group>
-
-      <Group direction="row" spacing={16} className={classes.buttons}>
+      <Group direction="row" spacing={16} pt={4} className={classes.buttons}>
         <Button
           color="red"
           onClick={() => {

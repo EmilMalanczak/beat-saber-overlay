@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 import type { FC } from 'react'
 
-import { Draggable } from 'components/Draggable'
+import { Draggable } from 'components/ConfiguratorCanvas/components/Draggable'
 import { options } from 'options/index'
 import { useConfiguratorStore, useConfiguratorStoreBare } from 'store/configurator'
 import { Option } from 'types/Options'
@@ -14,16 +14,13 @@ type ConfiguratorItemProps = {
 export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) => {
   const zoom = useConfiguratorStoreBare((state) => state.canvas.zoom)
 
-  const { dragElement, elements, removeElement, selectElement } = useConfiguratorStore((state) => ({
-    elements: state.elements,
-    dragElement: state.dragElement,
-    removeElement: state.removeElement,
-    selectElement: state.selectElement
-  }))
+  // TODO: selector for this
+  const { dragElement, elements, removeElement, selectElement, activeScreen } =
+    useConfiguratorStore()
 
   return (
     <>
-      {Object.values(elements).map(({ name, slug, options: elementOptions }) => {
+      {elements[activeScreen].map(({ name, options: elementOptions, cords }, index) => {
         const Item = options.find((opt) => opt.name === name)?.component
 
         if (!Item) return null
@@ -51,21 +48,21 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
         return (
           <Draggable
             id={name}
-            onStop={(_, { x, y }) => {
+            onStop={({ x, y }) => {
               dragElement({
-                slug,
+                index,
                 x,
                 y
               })
             }}
             bounds="parent"
             zoom={zoom as unknown as number}
-            defaultPosition={elements[slug].cords}
+            defaultPosition={cords}
             propsDependencies={[elementOptions.map(({ value }) => value)]}
-            onRemove={() => removeElement(slug)}
+            onRemove={() => removeElement(index)}
             onEdit={(params) => {
               onEdit(true, params)
-              selectElement(slug)
+              selectElement(index)
             }}
           >
             <Item {...elementProps} />
