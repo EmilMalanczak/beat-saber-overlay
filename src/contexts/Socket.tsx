@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router'
-import { createContext, useCallback, useEffect, useState } from 'react'
+import { createContext, useCallback, useEffect } from 'react'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { WebSocketLike } from 'react-use-websocket/dist/lib/types'
 
 import type { FC } from 'react'
 
 import { CONNECTION_RECONNECT_TIME, DEFAULT_IP, HTTPStatus } from 'constants/api'
 import { HP_COSTS } from 'constants/score'
-import { useInterval } from 'hooks/useInterval'
 import { useCutsStore } from 'store/cuts'
 import { useScoreStore } from 'store/score'
 import { useSongStore } from 'store/song'
@@ -17,14 +18,16 @@ import { SocketEvent } from 'types/SocketEvent'
 import { transformCoordinatesToRadians } from 'utils/transformCoordinatesToRadians'
 import { transformRadiansToAngle } from 'utils/transformRadiansToAngle'
 
-export const SocketContext = createContext<WebSocket | null>(null)
+export const SocketContext = createContext<Pick<
+  ReturnType<typeof useWebSocket>,
+  'getWebSocket' | 'lastMessage'
+> | null>(null)
 
 const HTTPProvider = SocketContext.Provider
 
 export const SocketProvider: FC = ({ children }) => {
   const router = useRouter()
-  const [socket, setSocket] = useState<WebSocket | null>(null)
-  const { connect, disconnect, connected } = useStatusStore()
+  const { connect, disconnect } = useStatusStore()
   const { getSong } = useSongStore()
   const cutNote = useCutsStore((state) => state.cutNote)
   const resetStore = useCutsStore((state) => state.resetStore)
@@ -37,14 +40,17 @@ export const SocketProvider: FC = ({ children }) => {
     setScore
   } = useScoreStore()
 
-  const handleConnectToHTTP = useCallback(() => {
-    const HTTPSocket = new WebSocket(
-      `ws://${router.query.ip ?? DEFAULT_IP}:${HTTPStatus.port}${HTTPStatus.entry}`
-    )
-
-    setSocket(HTTPSocket)
-  }, [router.query.ip])
-
+  const { lastMessage, readyState, getWebSocket } = useWebSocket(
+    `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${router.query.ip ?? DEFAULT_IP}:${
+      HTTPStatus.port
+    }${HTTPStatus.entry}`,
+    {
+      onOpen: connect,
+      onClose: disconnect,
+      onError: disconnect,
+      reconnectInterval: CONNECTION_RECONNECT_TIME
+    }
+  )
   const handleTransformSocketData = useCallback(
     (socketData) => {
       const data: HTTPEventData = JSON.parse(socketData.data)
@@ -141,36 +147,19 @@ export const SocketProvider: FC = ({ children }) => {
   )
 
   useEffect(() => {
-    handleConnectToHTTP()
-  }, [handleConnectToHTTP])
-
-  useEffect(() => {
-    if (!socket) return
-
-    socket.onopen = () => {
-      connect()
+    if (!lastMessage && readyState === ReadyState.OPEN) {
+      handleTransformSocketData(lastMessage)
     }
+  }, [handleTransformSocketData, lastMessage, readyState])
 
-    socket.onclose = () => {
-      disconnect()
-      setSocket(null)
-    }
-
-    socket.onmessage = (data) => {
-      handleTransformSocketData(data)
-    }
-
-    // eslint-disable-next-line consistent-return
-    return () => {
-      socket.close()
-    }
-  }, [connect, disconnect, handleTransformSocketData, socket])
-
-  useInterval(() => {
-    if (!connected) {
-      handleConnectToHTTP()
-    }
-  }, CONNECTION_RECONNECT_TIME)
-
-  return <HTTPProvider value={socket}>{children}</HTTPProvider>
+  return (
+    <HTTPProvider
+      value={{
+        getWebSocket,
+        lastMessage
+      }}
+    >
+      {children}
+    </HTTPProvider>
+  )
 }
