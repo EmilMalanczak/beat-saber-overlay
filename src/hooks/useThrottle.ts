@@ -13,9 +13,9 @@ export const useThrottle = (callback: (...args: any[]) => void, threshold: numbe
         wait.current = true
         clearTimeout(timeout.current)
 
-        timeout.current = window.setTimeout(() => {
+        timeout.current = setTimeout(() => {
           wait.current = false
-        }, threshold)
+        }, threshold) as unknown as number
       }
     },
     [callback, threshold]

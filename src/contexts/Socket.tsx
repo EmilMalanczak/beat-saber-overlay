@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useEffect } from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import { WebSocketLike } from 'react-use-websocket/dist/lib/types'
 
 import type { FC } from 'react'
 
@@ -40,17 +39,28 @@ export const SocketProvider: FC = ({ children }) => {
     setScore
   } = useScoreStore()
 
-  const { lastMessage, readyState, getWebSocket } = useWebSocket(
-    `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${router.query.ip ?? DEFAULT_IP}:${
-      HTTPStatus.port
-    }${HTTPStatus.entry}`,
-    {
-      onOpen: connect,
-      onClose: disconnect,
-      onError: disconnect,
-      reconnectInterval: CONNECTION_RECONNECT_TIME
-    }
+  // weird - passing that string directly causes build error
+  // with message that window is undefined
+  const getSocketUrl = useCallback(
+    (): Promise<string> =>
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(
+            `${window?.location?.protocol === 'https:' ? 'wss' : 'ws'}://${
+              router.query.ip ?? DEFAULT_IP
+            }:${HTTPStatus.port}${HTTPStatus.entry}`
+          )
+        }, 0)
+      }),
+    []
   )
+
+  const { lastMessage, readyState, getWebSocket } = useWebSocket(getSocketUrl, {
+    onOpen: connect,
+    onClose: disconnect,
+    onError: disconnect,
+    reconnectInterval: CONNECTION_RECONNECT_TIME
+  })
   const handleTransformSocketData = useCallback(
     (socketData) => {
       const data: HTTPEventData = JSON.parse(socketData.data)
