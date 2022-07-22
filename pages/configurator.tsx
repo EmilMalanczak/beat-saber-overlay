@@ -36,7 +36,6 @@ const Home = () => {
     <>
       <Navbar />
       <ConfiguratorCanvas editing={isEditOpen} onEdit={(val) => setIsEditOpen(val)} />
-
       <Portal zIndex={5}>
         <Group
           spacing={8}
