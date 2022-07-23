@@ -253,27 +253,36 @@ export const useConfiguratorStore = (
     key: 'overlay-config'
   })
 
-  const [setInitialElements, elements] = useConfiguratorStoreBare((state) => [
+  const [setInitialElements, elements, canvas, setCanvas] = useConfiguratorStoreBare((state) => [
     state.setInitialElements,
-    state.elements
+    state.elements,
+    state.canvas,
+    state.setCanvas
   ])
   const store = useConfiguratorStoreBare(selector)
 
   useEffect(() => {
     if (localConfig) {
       console.log(JSON.parse(localConfig))
+      const { elements: initialElement, canvas: initialCanvas } = JSON.parse(localConfig)
 
-      setInitialElements(JSON.parse(localConfig))
+      setInitialElements(initialElement)
+      setCanvas(initialCanvas)
     }
     // it causes infinite loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    setLocalConfig(JSON.stringify(elements))
-  }, [elements, setLocalConfig])
+    setLocalConfig(
+      JSON.stringify({
+        elements,
+        canvas
+      })
+    )
+  }, [elements, setLocalConfig, canvas])
 
-  return { ...store }
+  return store
 }
 
 if (process.env.NODE_ENV === 'development') {
