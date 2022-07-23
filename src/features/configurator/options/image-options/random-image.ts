@@ -1,7 +1,7 @@
-import { CustomText } from 'features/configurator/elements/custom-text'
+import { CustomText } from 'features/configurator/elements/text-elements/custom-text'
 import { ComponentOptions, ScreenType, Option } from 'features/configurator/options/types/options'
 
-import { getTextOptions } from './common/text-props'
+import { getImageOptions } from '../common/image-props'
 
 export const options: ComponentOptions = {
   name: 'Custom text',
@@ -16,11 +16,11 @@ export const options: ComponentOptions = {
   options: [
     {
       id: 'text-content',
-      propName: 'children',
+      propName: 'src',
       inputTypeName: Option.TEXT,
       label: 'Text',
       value: ''
     },
-    ...getTextOptions()
+    ...getImageOptions()
   ]
 }

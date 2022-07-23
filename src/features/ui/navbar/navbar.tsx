@@ -1,6 +1,6 @@
 import { Group } from '@mantine/core'
 
-import { NeonText } from 'features/configurator/elements/neon-text'
+import { NeonText } from 'features/configurator/elements/text-elements/neon-text'
 import { BuyMeACoffee } from 'features/ui/buy-me-a-coffee/buy-me-a-coffee'
 
 export const Navbar = () => (

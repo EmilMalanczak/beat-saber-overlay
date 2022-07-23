@@ -1,7 +1,7 @@
-import { AccuracyPercentage } from 'features/configurator/elements/accuracy-percentage'
+import { AccuracyPercentage } from 'features/configurator/elements/text-elements/accuracy-percentage'
 import { ComponentOptions, ScreenType } from 'features/configurator/options/types/options'
 
-import { getTextOptions } from './common/text-props'
+import { getTextOptions } from '../common/text-props'
 
 export const options: ComponentOptions = {
   name: 'Accuracy percentage',

@@ -1,4 +1,4 @@
-import { NeonText } from 'features/configurator/elements/neon-text'
+import { NeonText } from 'features/configurator/elements/text-elements/neon-text'
 import { ComponentOptions, ScreenType, Option } from 'features/configurator/options/types/options'
 
 export const options: ComponentOptions = {
