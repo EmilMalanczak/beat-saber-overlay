@@ -1,13 +1,15 @@
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
+import { transformUserDto } from 'api/dto/user-dto'
 import { scoresaber } from 'api/scoresaber'
-import { Player } from 'types/Player'
+import { Player, PlayerDto } from 'types/Player'
 
 type PlayerStore = {
   loading: boolean
   fetched: boolean
   error: boolean
-  player: Player | null
+  player: PlayerDto | null
   getPlayerInfo: (id: string) => Promise<void>
   setLoading: (isLoading: boolean) => void
 }
@@ -21,9 +23,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     try {
       get().setLoading(true)
 
-      const { data: player } = await scoresaber.get<Player>(`/player/${id}/full`) // TODO fetch player from scoresaber
+      const { data: player } = await scoresaber.get<Player>(`/player/${id}/full`)
+      console.log(player)
 
-      set({ player, fetched: true, loading: false, error: false })
+      set({ player: transformUserDto(player), fetched: true, loading: false, error: false })
     } catch (e) {
       console.error('[Scoresaber]: there was a problem with fetching player info')
       console.error(e)
@@ -35,3 +38,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     set({ loading })
   }
 }))
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('Player store', usePlayerStore)
+}

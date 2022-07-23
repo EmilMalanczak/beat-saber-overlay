@@ -1,3 +1,4 @@
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
 import { HP_COSTS } from 'constants/score'
@@ -83,3 +84,7 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
     })
   }
 }))
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('Score store', useScoreStore)
+}

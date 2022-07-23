@@ -1,25 +1,15 @@
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
 import { beatsaver } from 'api/beatsaver'
-import { BeatmapObject } from 'types/Events'
-import { Song } from 'types/Song'
-
-type SongDetails = {
-  author: BeatmapObject['songAuthorName']
-  mapper: BeatmapObject['levelAuthorName']
-  cover: BeatmapObject['songCover']
-  difficulty: {
-    level: BeatmapObject['difficultyEnum']
-    name: BeatmapObject['difficulty']
-  }
-}
+import { transferSongDto } from 'api/dto/song-dto'
+import { Song, SongDto } from 'types/Song'
 
 type SongStore = {
   loading: boolean
   error: boolean
   paused: boolean
-  song: Song | null
-  details: SongDetails | null
+  song: SongDto | null
   setLoading: (isLoading: boolean) => void
   getSong: (hash: string) => Promise<void>
 }
@@ -29,16 +19,18 @@ export const useSongStore = create<SongStore>((set, get) => ({
   error: false,
   paused: false,
   song: null,
-  details: null,
   getSong: async (hash) => {
     try {
       get().setLoading(true)
 
-      const song = beatsaver.get(`/maps/hash/${hash}`) // TODO fetch song from beatsaver
+      const { data: song } = await beatsaver.get<Song>(`/maps/hash/${hash}`)
       console.log(song)
 
-      // @ts-ignore
-      set({ song: {}, loading: false, error: false })
+      set({
+        song: transferSongDto(song),
+        loading: false,
+        error: false
+      })
     } catch (e) {
       console.error('[Beatsaver]: there was a problem with fetching song info')
       console.error(e)
@@ -50,3 +42,7 @@ export const useSongStore = create<SongStore>((set, get) => ({
     set({ loading })
   }
 }))
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('Song store', useSongStore)
+}

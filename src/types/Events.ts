@@ -2,6 +2,7 @@
 // https://github.com/opl-/beatsaber-http-status/blob/master/protocol.md#status-object
 
 import { SocketEvent } from './SocketEvent'
+import { SongDifficultyEnum } from './Song'
 
 export type NoteCutObject = {
   noteID: number // ID of the note
@@ -116,7 +117,7 @@ export type BeatmapObject = {
   paused: null | number // If game is paused, UNIX timestamp in milliseconds of when the map was paused. null otherwise.
   length: number // Length of map in milliseconds. Adjusted for song speed multiplier.
   difficulty: string // Translated beatmap difficulty name. If SongCore is installed, this may contain a custom difficulty label defined by the beatmap.
-  difficultyEnum: 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus' // Beatmap difficulty
+  difficultyEnum: SongDifficultyEnum // Beatmap difficulty
   characteristic:
     | 'Standard'
     | 'NoArrows'

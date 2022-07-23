@@ -1,6 +1,7 @@
 import { useLocalStorageValue } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { useEffect } from 'react'
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
 import type { SetState, StateSelector } from 'zustand'
@@ -273,4 +274,8 @@ export const useConfiguratorStore = (
   }, [elements, setLocalConfig])
 
   return { ...store }
+}
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('Configurator store', useConfiguratorStoreBare)
 }

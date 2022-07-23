@@ -78,7 +78,7 @@ export const CutVisualizer: FC<CutVisualizerProps> = ({
     >
       {noteCuts.map((rowNotes) =>
         rowNotes.map((cell) => (
-          <div className={classes.blockWrapper}>
+          <div className={classes.blockWrapper} key={`${cell?.id ?? ''}${cell.x}${cell.y}`}>
             <NoteBlock fadeTime={fadeTime} noteConfig={noteConfig} cut={cell} />
           </div>
         ))

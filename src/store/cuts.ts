@@ -1,3 +1,4 @@
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
 import { NoteCutObject } from 'types/Events'
@@ -118,3 +119,7 @@ export const useCutsStore = create<CutStore>((set, get) => ({
     })
   }
 }))
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('Cut store', useCutsStore)
+}

@@ -1,6 +1,6 @@
 import { NotificationsProvider } from '@mantine/notifications'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { StrictMode, useEffect } from 'react'
 
 import type { AppProps } from 'next/app'
 
@@ -22,13 +22,15 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [getPlayerInfo, router.query.id])
 
   return (
-    <ThemeContext>
-      <NotificationsProvider>
-        <SocketProvider>
-          <Component {...pageProps} />
-        </SocketProvider>
-      </NotificationsProvider>
-    </ThemeContext>
+    <StrictMode>
+      <ThemeContext>
+        <NotificationsProvider>
+          <SocketProvider>
+            <Component {...pageProps} />
+          </SocketProvider>
+        </NotificationsProvider>
+      </ThemeContext>
+    </StrictMode>
   )
 }
 

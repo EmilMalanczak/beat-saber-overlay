@@ -1,3 +1,4 @@
+import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
 import { Saber } from 'types/Saber'
@@ -16,3 +17,7 @@ export const useUIStore = create<UIStore>((set) => ({
     set({ colors })
   }
 }))
+
+if (process.env.NODE_ENV === 'development') {
+  mountStoreDevtool('UI store', useUIStore)
+}

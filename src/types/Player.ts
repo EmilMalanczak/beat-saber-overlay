@@ -26,3 +26,10 @@ export type Player = {
   banned: true
   inactive: true
 }
+
+export type PlayerDto = Pick<
+  Player,
+  'id' | 'name' | 'profilePicture' | 'country' | 'pp' | 'rank' | 'countryRank'
+> & {
+  averageAcc: Player['scoreStats']['averageRankedAccuracy']
+}

@@ -1,6 +1,9 @@
 import { createStyles, useMantineTheme } from '@mantine/styles'
 import { useState } from 'react'
 
+import { usePlayerStore } from 'store/player'
+import { useSongStore } from 'store/song'
+
 import { CutVisualizer } from '../src/components/CutVisualizer'
 import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
 import { generateRandomCut } from '../src/helpers/generateRandomCut'
@@ -23,7 +26,8 @@ const Home = () => {
   const theme = useMantineTheme()
   const cutNote = useCutsStore((state) => state.cutNote)
   const [isDemoOn, toggleDemo] = useState(false)
-
+  const { getSong } = useSongStore()
+  const { getPlayerInfo } = usePlayerStore()
   const { classes } = useStyles()
 
   const handleCut = () => {
@@ -40,6 +44,14 @@ const Home = () => {
     <>
       <button type="button" onClick={() => toggleDemo((p) => !p)}>
         cut
+      </button>
+
+      <button type="button" onClick={() => getSong('8D0EDFBE3A32BABADF699BDB1937A1C0CAE1DBDC')}>
+        song
+      </button>
+
+      <button type="button" onClick={() => getPlayerInfo('76561199237406046')}>
+        player
       </button>
 
       <div className={classes.visualizers}>

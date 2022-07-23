@@ -85,7 +85,6 @@ export const SocketProvider: FC = ({ children }) => {
             [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
           })
           break
-
         case SocketEvent.FAILED:
         case SocketEvent.SOFT_FAILED:
         case SocketEvent.MENU:
