@@ -1,14 +1,13 @@
 import { createStyles, useMantineTheme } from '@mantine/styles'
 import { useState } from 'react'
 
-import { usePlayerStore } from 'store/player'
-import { useSongStore } from 'store/song'
-
-import { CutVisualizer } from '../src/components/CutVisualizer'
-import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
-import { generateRandomCut } from '../src/helpers/generateRandomCut'
-import { useInterval } from '../src/hooks/useInterval'
-import { useCutsStore } from '../src/store/cuts'
+import { CutVisualizer } from 'features/configurator/elements/cut-visualizer'
+import { HitScoreVisualizer } from 'features/configurator/elements/hit-score-visualizer'
+import { generateRandomCut } from 'features/demo/generate-random-cut'
+import { usePlayerStore } from 'features/scoresaber/player'
+import { useCutsStore } from 'features/socket/store/cuts'
+import { useSongStore } from 'features/socket/store/song'
+import { useInterval } from 'hooks/use-interval'
 
 export const useStyles = createStyles(() => ({
   visualizers: {

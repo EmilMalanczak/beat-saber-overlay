@@ -3,11 +3,11 @@ import { StrictMode } from 'react'
 
 import type { AppProps } from 'next/app'
 
-import { SocketProvider } from '../src/contexts/Socket'
-import { ThemeContext } from '../src/contexts/Theme'
+import { SocketProvider } from 'features/socket/socket-context'
+import { ThemeContext } from 'features/ui/theme-context'
 
-import '../src/styles/global.scss'
-import '../src/styles/fonts.scss'
+import 'features/ui/styles/global.scss'
+import 'features/ui/styles/fonts.scss'
 
 const App = ({ Component, pageProps }: AppProps) => (
   <StrictMode>

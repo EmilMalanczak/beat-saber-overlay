@@ -3,16 +3,15 @@ import { useBooleanToggle } from '@mantine/hooks'
 import { useState } from 'react'
 import { RiAddFill, RiPlayFill, RiPauseFill } from 'react-icons/ri'
 
-import { Navbar } from 'components/Navbar/Navbar'
-import { useConfiguratorStoreBare } from 'store/configurator'
-import { ScreenType } from 'types/Options'
-
-import { AddElementDrawer } from '../src/components/AddElementDrawer/AddElementDrawer'
-import { ConfiguratorCanvas } from '../src/components/ConfiguratorCanvas/ConfiguratorCanvas'
-import { EditDrawer } from '../src/components/EditDrawer'
-import { generateRandomCut } from '../src/helpers/generateRandomCut'
-import { useInterval } from '../src/hooks/useInterval'
-import { useCutsStore } from '../src/store/cuts'
+import { AddElementDrawer } from 'features/configurator/add-element-drawer/add-element-drawer'
+import { ConfiguratorCanvas } from 'features/configurator/canvas/configurator-canvas'
+import { EditDrawer } from 'features/configurator/edit-drawer'
+import { ScreenType } from 'features/configurator/options/types/options'
+import { useConfiguratorStoreBare } from 'features/configurator/store/configurator'
+import { generateRandomCut } from 'features/demo/generate-random-cut'
+import { useCutsStore } from 'features/socket/store/cuts'
+import { Navbar } from 'features/ui/navbar/navbar'
+import { useInterval } from 'hooks/use-interval'
 
 const Home = () => {
   const cutNote = useCutsStore((state) => state.cutNote)
