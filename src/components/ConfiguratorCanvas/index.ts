@@ -1,1 +1,0 @@
-export { ConfiguratorCanvas } from './ConfiguratorCanvas'

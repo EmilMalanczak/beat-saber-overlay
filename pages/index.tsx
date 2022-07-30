@@ -1,11 +1,13 @@
 import { createStyles, useMantineTheme } from '@mantine/styles'
 import { useState } from 'react'
 
-import { CutVisualizer } from '../src/components/CutVisualizer'
-import { HitScoreVisualizer } from '../src/components/HitScoreVisualizer'
-import { generateRandomCut } from '../src/helpers/generateRandomCut'
-import { useInterval } from '../src/hooks/useInterval'
-import { useCutsStore } from '../src/store/cuts'
+import { useSongStore } from 'features/beatsaver/song'
+import { CutVisualizer } from 'features/configurator/elements/cut-visualizer'
+import { HitScoreVisualizer } from 'features/configurator/elements/hit-score-visualizer'
+import { generateRandomCut } from 'features/demo/generate-random-cut'
+import { usePlayerStore } from 'features/scoresaber/player'
+import { useCutsStore } from 'features/socket/store/cuts'
+import { useInterval } from 'hooks/use-interval'
 
 export const useStyles = createStyles(() => ({
   visualizers: {
@@ -23,7 +25,8 @@ const Home = () => {
   const theme = useMantineTheme()
   const cutNote = useCutsStore((state) => state.cutNote)
   const [isDemoOn, toggleDemo] = useState(false)
-
+  const { getSong } = useSongStore()
+  const { getPlayerInfo } = usePlayerStore()
   const { classes } = useStyles()
 
   const handleCut = () => {
@@ -40,6 +43,14 @@ const Home = () => {
     <>
       <button type="button" onClick={() => toggleDemo((p) => !p)}>
         cut
+      </button>
+
+      <button type="button" onClick={() => getSong('8D0EDFBE3A32BABADF699BDB1937A1C0CAE1DBDC')}>
+        song
+      </button>
+
+      <button type="button" onClick={() => getPlayerInfo('76561199237406046')}>
+        player
       </button>
 
       <div className={classes.visualizers}>

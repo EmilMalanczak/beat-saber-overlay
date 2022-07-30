@@ -1,0 +1,14 @@
+.bar {
+  width: var(--bar-width);
+  height: var(--bar-height);
+  background-color: var(--bar-background-color);
+  border-radius: calc(var(--bar-border-radius) * 1px);
+  position: relative;
+  overflow: hidden;
+}
+
+.barFilled {
+  background-color: var(--bar-color-filled);
+  position: absolute;
+  inset: 0;
+}

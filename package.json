@@ -35,6 +35,7 @@
     "husky": "^7.0.4",
     "lint-staged": "^12.3.2",
     "prettier": "^2.5.1",
+    "simple-zustand-devtools": "^1.1.0",
     "typescript": "^4.5.5"
   },
   "dependencies": {
@@ -49,6 +50,7 @@
     "polished": "^4.1.4",
     "ramda": "^0.28.0",
     "react": "18",
+    "react-country-flag": "^3.0.2",
     "react-dom": "18",
     "react-draggable": "^4.4.4",
     "react-icons": "^4.3.1",
