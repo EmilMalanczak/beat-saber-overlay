@@ -77,9 +77,12 @@ export const SocketProvider: FC = ({ children }) => {
           break
 
         case SocketEvent.SONG_START:
-          const { songHash, color, difficultyEnum } = data.status.beatmap!
+          const { songHash, color, difficultyEnum, difficulty } = data.status.beatmap!
           getSong(songHash)
-          setDifficulty(difficultyEnum)
+          setDifficulty({
+            base: difficultyEnum,
+            custom: difficulty
+          })
           setSaberColors({
             [Saber.A]: `rgb(${color.saberA[0]}, ${color.saberA[1]}, ${color.saberA[2]})`,
             [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
