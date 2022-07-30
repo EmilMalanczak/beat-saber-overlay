@@ -13,7 +13,7 @@ import {
 } from 'features/configurator/options/types/options'
 import { useConfiguratorStore } from 'features/configurator/store/configurator'
 
-import { useStyles } from './edit-drawer.styles'
+import { useStyles } from './edit-element-drawer.styles'
 
 type EditDrawerProps = {
   opened: boolean

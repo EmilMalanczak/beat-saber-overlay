@@ -42,7 +42,7 @@ type PropOptions =
   | OptionsBase<Option.COLOR, ColorInputProps>
   | OptionsBase<Option.HUE, InputWrapperBaseProps & Omit<HueSliderProps, 'onChange'>>
   | OptionsBase<Option.SLIDER, InputWrapperBaseProps & SliderProps>
-  | OptionsBase<Option.TOGGLE, SwitchProps>
+  | OptionsBase<Option.TOGGLE, Omit<SwitchProps, 'checked' | 'value'> & { value: boolean }>
   | OptionsBase<Option.TEXT, TextInputProps>
 
 type ToggleOptions = PropOptions & {

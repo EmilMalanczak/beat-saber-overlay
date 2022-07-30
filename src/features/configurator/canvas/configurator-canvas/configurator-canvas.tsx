@@ -10,6 +10,7 @@ import type { ResizableProps } from 'react-resizable'
 import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 
 import { CANVAS_ID, DRAWER_WIDTH } from 'constants/dom'
+import { getInitialZoom } from 'features/configurator/helpers/get-initial-zoom'
 import { roundZoomScale } from 'features/configurator/helpers/round-zoom-scale'
 import { useConfiguratorStore } from 'features/configurator/store/configurator'
 
@@ -59,15 +60,6 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit, editing }) 
       }
     }
   }
-
-  const getInitialZoom = () => {
-    const vmin = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight
-
-    const heightDimension = roundZoomScale(window.innerHeight / (canvas.height + vmin * 0.1))
-    const widthDimension = roundZoomScale(window.innerWidth / (canvas.width + vmin * 0.1))
-
-    return heightDimension > widthDimension ? widthDimension : heightDimension
-  }
   useEffect(() => {
     if (!editing && wasInitiallyZoomed && latestPosition.current?.x && latestPosition.current?.y) {
       panRef.current?.setTransform(latestPosition.current.x, latestPosition.current.y, canvas.zoom)
@@ -92,6 +84,12 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit, editing }) 
       saveLatestPosition()
     }
   }, [canvas.zoom])
+
+  useEffect(() => {
+    if (panRef.current) {
+      panRef.current.centerView(canvas.zoom)
+    }
+  }, [])
 
   return (
     <TransformWrapper
@@ -133,7 +131,7 @@ export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit, editing }) 
             >
               <div className={classes.wrapper}>
                 <span className={classes.size}>
-                  {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom}x`}
+                  {`${canvas.width} x ${canvas.height}, zoom: ${canvas.zoom.toFixed(2)}x`}
                 </span>
                 <div className={classes.canvas} id={CANVAS_ID}>
                   <ConfiguratorItems

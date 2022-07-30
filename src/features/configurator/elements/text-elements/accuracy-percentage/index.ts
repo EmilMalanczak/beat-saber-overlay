@@ -1,1 +1,1 @@
-export { AccuracyPercentage } from './accuracy-percentage'
+export * from './accuracy-percentage'

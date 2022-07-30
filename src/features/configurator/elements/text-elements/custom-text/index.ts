@@ -1,1 +1,1 @@
-export { CustomText } from './custom-text'
+export * from './custom-text'

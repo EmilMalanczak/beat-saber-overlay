@@ -50,6 +50,7 @@
     "polished": "^4.1.4",
     "ramda": "^0.28.0",
     "react": "18",
+    "react-country-flag": "^3.0.2",
     "react-dom": "18",
     "react-draggable": "^4.4.4",
     "react-icons": "^4.3.1",

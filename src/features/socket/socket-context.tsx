@@ -6,10 +6,10 @@ import type { FC } from 'react'
 
 import { CONNECTION_RECONNECT_TIME, DEFAULT_IP, HTTPStatus } from 'constants/api'
 import { HP_COSTS } from 'constants/score'
+import { useSongStore } from 'features/beatsaver/song'
 import { useGlobalConfigStore } from 'features/configurator/store/global-config'
 import { useCutsStore } from 'features/socket/store/cuts'
 import { useScoreStore } from 'features/socket/store/score'
-import { useSongStore } from 'features/socket/store/song'
 import { useStatusStore } from 'features/socket/store/status'
 import { HTTPEventData } from 'features/socket/types/events'
 import { Saber } from 'features/socket/types/saber'
@@ -27,7 +27,7 @@ const HTTPProvider = SocketContext.Provider
 export const SocketProvider: FC = ({ children }) => {
   const router = useRouter()
   const { connect, disconnect } = useStatusStore()
-  const { getSong } = useSongStore()
+  const { getSong, setDifficulty } = useSongStore()
   const cutNote = useCutsStore((state) => state.cutNote)
   const resetStore = useCutsStore((state) => state.resetStore)
   const { setSaberColors, colors } = useGlobalConfigStore()
@@ -36,7 +36,7 @@ export const SocketProvider: FC = ({ children }) => {
     decreaseHealth,
     startObstacleHealthLoss,
     stopObstacleHealthLoss,
-    setScore
+    calculateScore
   } = useScoreStore()
 
   // weird - passing that string directly causes build error
@@ -77,9 +77,9 @@ export const SocketProvider: FC = ({ children }) => {
           break
 
         case SocketEvent.SONG_START:
-          const { songHash, color } = data.status.beatmap!
+          const { songHash, color, difficultyEnum } = data.status.beatmap!
           getSong(songHash)
-
+          setDifficulty(difficultyEnum)
           setSaberColors({
             [Saber.A]: `rgb(${color.saberA[0]}, ${color.saberA[1]}, ${color.saberA[2]})`,
             [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
@@ -111,7 +111,7 @@ export const SocketProvider: FC = ({ children }) => {
         case SocketEvent.SCORE_CHANGED:
           const { score, currentMaxScore } = data.status.performance!
 
-          setScore(score, currentMaxScore)
+          calculateScore(score, currentMaxScore)
           break
 
         case SocketEvent.NOTE_FULLY_CUT:

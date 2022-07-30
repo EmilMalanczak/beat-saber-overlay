@@ -12,6 +12,6 @@ export const options: ComponentOptions = {
   image: '',
   unique: true,
   description: 'Display cuts from the game',
-  screen: [ScreenType.InGame, ScreenType.Lobby],
+  screen: [ScreenType.InGame],
   options: [...getTextOptions()]
 }

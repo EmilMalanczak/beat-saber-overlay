@@ -36,7 +36,7 @@ type SongDifficulty = {
     warns: number
   }
   seconds: number
-  stars: unknown
+  stars: number
   maxScore: number
 }
 
@@ -251,9 +251,12 @@ export type Song = {
 }
 
 export type SongDto = {
-  author: SongMetadata['songAuthorName']
   mapper: SongMetadata['levelAuthorName']
   cover: SongVersion['coverURL']
+  name: SongMetadata['songName']
+  author: SongMetadata['songAuthorName']
+  fullName: Song['name']
+  hash: Song['id']
   difficulty: Partial<
     Record<
       SongDifficultyEnum,

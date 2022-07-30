@@ -17,7 +17,7 @@ type ScoreStore = {
   incrementMisses: () => void
   startObstacleHealthLoss: (timestamp: number) => void
   stopObstacleHealthLoss: (timestamp: number) => void
-  setScore: (score: number, maxScore: number) => void
+  calculateScore: (score: number, maxScore: number) => void
 }
 
 export const useScoreStore = create<ScoreStore>((set, get) => ({
@@ -68,7 +68,7 @@ export const useScoreStore = create<ScoreStore>((set, get) => ({
       obstacleEnteredTime: null
     })
   },
-  setScore: (score, maxScore) => {
+  calculateScore: (score, maxScore) => {
     const accuracy = maxScore > 0 ? ((score / maxScore) * 100).toFixed(2) : '100.00'
 
     set({

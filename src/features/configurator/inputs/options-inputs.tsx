@@ -1,7 +1,7 @@
 import {
   NumberInput,
   ColorInput,
-  Switch,
+  Switch as MSwitch,
   Slider as MSlider,
   HueSlider as MHueSlider,
   InputWrapper,
@@ -27,6 +27,8 @@ const Slider = ({ label, description, ...props }: any) => (
     <MSlider {...props} />
   </InputWrapper>
 )
+
+const Toggle = ({ value, ...props }: any) => <MSwitch checked={value} {...props} />
 const HueSlider = ({ label, description, ...props }: any) => (
   <InputWrapper label={label} description={description}>
     <MHueSlider {...props} />
@@ -67,15 +69,15 @@ export const optionsInputsBase: Record<Exclude<Option, Option.DYNAMIC_OPTIONS>, 
     handler: defaultHandler
   },
   [Option.TOGGLE]: {
-    component: Switch,
-    handler: defaultHandler
+    component: Toggle,
+    handler: (event) => event.target.checked
   },
   [Option.TEXT]: {
     component: TextInput,
     handler: (event) => event.target.value
   },
   [Option.TOGGLE_COMPONENTS]: {
-    component: Switch,
+    component: MSwitch,
     handler: defaultHandler
   }
 }

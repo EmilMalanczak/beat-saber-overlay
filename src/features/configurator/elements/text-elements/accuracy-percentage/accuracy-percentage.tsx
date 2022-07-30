@@ -1,10 +1,10 @@
 import { VFC } from 'react'
 
 import { TextCore, TextCoreProps } from 'features/configurator/elements/text-elements/text-core'
-import { useConfiguratorStoreBare } from 'features/configurator/store/configurator'
+import { useScoreStore } from 'features/socket/store/score'
 
 export const AccuracyPercentage: VFC<TextCoreProps> = (props) => {
-  const x = useConfiguratorStoreBare()
+  const accuracy = useScoreStore((state) => state.accuracy)
 
-  return <TextCore {...props}>91.5%</TextCore>
+  return <TextCore {...props}>{`${accuracy}%`}</TextCore>
 }
