@@ -5,21 +5,23 @@ import type { FC } from 'react'
 import { Draggable } from 'features/configurator/canvas/draggable'
 import { getConfiguratorItemComponent } from 'features/configurator/helpers/get-configurator-item-component'
 import { getConfiguratorItemProps } from 'features/configurator/helpers/get-configurator-item-props'
-import {
-  useConfiguratorStore,
-  useConfiguratorStoreBare
-} from 'features/configurator/store/configurator'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 type ConfiguratorItemProps = {
   onEdit: (value: boolean, params: { initialLeft: number; finalLeft: number; y: number }) => void
 }
 
 export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) => {
-  const zoom = useConfiguratorStoreBare((state) => state.canvas.zoom)
-
   // TODO: selector for this
-  const { dragElement, elements, removeElement, selectElement, activeScreen } =
-    useConfiguratorStore()
+  const { dragElement, elements, removeElement, selectElement, activeScreen, zoom } =
+    useSyncedConfiguratorStore((state) => ({
+      dragElement: state.dragElement,
+      elements: state.elements,
+      removeElement: state.removeElement,
+      selectElement: state.selectElement,
+      activeScreen: state.activeScreen,
+      zoom: state.canvas.zoom
+    }))
 
   return (
     <>

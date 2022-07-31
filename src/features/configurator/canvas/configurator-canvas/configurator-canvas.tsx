@@ -12,7 +12,7 @@ import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { CANVAS_ID, DRAWER_WIDTH } from 'constants/dom'
 import { getInitialZoom } from 'features/configurator/helpers/get-initial-zoom'
 import { roundZoomScale } from 'features/configurator/helpers/round-zoom-scale'
-import { useConfiguratorStore } from 'features/configurator/store/configurator'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 import { useStyles } from './configurator-canvas.styles'
 
@@ -33,7 +33,7 @@ type ConfiguratorProps = {
 }
 
 export const ConfiguratorCanvas: VFC<ConfiguratorProps> = ({ onEdit, editing }) => {
-  const { canvas, setCanvas } = useConfiguratorStore((state) => ({
+  const { canvas, setCanvas } = useSyncedConfiguratorStore((state) => ({
     canvas: state.canvas,
     setCanvas: state.setCanvas
   }))

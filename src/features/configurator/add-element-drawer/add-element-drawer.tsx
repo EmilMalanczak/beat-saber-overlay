@@ -2,7 +2,7 @@ import { Button, Drawer, Group } from '@mantine/core'
 import { VFC } from 'react'
 
 import { options } from 'features/configurator/options/index'
-import { useConfiguratorStore } from 'features/configurator/store/configurator'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 type AddElementDrawerProps = {
   opened: boolean
@@ -10,7 +10,7 @@ type AddElementDrawerProps = {
 }
 
 export const AddElementDrawer: VFC<AddElementDrawerProps> = ({ opened, setOpened }) => {
-  const { addElement, activeScreen } = useConfiguratorStore()
+  const { addElement, activeScreen } = useSyncedConfiguratorStore()
 
   return (
     <Drawer

@@ -8,7 +8,7 @@ import { CONNECTION_RECONNECT_TIME, DEFAULT_IP, HTTPStatus } from 'constants/api
 import { HP_COSTS } from 'constants/score'
 import { useSongStore } from 'features/beatsaver/song'
 import { ScreenType } from 'features/configurator/options/types/options'
-import { useConfiguratorStoreBare } from 'features/configurator/store/configurator'
+import { useConfiguratorStore } from 'features/configurator/store/configurator'
 import { useGlobalConfigStore } from 'features/configurator/store/global-config'
 import { useCutsStore } from 'features/socket/store/cuts'
 import { useScoreStore } from 'features/socket/store/score'
@@ -33,7 +33,7 @@ export const SocketProvider: FC = ({ children }) => {
   const cutNote = useCutsStore((state) => state.cutNote)
   const resetStore = useCutsStore((state) => state.resetStore)
   const { setSaberColors, colors } = useGlobalConfigStore()
-  const changeActiveScreen = useConfiguratorStoreBare((state) => state.changeActiveScreen)
+  const changeActiveScreen = useConfiguratorStore((state) => state.changeActiveScreen)
   const {
     increaseHealth,
     decreaseHealth,

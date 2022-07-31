@@ -1,9 +1,9 @@
 import { roundZoomScale } from './round-zoom-scale'
 
-import { useConfiguratorStoreBare } from '../store/configurator'
+import { useConfiguratorStore } from '../store/configurator'
 
 export const getInitialZoom = (initialValues?: { width: number; height: number }) => {
-  const canvas = initialValues || useConfiguratorStoreBare.getState().canvas
+  const canvas = initialValues || useConfiguratorStore.getState().canvas
   const vmin = window.innerHeight > window.innerWidth ? window.innerWidth : window.innerHeight
 
   const heightDimension = roundZoomScale(window.innerHeight / (canvas.height + vmin * 0.1))

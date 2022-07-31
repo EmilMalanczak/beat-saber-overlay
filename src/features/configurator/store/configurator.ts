@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
-import type { SetState, StateSelector } from 'zustand'
+import type { SetState } from 'zustand'
 
 import { ComponentOptions, Option, ScreenType } from 'features/configurator/options/types/options'
 import { useLocalStorage } from 'hooks/use-local-storage'
@@ -46,7 +46,7 @@ type ConfiguratorStore = {
   ) => void
 }
 
-export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
+export const useConfiguratorStore = create<ConfiguratorStore>((set, get) => ({
   elements: {
     [ScreenType.InGame]: [],
     [ScreenType.Lobby]: []
@@ -255,22 +255,21 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
   }
 }))
 
-export const useConfiguratorStore = (
-  selector: StateSelector<ConfiguratorStore, any> = (state) => state
-): ConfiguratorStore => {
+type AnySelector = (state: ConfiguratorStore) => any
+
+export const useSyncedConfiguratorStore = <S extends AnySelector>(selector: S): ReturnType<S> => {
   const [localConfig, setLocalConfig] = useLocalStorage('overlay-config', '')
 
-  const [setInitialElements, elements, canvas, setCanvas] = useConfiguratorStoreBare((state) => [
+  const [setInitialElements, elements, canvas, setCanvas] = useConfiguratorStore((state) => [
     state.setInitialElements,
     state.elements,
     state.canvas,
     state.setCanvas
   ])
-  const store = useConfiguratorStoreBare(selector)
+  const store = useConfiguratorStore(selector)
 
   useEffect(() => {
     if (localConfig) {
-      console.log(parseJSON(localConfig))
       const { elements: initialElement, canvas: initialCanvas } = parseJSON<LocalStorageConfig>(
         localConfig
       ) as LocalStorageConfig
@@ -295,5 +294,5 @@ export const useConfiguratorStore = (
 }
 
 if (process.env.NODE_ENV === 'development') {
-  mountStoreDevtool('Configurator store', useConfiguratorStoreBare)
+  mountStoreDevtool('Configurator store', useConfiguratorStore)
 }

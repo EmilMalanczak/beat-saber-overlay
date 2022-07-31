@@ -4,7 +4,10 @@ import { CANVAS_PADDING } from 'constants/dom'
 import { useSongStore } from 'features/beatsaver/song'
 import { getConfiguratorItemComponent } from 'features/configurator/helpers/get-configurator-item-component'
 import { getConfiguratorItemProps } from 'features/configurator/helpers/get-configurator-item-props'
-import { LocalStorageConfig, useConfiguratorStore } from 'features/configurator/store/configurator'
+import {
+  LocalStorageConfig,
+  useSyncedConfiguratorStore
+} from 'features/configurator/store/configurator'
 import { generateRandomCut } from 'features/demo/generate-random-cut'
 import { usePlayerStore } from 'features/scoresaber/player'
 import { useCutsStore } from 'features/socket/store/cuts'
@@ -18,7 +21,7 @@ const Home = () => {
   const [isDemoOn, toggleDemo] = useState(false)
   const { getSong } = useSongStore()
   const { getPlayerInfo } = usePlayerStore()
-  const { activeScreen } = useConfiguratorStore((state) => ({
+  const { activeScreen } = useSyncedConfiguratorStore((state) => ({
     activeScreen: state.activeScreen,
     canvas: state.canvas
   }))

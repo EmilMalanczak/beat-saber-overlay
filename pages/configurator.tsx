@@ -11,7 +11,7 @@ import { ConfiguratorCanvas } from 'features/configurator/canvas/configurator-ca
 import { ConfiguratorWelcomeModal } from 'features/configurator/configurator-welcome-modal/configurator-welcome-modal'
 import { EditDrawer } from 'features/configurator/edit-element-drawer'
 import { ScreenType } from 'features/configurator/options/types/options'
-import { useConfiguratorStoreBare } from 'features/configurator/store/configurator'
+import { useConfiguratorStore } from 'features/configurator/store/configurator'
 import { generateRandomCut } from 'features/demo/generate-random-cut'
 import { usePlayerStore } from 'features/scoresaber/player'
 import { useCutsStore } from 'features/socket/store/cuts'
@@ -23,7 +23,7 @@ import { randomInt } from 'utils/random-int'
 
 const Home = () => {
   const cutNote = useCutsStore((state) => state.cutNote)
-  const [activeScreen, setActiveScreen] = useConfiguratorStoreBare((state) => [
+  const [activeScreen, setActiveScreen] = useConfiguratorStore((state) => [
     state.activeScreen,
     state.changeActiveScreen
   ])
