@@ -17,5 +17,5 @@ export const transformUserDto = ({
   pp,
   rank,
   countryRank,
-  averageAcc: scoreStats.averageRankedAccuracy
+  averageAcc: scoreStats?.averageRankedAccuracy
 })

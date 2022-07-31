@@ -1,9 +1,8 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
-import { scoresaber } from 'features/scoresaber/scoresaber'
-import { Player, PlayerDto } from 'features/scoresaber/types/player'
-import { transformUserDto } from 'features/scoresaber/user-dto'
+import { api } from 'constants/api'
+import { PlayerDto } from 'features/scoresaber/types/player'
 
 type PlayerStore = {
   loading: boolean
@@ -23,10 +22,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     try {
       get().setLoading(true)
 
-      const { data: player } = await scoresaber.get<Player>(`/player/${id}/full`)
+      const { data: player } = await api.get<PlayerDto>(`/scoresaber/player/${id}`)
       console.log(player)
 
-      set({ player: transformUserDto(player), fetched: true, loading: false, error: false })
+      set({ player, fetched: true, loading: false, error: false })
     } catch (e) {
       console.error('[Scoresaber]: there was a problem with fetching player info')
       console.error(e)

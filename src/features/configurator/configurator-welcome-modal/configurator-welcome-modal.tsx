@@ -17,6 +17,7 @@ import { useEffect, useState, VFC } from 'react'
 import { BsFillCheckCircleFill } from 'react-icons/bs'
 import { FiInfo } from 'react-icons/fi'
 
+import { api } from 'constants/api'
 import { scoresaber } from 'features/scoresaber/scoresaber'
 import { Player, PlayerDto } from 'features/scoresaber/types/player'
 import { transformUserDto } from 'features/scoresaber/user-dto'
@@ -68,7 +69,7 @@ export const ConfiguratorWelcomeModal: VFC<ConfiguratorWelcomeModalProps> = ({ o
         disallowClose: true
       })
 
-      const { data: scoresaberPlayer } = await scoresaber.get<Player>(`/player/${data.id}/full`)
+      const { data: scoresaberPlayer } = await api.get<Player>(`/scoresaber/player/${data.id}`)
 
       updateNotification({
         id: 'load-data',

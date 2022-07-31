@@ -28,6 +28,7 @@ export const AddElementDrawer: VFC<AddElementDrawerProps> = ({ opened, setOpened
           .filter((option) => option.screen.some((screen) => screen === activeScreen))
           .map((component) => (
             <Button
+              key={component.slug}
               onClick={() => {
                 addElement(component)
                 setOpened(false)

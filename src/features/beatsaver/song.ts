@@ -1,9 +1,8 @@
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
-import { beatsaver } from 'features/beatsaver/beatsaver'
-import { transferSongDto } from 'features/beatsaver/song-dto'
-import { Song, SongDifficultyEnum, SongDto } from 'features/beatsaver/types/song'
+import { api } from 'constants/api'
+import { SongDifficultyEnum, SongDto } from 'features/beatsaver/types/song'
 
 type ActiveSongDifficulty = {
   base: SongDifficultyEnum | null
@@ -35,11 +34,11 @@ export const useSongStore = create<SongStore>((set, get) => ({
     try {
       get().setLoading(true)
 
-      const { data: song } = await beatsaver.get<Song>(`/maps/hash/${hash}`)
+      const { data: song } = await api.get<SongDto>(`/beatsaver/map/${hash}`)
       console.log(song)
 
       set({
-        song: transferSongDto(song),
+        song,
         loading: false,
         error: false,
         fetched: true
