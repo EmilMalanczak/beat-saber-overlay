@@ -12,7 +12,10 @@ export const DynamicOptionsInput = ({
   description,
   value
 }: DynamicPropOptions & { onChange: any }) => {
-  const { saveConfig, editActiveElement } = useSyncedConfiguratorStore()
+  const { saveConfig, editActiveElement } = useSyncedConfiguratorStore((state) => ({
+    saveConfig: state.saveConfig,
+    editActiveElement: state.editActiveElement
+  }))
 
   return (
     <InputWrapper label={label} description={description}>

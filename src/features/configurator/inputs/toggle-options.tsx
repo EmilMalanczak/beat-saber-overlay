@@ -12,7 +12,11 @@ export const ToggleOptions = ({
   ...switchProps
 }: TogglePropOptions & { id: string }) => {
   const { saveConfig, editActiveElement, toggleActiveElementComponents } =
-    useSyncedConfiguratorStore()
+    useSyncedConfiguratorStore((state) => ({
+      saveConfig: state.saveConfig,
+      editActiveElement: state.editActiveElement,
+      toggleActiveElementComponents: state.toggleActiveElementComponents
+    }))
 
   return (
     <>

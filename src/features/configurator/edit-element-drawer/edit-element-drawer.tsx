@@ -22,7 +22,11 @@ type EditDrawerProps = {
 
 export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
   const { classes } = useStyles()
-  const { activeElement, saveConfig, editActiveElement } = useSyncedConfiguratorStore()
+  const { activeElement, saveConfig, editActiveElement } = useSyncedConfiguratorStore((state) => ({
+    activeElement: state.activeElement,
+    saveConfig: state.saveConfig,
+    editActiveElement: state.editActiveElement
+  }))
 
   return (
     <Drawer

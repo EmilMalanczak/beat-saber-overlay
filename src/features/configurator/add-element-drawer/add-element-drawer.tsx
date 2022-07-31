@@ -10,7 +10,10 @@ type AddElementDrawerProps = {
 }
 
 export const AddElementDrawer: VFC<AddElementDrawerProps> = ({ opened, setOpened }) => {
-  const { addElement, activeScreen } = useSyncedConfiguratorStore()
+  const { addElement, activeScreen } = useSyncedConfiguratorStore((state) => ({
+    addElement: state.addElement,
+    activeScreen: state.activeScreen
+  }))
 
   return (
     <Drawer
