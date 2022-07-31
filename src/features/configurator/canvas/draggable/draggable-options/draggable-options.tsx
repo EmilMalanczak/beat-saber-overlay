@@ -68,7 +68,7 @@ export const DraggableOptions: VFC<DraggableOptionsProps> = ({
           fn: ({ state }: any) => {
             const { placement } = state
 
-            state.styles.popper['transform-origin'] = `${
+            state.styles.popper.transformOrigin = `${
               placement.includes('top') ? 'bottom' : 'top'
             } ${state.placement.includes('start') ? 'left' : 'right'}`
           }

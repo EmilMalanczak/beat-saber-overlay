@@ -35,6 +35,7 @@ export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) =>
         return (
           <Draggable
             id={name}
+            key={name}
             onStop={({ x, y }) => {
               dragElement({
                 index,

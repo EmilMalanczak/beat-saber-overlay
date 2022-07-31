@@ -27,11 +27,11 @@ export default class MyDocument extends Document {
           <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
-          <link rel="manifest" href="/manifest.json" />
+          <link rel="manifest" href="/assets/manifest.json" />
           <meta name="theme-color" content="#ffffff" />
 
           {/* font loading */}
-          <link rel="preload" href="/fonts/NeonTubes2.ttf" as="font" crossOrigin="" />
+          <link rel="preload" href="/fonts/NeonTubes2.otf" as="font" crossOrigin="" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
           <link

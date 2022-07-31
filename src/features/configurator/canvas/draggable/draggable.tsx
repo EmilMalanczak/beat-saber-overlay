@@ -1,4 +1,3 @@
-import { UnstyledButton } from '@mantine/core'
 import {
   useBooleanToggle,
   useClickOutside,
@@ -205,8 +204,15 @@ export const Draggable: FC<DraggableProps> = ({
       onDrag={handleDrag}
       {...rest}
     >
-      <UnstyledButton
+      <div
+        tabIndex={-1}
+        role="button"
         ref={useMergedRef(boxRef, outsideClickRef, sizeRef)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !isOnOptionsNode(e)) {
+            toggleOpened()
+          }
+        }}
         onClick={(e) => {
           if (!isOnOptionsNode(e)) {
             toggleOpened()
@@ -254,7 +260,7 @@ export const Draggable: FC<DraggableProps> = ({
           optionsRef={optionsRef}
           zoom={canvas.zoom}
         />
-      </UnstyledButton>
+      </div>
     </ReactDraggable>
   )
 }
