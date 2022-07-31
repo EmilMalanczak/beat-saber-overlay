@@ -1,7 +1,7 @@
 import { Switch } from '@mantine/core'
 
 import { TogglePropOptions } from 'features/configurator/options/types/options'
-import { useConfiguratorStore } from 'features/configurator/store/configurator'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 import { getOptionInput } from './options-inputs'
 
@@ -11,7 +11,12 @@ export const ToggleOptions = ({
   id,
   ...switchProps
 }: TogglePropOptions & { id: string }) => {
-  const { saveConfig, editActiveElement, toggleActiveElementComponents } = useConfiguratorStore()
+  const { saveConfig, editActiveElement, toggleActiveElementComponents } =
+    useSyncedConfiguratorStore((state) => ({
+      saveConfig: state.saveConfig,
+      editActiveElement: state.editActiveElement,
+      toggleActiveElementComponents: state.toggleActiveElementComponents
+    }))
 
   return (
     <>

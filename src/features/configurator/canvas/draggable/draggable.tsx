@@ -16,7 +16,7 @@ import type { DraggableProps as ReactDraggableProps, DraggableEventHandler } fro
 
 import { CANVAS_PADDING } from 'constants/dom'
 import { getConfiguratorElement } from 'features/configurator/helpers/get-configurator-element'
-import { useConfiguratorStoreBare } from 'features/configurator/store/configurator'
+import { useConfiguratorStore } from 'features/configurator/store/configurator'
 
 import { DraggableOptions } from './draggable-options'
 import { useStyles } from './draggable.styles'
@@ -71,7 +71,7 @@ export const Draggable: FC<DraggableProps> = ({
   const optionsRef = useRef<HTMLDivElement>(null)
   const outsideClickRef = useClickOutside(() => toggleOpened(false))
 
-  const canvas = useConfiguratorStoreBare((state) => state.canvas)
+  const canvas = useConfiguratorStore((state) => state.canvas)
   const { ref: sizeRef, width: childWidth, height: childHeight } = useElementSize()
 
   const { classes, cx } = useStyles({ zoom, locked: isLocked })

@@ -7,6 +7,8 @@ import type { FC } from 'react'
 import { CONNECTION_RECONNECT_TIME, DEFAULT_IP, HTTPStatus } from 'constants/api'
 import { HP_COSTS } from 'constants/score'
 import { useSongStore } from 'features/beatsaver/song'
+import { ScreenType } from 'features/configurator/options/types/options'
+import { useConfiguratorStore } from 'features/configurator/store/configurator'
 import { useGlobalConfigStore } from 'features/configurator/store/global-config'
 import { useCutsStore } from 'features/socket/store/cuts'
 import { useScoreStore } from 'features/socket/store/score'
@@ -31,6 +33,7 @@ export const SocketProvider: FC = ({ children }) => {
   const cutNote = useCutsStore((state) => state.cutNote)
   const resetStore = useCutsStore((state) => state.resetStore)
   const { setSaberColors, colors } = useGlobalConfigStore()
+  const changeActiveScreen = useConfiguratorStore((state) => state.changeActiveScreen)
   const {
     increaseHealth,
     decreaseHealth,
@@ -77,6 +80,7 @@ export const SocketProvider: FC = ({ children }) => {
           break
 
         case SocketEvent.SONG_START:
+          changeActiveScreen(ScreenType.InGame)
           const { songHash, color, difficultyEnum, difficulty } = data.status.beatmap!
           getSong(songHash)
           setDifficulty({
@@ -88,9 +92,14 @@ export const SocketProvider: FC = ({ children }) => {
             [Saber.B]: `rgb(${color.saberB[0]}, ${color.saberB[1]}, ${color.saberB[2]})`
           })
           break
+
+        case SocketEvent.MENU:
+          resetStore()
+          changeActiveScreen(ScreenType.Lobby)
+          break
+
         case SocketEvent.FAILED:
         case SocketEvent.SOFT_FAILED:
-        case SocketEvent.MENU:
           resetStore()
           break
 

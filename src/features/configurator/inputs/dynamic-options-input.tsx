@@ -2,7 +2,7 @@ import { Button, InputWrapper } from '@mantine/core'
 import { RiAddLine } from 'react-icons/ri'
 
 import { DynamicPropOptions } from 'features/configurator/options/types/options'
-import { useConfiguratorStore } from 'features/configurator/store/configurator'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 import { optionsInputsBase } from './options-inputs'
 
@@ -12,7 +12,10 @@ export const DynamicOptionsInput = ({
   description,
   value
 }: DynamicPropOptions & { onChange: any }) => {
-  const { saveConfig, editActiveElement } = useConfiguratorStore()
+  const { saveConfig, editActiveElement } = useSyncedConfiguratorStore((state) => ({
+    saveConfig: state.saveConfig,
+    editActiveElement: state.editActiveElement
+  }))
 
   return (
     <InputWrapper label={label} description={description}>

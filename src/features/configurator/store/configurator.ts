@@ -1,12 +1,13 @@
-import { useLocalStorageValue } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { useEffect } from 'react'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 import create from 'zustand'
 
-import type { SetState, StateSelector } from 'zustand'
+import type { SetState } from 'zustand'
 
 import { ComponentOptions, Option, ScreenType } from 'features/configurator/options/types/options'
+import { useLocalStorage } from 'hooks/use-local-storage'
+import { parseJSON } from 'utils/parseJSON'
 
 type CanvasParams = {
   width: number
@@ -16,6 +17,11 @@ type CanvasParams = {
 
 type ElementType = ComponentOptions & { cords: { x: number; y: number }; index: number }
 export type ConfiguratorElements = Record<ScreenType, Omit<ElementType, 'index'>[]>
+
+export type LocalStorageConfig = {
+  elements: ConfiguratorElements
+  canvas: CanvasParams
+}
 
 type ConfiguratorStore = {
   isDragging: boolean
@@ -40,7 +46,7 @@ type ConfiguratorStore = {
   ) => void
 }
 
-export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => ({
+export const useConfiguratorStore = create<ConfiguratorStore>((set, get) => ({
   elements: {
     [ScreenType.InGame]: [],
     [ScreenType.Lobby]: []
@@ -249,25 +255,24 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
   }
 }))
 
-export const useConfiguratorStore = (
-  selector: StateSelector<ConfiguratorStore, any> = (state) => state
-): ConfiguratorStore => {
-  const [localConfig, setLocalConfig] = useLocalStorageValue({
-    key: 'overlay-config'
-  })
+type AnySelector = (state: ConfiguratorStore) => any
 
-  const [setInitialElements, elements, canvas, setCanvas] = useConfiguratorStoreBare((state) => [
+export const useSyncedConfiguratorStore = <S extends AnySelector>(selector: S): ReturnType<S> => {
+  const [localConfig, setLocalConfig] = useLocalStorage('overlay-config', '')
+
+  const [setInitialElements, elements, canvas, setCanvas] = useConfiguratorStore((state) => [
     state.setInitialElements,
     state.elements,
     state.canvas,
     state.setCanvas
   ])
-  const store = useConfiguratorStoreBare(selector)
+  const store = useConfiguratorStore(selector)
 
   useEffect(() => {
     if (localConfig) {
-      console.log(JSON.parse(localConfig))
-      const { elements: initialElement, canvas: initialCanvas } = JSON.parse(localConfig)
+      const { elements: initialElement, canvas: initialCanvas } = parseJSON<LocalStorageConfig>(
+        localConfig
+      ) as LocalStorageConfig
 
       setInitialElements(initialElement)
       setCanvas(initialCanvas)
@@ -289,5 +294,5 @@ export const useConfiguratorStore = (
 }
 
 if (process.env.NODE_ENV === 'development') {
-  mountStoreDevtool('Configurator store', useConfiguratorStoreBare)
+  mountStoreDevtool('Configurator store', useConfiguratorStore)
 }

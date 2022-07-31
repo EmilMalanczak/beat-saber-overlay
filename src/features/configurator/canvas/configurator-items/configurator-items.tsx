@@ -3,50 +3,34 @@ import { memo } from 'react'
 import type { FC } from 'react'
 
 import { Draggable } from 'features/configurator/canvas/draggable'
-import { options } from 'features/configurator/options/index'
-import { Option } from 'features/configurator/options/types/options'
-import {
-  useConfiguratorStore,
-  useConfiguratorStoreBare
-} from 'features/configurator/store/configurator'
+import { getConfiguratorItemComponent } from 'features/configurator/helpers/get-configurator-item-component'
+import { getConfiguratorItemProps } from 'features/configurator/helpers/get-configurator-item-props'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 type ConfiguratorItemProps = {
   onEdit: (value: boolean, params: { initialLeft: number; finalLeft: number; y: number }) => void
 }
 
 export const ConfiguratorItems: FC<ConfiguratorItemProps> = memo(({ onEdit }) => {
-  const zoom = useConfiguratorStoreBare((state) => state.canvas.zoom)
-
   // TODO: selector for this
-  const { dragElement, elements, removeElement, selectElement, activeScreen } =
-    useConfiguratorStore()
+  const { dragElement, elements, removeElement, selectElement, activeScreen, zoom } =
+    useSyncedConfiguratorStore((state) => ({
+      dragElement: state.dragElement,
+      elements: state.elements,
+      removeElement: state.removeElement,
+      selectElement: state.selectElement,
+      activeScreen: state.activeScreen,
+      zoom: state.canvas.zoom
+    }))
 
   return (
     <>
       {elements[activeScreen].map(({ name, options: elementOptions, cords }, index) => {
-        const Item = options.find((opt) => opt.name === name)?.component
+        const Item = getConfiguratorItemComponent(name)
 
         if (!Item) return null
 
-        const elementProps = elementOptions.reduce((acc, item) => {
-          if (item?.inputTypeName === Option.TOGGLE_COMPONENTS) {
-            return {
-              ...acc,
-              ...item.options.reduce(
-                (nAcc, nItem) => ({
-                  ...nAcc,
-                  [nItem.propName]: nItem.value
-                }),
-                {}
-              )
-            }
-          }
-
-          return {
-            ...acc,
-            [item.propName]: item.value
-          }
-        }, {})
+        const elementProps = getConfiguratorItemProps(elementOptions)
 
         return (
           <Draggable

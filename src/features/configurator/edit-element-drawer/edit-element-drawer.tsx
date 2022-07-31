@@ -11,7 +11,7 @@ import {
   Option,
   TogglePropOptions
 } from 'features/configurator/options/types/options'
-import { useConfiguratorStore } from 'features/configurator/store/configurator'
+import { useSyncedConfiguratorStore } from 'features/configurator/store/configurator'
 
 import { useStyles } from './edit-element-drawer.styles'
 
@@ -22,7 +22,11 @@ type EditDrawerProps = {
 
 export const EditDrawer: VFC<EditDrawerProps> = ({ opened, setOpened }) => {
   const { classes } = useStyles()
-  const { activeElement, saveConfig, editActiveElement } = useConfiguratorStore()
+  const { activeElement, saveConfig, editActiveElement } = useSyncedConfiguratorStore((state) => ({
+    activeElement: state.activeElement,
+    saveConfig: state.saveConfig,
+    editActiveElement: state.editActiveElement
+  }))
 
   return (
     <Drawer

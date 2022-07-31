@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
-import { useState, VFC } from 'react'
+import { useEffect, useState, VFC } from 'react'
 import { BsFillCheckCircleFill } from 'react-icons/bs'
 import { FiInfo } from 'react-icons/fi'
 
@@ -25,7 +25,7 @@ import { useLocalStorage } from 'hooks/use-local-storage'
 import { ScoresaberProfileConfirmation } from './scoresaber-profile-confirmation'
 
 import { getInitialZoom } from '../helpers/get-initial-zoom'
-import { useConfiguratorStoreBare } from '../store/configurator'
+import { useSyncedConfiguratorStore } from '../store/configurator'
 
 type ConfiguratorWelcomeModalProps = {
   opened: boolean
@@ -35,7 +35,7 @@ export const ConfiguratorWelcomeModal: VFC<ConfiguratorWelcomeModalProps> = ({ o
   const [tooltipVisible, setTooltipVisible] = useState(false)
   const [player, setPlayer] = useState<PlayerDto | null>(null)
   const [confirmationOpen, setConfirmationOpen] = useState(false)
-  const setCanvas = useConfiguratorStoreBare((state) => state.setCanvas)
+  const setCanvas = useSyncedConfiguratorStore((state) => state.setCanvas)
   const [, setPlayerId] = useLocalStorage('scoresaber-player-id', '')
 
   // TODO add is that you
@@ -58,7 +58,6 @@ export const ConfiguratorWelcomeModal: VFC<ConfiguratorWelcomeModalProps> = ({ o
   })
 
   const handleSubmit = async (data: any) => {
-    console.log(data)
     try {
       showNotification({
         id: 'load-data',
@@ -91,6 +90,11 @@ export const ConfiguratorWelcomeModal: VFC<ConfiguratorWelcomeModalProps> = ({ o
       })
     }
   }
+
+  useEffect(() => {
+    form.setFieldValue('width', window.outerWidth)
+    form.setFieldValue('height', window.outerHeight)
+  }, [])
 
   return (
     <>
