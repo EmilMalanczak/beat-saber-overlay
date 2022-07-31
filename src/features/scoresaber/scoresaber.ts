@@ -8,7 +8,8 @@ const config: AxiosRequestConfig = {
   baseURL: SCORESABER_URL,
   timeout: 120_000,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
   }
 }
 

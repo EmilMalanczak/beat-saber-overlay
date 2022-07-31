@@ -13,9 +13,7 @@ const App = ({ Component, pageProps }: AppProps) => (
   <StrictMode>
     <ThemeContext>
       <NotificationsProvider>
-        <SocketProvider>
-          <Component {...pageProps} />
-        </SocketProvider>
+        <Component {...pageProps} />
       </NotificationsProvider>
     </ThemeContext>
   </StrictMode>

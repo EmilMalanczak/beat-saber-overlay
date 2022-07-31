@@ -10,13 +10,13 @@ import {
 } from 'features/configurator/store/configurator'
 import { generateRandomCut } from 'features/demo/generate-random-cut'
 import { usePlayerStore } from 'features/scoresaber/player'
+import { SocketProvider } from 'features/socket/socket-context'
 import { useCutsStore } from 'features/socket/store/cuts'
 import { useInterval } from 'hooks/use-interval'
 import { useLocalStorage } from 'hooks/use-local-storage'
 import { parseJSON } from 'utils/parseJSON'
 
 const Home = () => {
-  // const { loading, player } = usePlayerStore()
   const cutNote = useCutsStore((state) => state.cutNote)
   const [isDemoOn, toggleDemo] = useState(false)
   const { getSong } = useSongStore()
@@ -39,7 +39,7 @@ const Home = () => {
   useInterval(handleCut, isDemoOn ? 50 : null)
 
   return (
-    <>
+    <SocketProvider>
       <div
         style={{
           position: 'absolute',
@@ -91,7 +91,7 @@ const Home = () => {
           )
         })}
       </div>
-    </>
+    </SocketProvider>
   )
 }
 
