@@ -13,7 +13,7 @@ export const DEFAULT_IP = '127.0.0.1'
 export const CONNECTION_RECONNECT_TIME = 3000
 
 const config: AxiosRequestConfig = {
-  baseURL: `${process.env.API_URL}/api`,
+  baseURL: '/api',
   timeout: 120_000,
   headers: {
     'Content-Type': 'application/json',
