@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { CANVAS_PADDING } from 'constants/dom'
 import { useSongStore } from 'features/beatsaver/song'
@@ -26,7 +26,9 @@ const Home = () => {
     canvas: state.canvas
   }))
   const [config] = useLocalStorage('overlay-config', '')
-  const parsedConfig = useMemo(() => parseJSON<LocalStorageConfig>(config), [config])
+  const [parsedConfig, setParsedConfig] = useState<LocalStorageConfig>()
+
+  // const parsedConfig = useMemo(() => parseJSON<LocalStorageConfig>(config), [config])
 
   const handleCut = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -37,6 +39,10 @@ const Home = () => {
   }
 
   useInterval(handleCut, isDemoOn ? 50 : null)
+
+  useEffect(() => {
+    setParsedConfig(parseJSON<LocalStorageConfig>(config))
+  }, [config])
 
   return (
     <SocketProvider>
