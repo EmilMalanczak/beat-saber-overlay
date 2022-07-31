@@ -1,4 +1,3 @@
-import { useLocalStorageValue } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { useEffect } from 'react'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
@@ -7,6 +6,8 @@ import create from 'zustand'
 import type { SetState, StateSelector } from 'zustand'
 
 import { ComponentOptions, Option, ScreenType } from 'features/configurator/options/types/options'
+import { useLocalStorage } from 'hooks/use-local-storage'
+import { parseJSON } from 'utils/parseJSON'
 
 type CanvasParams = {
   width: number
@@ -16,6 +17,11 @@ type CanvasParams = {
 
 type ElementType = ComponentOptions & { cords: { x: number; y: number }; index: number }
 export type ConfiguratorElements = Record<ScreenType, Omit<ElementType, 'index'>[]>
+
+export type LocalStorageConfig = {
+  elements: ConfiguratorElements
+  canvas: CanvasParams
+}
 
 type ConfiguratorStore = {
   isDragging: boolean
@@ -252,9 +258,7 @@ export const useConfiguratorStoreBare = create<ConfiguratorStore>((set, get) => 
 export const useConfiguratorStore = (
   selector: StateSelector<ConfiguratorStore, any> = (state) => state
 ): ConfiguratorStore => {
-  const [localConfig, setLocalConfig] = useLocalStorageValue({
-    key: 'overlay-config'
-  })
+  const [localConfig, setLocalConfig] = useLocalStorage('overlay-config', '')
 
   const [setInitialElements, elements, canvas, setCanvas] = useConfiguratorStoreBare((state) => [
     state.setInitialElements,
@@ -266,8 +270,10 @@ export const useConfiguratorStore = (
 
   useEffect(() => {
     if (localConfig) {
-      console.log(JSON.parse(localConfig))
-      const { elements: initialElement, canvas: initialCanvas } = JSON.parse(localConfig)
+      console.log(parseJSON(localConfig))
+      const { elements: initialElement, canvas: initialCanvas } = parseJSON<LocalStorageConfig>(
+        localConfig
+      ) as LocalStorageConfig
 
       setInitialElements(initialElement)
       setCanvas(initialCanvas)

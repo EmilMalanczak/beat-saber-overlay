@@ -65,7 +65,7 @@ export type DynamicPropOptions = InputWrapperBaseProps & {
   value: Record<string, any>[]
 }
 
-type OptionsType = PropOptions | TogglePropOptions | DynamicPropOptions
+export type OptionsType = PropOptions | TogglePropOptions | DynamicPropOptions
 
 export type ComponentOptions = {
   name: string

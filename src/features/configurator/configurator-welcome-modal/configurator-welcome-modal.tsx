@@ -13,7 +13,7 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
-import { useState, VFC } from 'react'
+import { useEffect, useState, VFC } from 'react'
 import { BsFillCheckCircleFill } from 'react-icons/bs'
 import { FiInfo } from 'react-icons/fi'
 
@@ -58,7 +58,6 @@ export const ConfiguratorWelcomeModal: VFC<ConfiguratorWelcomeModalProps> = ({ o
   })
 
   const handleSubmit = async (data: any) => {
-    console.log(data)
     try {
       showNotification({
         id: 'load-data',
@@ -91,6 +90,11 @@ export const ConfiguratorWelcomeModal: VFC<ConfiguratorWelcomeModalProps> = ({ o
       })
     }
   }
+
+  useEffect(() => {
+    form.setFieldValue('width', window.outerWidth)
+    form.setFieldValue('height', window.outerHeight)
+  }, [])
 
   return (
     <>
