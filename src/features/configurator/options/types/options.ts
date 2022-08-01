@@ -29,6 +29,8 @@ export enum ScreenType {
   Lobby = 'lobby'
 }
 
+export type ElementsCategory = 'player' | 'visualizer' | 'song' | 'other'
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 type OptionsBase<N extends Option, Props extends object = {}> = {
   id: string
@@ -69,12 +71,13 @@ export type OptionsType = PropOptions | TogglePropOptions | DynamicPropOptions
 
 export type ComponentOptions = {
   name: string
+  description: string
+  tags: string[]
   slug: string
-  category: string
+  category: ElementsCategory | 'core'
   order: number
   image: string
   unique: boolean
-  description: string
   screen: ScreenType[]
   options: OptionsType[]
   component: any

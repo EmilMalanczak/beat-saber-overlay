@@ -1,21 +1,27 @@
-import { options as CutVisualizerOptions } from './cut-visualizer'
-import { options as HealthBarOptions } from './health-bar'
-import { options as HitScoreVisualizerOptions } from './hit-score-visualizer'
-import { options as PlayerAvatarOptions } from './image-options/player-avatar'
-import { options as PlayerFlagOptions } from './image-options/player-flag'
-import { options as SongCoverOptions } from './image-options/song-cover'
-import { options as SongDifficultyBadgeOptions } from './song-difficulty-badge'
-import { options as AccuracyPercentage } from './text-options/accuracy-percentage'
-import { options as CustomgetTextOptions } from './text-options/custom-text'
-import { options as HealthAmountOptions } from './text-options/health-amount'
-import { options as NeonTextOptions } from './text-options/neon-text'
-import { options as PlayerCountryRankOptions } from './text-options/player-country-rank'
-import { options as PlayerNameOptions } from './text-options/player-name'
-import { options as PlayerPPOptions } from './text-options/player-pp'
-import { options as PlayerRankOptions } from './text-options/player-rank'
-import { options as PlayerScoreOptions } from './text-options/player-score'
-import { options as SongFullNameOptions } from './text-options/song-full-name'
-import { options as SongStartDifficultyOptions } from './text-options/song-star-difficulty'
+import { options as CustomgetTextOptions } from './other/custom-text'
+import { options as NeonTextOptions } from './other/neon-text'
+import { options as PlayerAvatarOptions } from './player/player-avatar'
+import { options as PlayerAverageAccOptions } from './player/player-average-acc'
+import { options as PlayerCountryRankOptions } from './player/player-country-rank'
+import { options as PlayerFlagOptions } from './player/player-flag'
+import { options as PlayerNameOptions } from './player/player-name'
+import { options as PlayerPPOptions } from './player/player-pp'
+import { options as PlayerRankOptions } from './player/player-rank'
+import { options as SongAuthorOptions } from './song/song-author'
+import { options as SongCoverOptions } from './song/song-cover'
+import { options as SongDifficultyBadgeOptions } from './song/song-difficulty-badge'
+import { options as SongFullNameOptions } from './song/song-full-name'
+import { options as SongHashOptions } from './song/song-hash'
+import { options as SongMapperOptions } from './song/song-mapper'
+import { options as SongNameOptions } from './song/song-name'
+import { options as SongStartDifficultyOptions } from './song/song-star-difficulty'
+import { ComponentOptions, ElementsCategory } from './types/options'
+import { options as AccuracyPercentage } from './visualizers/accuracy-percentage'
+import { options as CutVisualizerOptions } from './visualizers/cut-visualizer'
+import { options as HealthAmountOptions } from './visualizers/health-amount'
+import { options as HealthBarOptions } from './visualizers/health-bar'
+import { options as HitScoreVisualizerOptions } from './visualizers/hit-score-visualizer'
+import { options as PlayerScoreOptions } from './visualizers/player-score'
 
 export const options = [
   CustomgetTextOptions,
@@ -26,8 +32,13 @@ export const options = [
   HealthBarOptions,
   HealthAmountOptions,
   PlayerScoreOptions,
+  SongAuthorOptions,
+  SongHashOptions,
   PlayerAvatarOptions,
   PlayerNameOptions,
+  SongMapperOptions,
+  SongNameOptions,
+  PlayerAverageAccOptions,
   SongDifficultyBadgeOptions,
   SongFullNameOptions,
   PlayerFlagOptions,
@@ -37,3 +48,14 @@ export const options = [
   PlayerCountryRankOptions,
   SongCoverOptions
 ]
+
+export const groupedOptionsByCategory = options.reduce((acc, option) => {
+  if (option.category === 'core') {
+    return acc
+  }
+
+  return {
+    ...acc,
+    [option.category]: [...(acc[option.category] || []), option]
+  }
+}, {} as Record<ElementsCategory, ComponentOptions[]>)
